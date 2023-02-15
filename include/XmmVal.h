@@ -64,6 +64,44 @@ public:
         return ToStringUint(m_U64, sizeof(m_U64) / sizeof(uint64_t) , 32);
     }
 
+    //
+    // Hexadecimal
+    //
+
+    std::string ToStringX8(void)
+    {
+        return ToStringHex(m_U8, sizeof(m_U8) / sizeof(uint8_t), 4);
+    }
+
+    std::string ToStringX16(void)
+    {
+        return ToStringHex(m_U16, sizeof(m_U16) / sizeof(uint16_t), 8);
+    }
+
+    std::string ToStringX32(void)
+    {
+        return ToStringHex(m_U32, sizeof(m_U32) / sizeof(uint32_t), 16);
+    }
+
+    std::string ToStringX64(void)
+    {
+        return ToStringHex(m_U64, sizeof(m_U64) / sizeof(uint64_t), 32);
+    }
+
+    //
+    // Floating point
+    //
+
+    std::string ToStringF32(void)
+    {
+        return ToStringFP(m_F32, sizeof(m_F32) / sizeof(float), 16, 6);
+    }
+
+    std::string ToStringF64(void)
+    {
+        return ToStringFP(m_F64, sizeof(m_F64) / sizeof(double), 32, 12);
+    }
+
 private:
     template <typename  T>
     std::string ToStringInt(const T* x, int n , int w)
@@ -89,6 +127,46 @@ private:
                 oss << "    |";
             }
         }
+        return oss.str();
+    }
+
+    template <typename T> std::string ToStringHex(const T* x, int n, int w)
+    {
+        std::ostringstream oss;
+
+        for (int i = 0; i < n; i++)
+        {
+            const int w_temp = 16;
+            std::ostringstream oss_temp;
+
+            oss_temp << std::uppercase << std::hex << std::setfill('0');
+            oss_temp << std::setw(w_temp) << (uint64_t)x[i];
+            std::string s1 = oss_temp.str();
+            std::string s2 = s1.substr(w_temp - sizeof(T) * 2);
+
+            oss << std::setw(w) << s2;
+
+            if (i + 1 == n / 2)
+                oss << "   |";
+        }
+
+        return oss.str();
+    }
+
+    template <typename T> std::string ToStringFP(const T* x, int n, int w, int p)
+    {
+        std::ostringstream oss;
+
+        oss << std::fixed << std::setprecision(p);
+
+        for (int i = 0; i < n; i++)
+        {
+            oss << std::setw(w) << x[i];
+
+            if (i + 1 == n / 2)
+                oss << "   |";
+        }
+
         return oss.str();
     }
 };

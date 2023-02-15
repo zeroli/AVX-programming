@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
 
-project(Ch02_01 CXX)
+project(Ch02_02 CXX)
 
 aux_source_directory(. SRC)
 
