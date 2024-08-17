@@ -3,6 +3,7 @@
 #include "immintrin.h"
 #include <cstdint>
 #include <ostream>
+#include <type_traits>
 
 namespace simd {
 struct AVX { enum { alignment = 32 }; };
@@ -89,21 +90,6 @@ struct SIMDTraits {
     using arch_t = typename SIMD::vec_t;
 };
 
-template <typename T, typename Arch>
-inline std::ostream& operator <<(std::ostream& os, const Value<T, Arch>& x)
-{
-    using simd_t = Value<T, Arch>;
-    using scalar_t = typename simd_t::scalar_t;
-    using vec_t = typename simd_t::vec_t;
-    const scalar_t* p = (const scalar_t*)&(const vec_t&)x;
-    os << simd_t::name() << "{[0]=" << p[0];
-    for (int i = 1; i < simd_t::size(); i++) {
-        os << ", [" << i << "]=" << p[i];
-    }
-    os << "}";
-    return os;
-}
-
 Value<int32_t, AVX> Make(__m256i vec)
 {
     return Value<int32_t, AVX>(vec);
@@ -118,4 +104,35 @@ Value<double, AVX> Make(__m256d vec)
 {
     return Value<double, AVX>(vec);
 }
+
+template <typename T, typename Arch>
+inline std::ostream& operator <<(std::ostream& os, const Value<T, Arch>& x)
+{
+    using simd_t = Value<T, Arch>;
+    using scalar_t = typename simd_t::scalar_t;
+    using vec_t = typename simd_t::vec_t;
+    const scalar_t* p = (const scalar_t*)&(const vec_t&)x;
+    os << simd_t::name() << "{[0]=" << p[0];
+    for (int i = 1; i < simd_t::size(); i++) {
+        os << ", [" << i << "]=" << p[i];
+    }
+    os << "}";
+    return os;
+}
 }  // namespace simd
+
+template <typename VT>
+struct is_vec_t : std::false_type { };
+template <>
+struct is_vec_t<__m256i> : std::true_type { };
+template <>
+struct is_vec_t<__m256> : std::true_type { };
+template <>
+struct is_vec_t<__m256d> : std::true_type { };
+
+template <typename VecT,
+    std::enable_if_t<is_vec_t<VecT>::value>* = nullptr>
+inline std::ostream& operator <<(std::ostream& os, const VecT& x)
+{
+    return os << simd::Make(x);
+}
