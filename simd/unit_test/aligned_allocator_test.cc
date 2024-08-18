@@ -8,4 +8,5 @@ TEST(aligned_allocator, test_1)
     auto ptr = alloc.allocate(10);
     EXPECT_TRUE(ptr != nullptr);
     EXPECT_TRUE(simd::is_aligned(ptr, 32));
+    alloc.deallocate(ptr);
 }
