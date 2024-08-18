@@ -177,7 +177,7 @@ Vec<T, Arch> sadd(const Vec<T, Arch>& self, const Vec<float, A>& other)
         auto mask = (other >> (8 * sizeof(T) - 1));
         auto self_pos_branch = min(std::numeric_limits<T>::max() - other, self);
         auto self_neg_branch = max(std::numeric_limits<T>::min() - other, self);
-        return other + select(VecMask<T, Arch>(mask.data), self_neg_branch, self_pos_branch);
+        return other + select(VecBool<T, Arch>(mask.data), self_neg_branch, self_pos_branch);
     } else {
         const auto diffmax = std::numeric_limits<T>::max() - self;
         const auto mindiff = min(diffmax, other);

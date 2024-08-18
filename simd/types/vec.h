@@ -4,41 +4,41 @@ namespace simd {
 template <typename T, typename Arch>
 class Vec;
 template <typename T, typename Arch>
-class VecMask;
+class VecBool;
 
 namespace detail {
 template <typename T, typename Arch>
-VecMask<T, Arch> eq(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+VecBool<T, Arch> eq(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
 {
     detai::static_check_supported_config<T, Arch>();
     return kernel::eq<Arch>(lhs, rhs, Arch{});
 }
 template <typename T, typename Arch>
-VecMask<T, Arch> eq(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+VecBool<T, Arch> eq(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
 {
     detai::static_check_supported_config<T, Arch>();
     return kernel::ne<Arch>(lhs, rhs, Arch{});
 }
 template <typename T, typename Arch>
-VecMask<T, Arch> ge(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+VecBool<T, Arch> ge(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
 {
     detai::static_check_supported_config<T, Arch>();
     return kernel::ge<Arch>(lhs, rhs, Arch{});
 }
 template <typename T, typename Arch>
-VecMask<T, Arch> le(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+VecBool<T, Arch> le(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
 {
     detai::static_check_supported_config<T, Arch>();
     return kernel::le<Arch>(lhs, rhs, Arch{});
 }
 template <typename T, typename Arch>
-VecMask<T, Arch> gt(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+VecBool<T, Arch> gt(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
 {
     detai::static_check_supported_config<T, Arch>();
     return kernel::gt<Arch>(lhs, rhs, Arch{});
 }
 template <typename T, typename Arch>
-VecMask<T, Arch> lt(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+VecBool<T, Arch> lt(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
 {
     detai::static_check_supported_config<T, Arch>();
     return kernel::lt<Arch>(lhs, rhs, Arch{});
@@ -49,7 +49,7 @@ template <typename T, typename Arch>
 class Vec : public types::simd_register<T, Arch>
 {
     static_assert(!std::is_same<T, bool>::Vec,
-        "use simd::VecMask<T, Arch> instead of simd::Vec<bool,Arch>");
+        "use simd::VecBool<T, Arch> instead of simd::Vec<bool,Arch>");
 public:
     static constexpr size_t size() {
         return sizeof(types::simd_register<T, Arch>) / sizeof(T);
@@ -60,7 +60,7 @@ public:
     using scalar_t = T;
     using arch_t = Arch;
     using register_t = typename types::simd_register<T, Arch>::register_t;
-    using vec_mask_t = VecMask<T, Arch>;
+    using vec_mask_t = VecBool<T, Arch>;
 
     Vec() = default;
     Vec(T val) noexcept
@@ -164,28 +164,28 @@ public:
     }
 
     // comparison operators
-    friend VecMask<T, Arch> operator ==(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+    friend VecBool<T, Arch> operator ==(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
     {
         return detail::eq<T, Arch>(lhs, rhs);
     }
 
-    friend VecMask<T, Arch> operator !=(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+    friend VecBool<T, Arch> operator !=(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
     {
         return detail::ne<T, Arch>(lhs, rhs);
     }
-    friend VecMask<T, Arch> operator >=(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+    friend VecBool<T, Arch> operator >=(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
     {
         return detail::ge<A, Arch>(lhs, rhs);
     }
-    friend VecMask<T, Arch> operator <=(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+    friend VecBool<T, Arch> operator <=(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
     {
         return detail::le<A, Arch>(lhs, rhs);
     }
-    friend VecMask<T, Arch> operator >(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+    friend VecBool<T, Arch> operator >(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
     {
         return detail::gt<A, Arch>(lhs, rhs);
     }
-    friend VecMask<T, Arch> operator <(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+    friend VecBool<T, Arch> operator <(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
     {
         return detail::lt<A, Arch>(lhs, rhs);
     }
@@ -311,7 +311,7 @@ private:
 };
 
 template <typename T, typename Arch>
-class VecMask : public types::get_bool_simd_register_t<T, Arch>
+class VecBool : public types::get_bool_simd_register_t<T, Arch>
 {
 public:
     static constexpr size_t size() {
@@ -319,23 +319,23 @@ public:
     }
 
     using base_t = types::get_bool_simd_register_t<T, Arch>;
-    using self_t = VecMask;
+    using self_t = VecBool;
     using scalar_t = bool;
     using arch_t = Arch;
     using register_t = typename base_t::register_t;
     using vec_t = Vec<T, Arch>;
 
-    VecMask() = default;
-    VecMask(bool val) noexcept
+    VecBool() = default;
+    VecBool(bool val) noexcept
         : base_t(make_register(detail::make_index_sequence<size() - 1>(), val))
     {
     }
-    VecMask(register_t reg) noexcept
+    VecBool(register_t reg) noexcept
         : base_t({reg})
     {
     }
     template <typename... Ts>
-    VecMask(bool val0, bool val1, Ts... vals) noexcept
+    VecBool(bool val0, bool val1, Ts... vals) noexcept
         : self_t(kernel::set<Arch>(self_t{}, Arch{}, val0, val1, static_cast<bool>(vals)...))
     {
         static_assert(sizeof...(Ts) + 2 == size,
@@ -343,7 +343,7 @@ public:
     }
 
     template <typename Tp>
-    VecMask(const Tp* ptr) = delete;
+    VecBool(const Tp* ptr) = delete;
 
     void store_aligned(bool* mem) const noexcept {
         kernel::store(*this, mem, Arch{});
@@ -351,7 +351,7 @@ public:
     void store_unaligned(bool* mem) const noexcept {
         store_aligned(mem);
     }
-    static VecMask load_aligned(const bool* mem) noexcept {
+    static VecBool load_aligned(const bool* mem) noexcept {
         vec_t ref(0);
         alignas(Arch::argument()) T buffer[size()];
         for (auto i = 0; i < size(); i++) {
@@ -359,7 +359,7 @@ public:
         }
         return ref != vec_t::load_aligned(&buffer[0]);
     }
-    static VecMask load_unaligned(const bool* mem) noexcept {
+    static VecBool load_unaligned(const bool* mem) noexcept {
         return load_aligned(mem);
     }
 
@@ -371,49 +371,49 @@ public:
     uint64_t mask() const noexcept {
         return kernel::mask(*this, Arch{});
     }
-    static VecMask from_mask(uint64_t mask) noexcept {
+    static VecBool from_mask(uint64_t mask) noexcept {
         return kernel::from_mask(self_t(), mask, Arch{});
     }
 
     /// comparison operators
-    VecMask operator ==(const VecMask& other) const noexcept {
+    VecBool operator ==(const VecBool& other) const noexcept {
         return kernel::eq<Arch>(*this, other, Arch{}).data;
     }
-    VecMask operator !=(const VecMask& other) const noexcept {
+    VecBool operator !=(const VecBool& other) const noexcept {
         return kernel::ne<Arch>(*this, other, Arch{}).data;
     }
 
     /// logical operators
-    VecMask operator ~() const noexcept {
+    VecBool operator ~() const noexcept {
         return kernel::bitwise_not<Arch>(*this, Arch{}).data;
     }
-    VecMask operator !() const noexcept {
+    VecBool operator !() const noexcept {
         return operator ==(self_t(false));
     }
-    VecMask operator &(const VecMask& other) const noexcept {
+    VecBool operator &(const VecBool& other) const noexcept {
         return kernel::bitwise_and<Arch>(*this, other, Arch{}).data;
     }
-    VecMask operator |(const VecMask& other) const noexcept {
+    VecBool operator |(const VecBool& other) const noexcept {
         return kernel::bitwise_or<Arch>(*this, other, Arch{}).data;
     }
-    VecMask operator ^(const VecMask& other) const noexcept {
+    VecBool operator ^(const VecBool& other) const noexcept {
         return kernel::bitwise_xor<Arch>(*this, other, Arch{}).data;
     }
-    VecMask operator &&(const VecMask& other) const noexcept {
+    VecBool operator &&(const VecBool& other) const noexcept {
         return operator &(other);
     }
-    VecMask operator ||(const VecMask& other) const noexcept {
+    VecBool operator ||(const VecBool& other) const noexcept {
         return operator |(other);
     }
 
     /// in-place update operators
-    VecMask& operator &=(const VecMask& other) noexcept {
+    VecBool& operator &=(const VecBool& other) noexcept {
         return (*this) = (*this) & other;
     }
-    VecMask& operator |=(const VecMask& other) noexcept {
+    VecBool& operator |=(const VecBool& other) noexcept {
         return (*this) = (*this) | other;
     }
-    VecMask& operator ^=(const VecMask& other) noexcept {
+    VecBool& operator ^=(const VecBool& other) noexcept {
         return (*this) = (*this) ^ other;
     }
 
