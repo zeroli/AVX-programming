@@ -6,11 +6,11 @@
 #include <cstdint>
 #include <cstddef>
 
-#if 0
 namespace simd {
 namespace kernel {
 using namespace types;
 
+#if 0
 /// eq
 template <typename Arch>
 VecBool<float, Arch> eq(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<SSE>) noexcept
@@ -231,7 +231,7 @@ bool any(const Vec<T, Arch>& self, requires_arch<SSE>) noexcept
 {
     return !_mm_testz_si128(self, self);  // sse4.1
 }
+#endif
 
 }  // namespace kernel
 }  // namespace simd
-#endif

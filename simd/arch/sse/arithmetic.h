@@ -1,126 +1,177 @@
 #pragma once
 
 #include "simd/types/sse_register.h"
-#include "simd/types/vec.h"
+#include "simd/types/traits.h"
 
 #include <limits>
 #include <type_traits>
 #include <cstddef>
 #include <cstdint>
 
-#if 0
 namespace simd {
 namespace kernel {
 using namespace types;
 
 /// add
-template <typename Arch>
-Vec<float, Arch> add(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<SSE>) noexcept
+template <size_t W>
+Vec<float, W> add(const Vec<float, W>& lhs, const Vec<float, W>& rhs, requires_arch<SSE>) noexcept
 {
-    return _mm_add_ps(self, other);
-}
-
-template <typename Arch>
-Vec<double, Arch> add(const Vec<double, Arch>& self, const Vec<double, Arch>& other, requires_arch<SSE>) noexcept
-{
-    return _mm_add_pd(self, other);
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-Vec<T, Arch> add(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires_arch<SSE>) noexcept
-{
-    if (sizeof(T) == 1) {
-        return _mm_add_epi8(self, other);
-    } else if (sizeof(T) == 2) {
-        return _mm_add_epi16(self, other);
-    } else if (sizeof(T) == 4) {
-        return _mm_add_epi32(self, other);
-    } else if (sizeof(T) == 8) {
-        return _mm_add_epi64(self, other);
-    } else {
-        assert(false && "unsupported add op for sizeof(T) > 8 in SSE arch");
-        return {};
+    Vec<float, W> ret;
+    constexpr int nregs = Vec<float, W>::n_regs();
+    #pragma unroll
+    for (auto idx = 0; idx < nregs; idx++) {
+        ret.reg(idx) = _mm_add_ps(lhs.reg(idx), rhs.reg(idx));
     }
+    return ret;
+}
+
+template <size_t W>
+Vec<double, W> add(const Vec<double, W>& lhs, const Vec<double, W>& rhs, requires_arch<SSE>) noexcept
+{
+    Vec<double, W> ret;
+    constexpr int nregs = Vec<double, W>::n_regs();
+    #pragma unroll
+    for (auto idx = 0; idx < nregs; idx++) {
+        ret.reg(idx) = _mm_add_ps(lhs.reg(idx), rhs.reg(idx));
+    }
+    return ret;
+}
+
+template <size_t W, typename T, REQUIRE_INTEGRAL(T)>
+Vec<T, W> add(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
+{
+    Vec<T, W> ret;
+    constexpr int nregs = Vec<T, W>::n_regs();
+    SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_add_epi8(lhs.reg(idx), rhs.reg(idx));
+        }
+    } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_add_epi16(lhs.reg(idx), rhs.reg(idx));
+        }
+    } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_add_epi32(lhs.reg(idx), rhs.reg(idx));
+        }
+    } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_add_epi64(lhs.reg(idx), rhs.reg(idx));
+        }
+    } else {
+        assert(0 && "unsupported arch/op combination");
+    }
+    return ret;
 }
 
 /// sub
-template <typename Arch>
-Vec<float, Arch> sub(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<SSE>) noexcept
+template <size_t W>
+Vec<float, W> sub(const Vec<float, W>& lhs, const Vec<float, W>& rhs, requires_arch<SSE>) noexcept
 {
-    return _mm_sub_ps(self, other);
-}
-
-template <typename Arch>
-Vec<double, Arch> sub(const Vec<double, Arch>& self, const Vec<double, Arch>& other, requires_arch<SSE>) noexcept
-{
-    return _mm_sub_pd(self, other);
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-Vec<T, Arch> sub(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires_arch<SSE>) noexcept
-{
-    if (sizeof(T) == 1) {
-        return _mm_sub_epi8(self, other);
-    } else if (sizeof(T) == 2) {
-        return _mm_sub_epi16(self, other);
-    } else if (sizeof(T) == 4) {
-        return _mm_sub_epi32(self, other);
-    } else if (sizeof(T) == 8) {
-        return _mm_sub_epi64(self, other);
-    } else {
-        assert(false && "unsupported sub op for sizeof(T) > 8 in SSE arch");
-        return {};
+    Vec<float, W> ret;
+    constexpr int nregs = Vec<float, W>::n_regs();
+    #pragma unroll
+    for (auto idx = 0; idx < nregs; idx++) {
+        ret.reg(idx) = _mm_sub_ps(lhs.reg(idx), rhs.reg(idx));
     }
+    return ret;
 }
+
+template <size_t W>
+Vec<double, W> sub(const Vec<double, W>& lhs, const Vec<double, W>& rhs, requires_arch<SSE>) noexcept
+{
+    Vec<double, W> ret;
+    constexpr int nregs = Vec<double, W>::n_regs();
+    #pragma unroll
+    for (auto idx = 0; idx < nregs; idx++) {
+        ret.reg(idx) = _mm_sub_ps(lhs.reg(idx), rhs.reg(idx));
+    }
+    return ret;
+}
+
+template <size_t W, typename T, REQUIRE_INTEGRAL(T)>
+Vec<T, W> sub(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
+{
+    Vec<T, W> ret;
+    constexpr int nregs = Vec<T, W>::n_regs();
+    SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_sub_epi8(lhs.reg(idx), rhs.reg(idx));
+        }
+    } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_sub_epi16(lhs.reg(idx), rhs.reg(idx));
+        }
+    } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_sub_epi32(lhs.reg(idx), rhs.reg(idx));
+        }
+    } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_sub_epi64(lhs.reg(idx), rhs.reg(idx));
+        }
+    } else {
+        assert(0 && "unsupported arch/op combination");
+    }
+    return ret;
+}
+
+#if 0
 
 /// mul
 template <typename Arch>
-Vec<float, Arch> mul(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<SSE>) noexcept
+Vec<float, Arch> mul(const Vec<float, Arch>& lhs, const Vec<float, Arch>& rhs, requires_arch<SSE>) noexcept
 {
-    return _mm_mul_ps(self, other);
+    return _mm_mul_ps(lhs, rhs);
 }
 
 template <typename Arch>
-Vec<double, Arch> mul(const Vec<double, Arch>& self, const Vec<float, Arch>& other, requires_arch<SSE>) noexcept
+Vec<double, Arch> mul(const Vec<double, Arch>& lhs, const Vec<float, Arch>& rhs, requires_arch<SSE>) noexcept
 {
-    return _mm_mul_pd(self, other);
+    return _mm_mul_pd(lhs, rhs);
 }
 
 template <typename Arch>
-Vec<int16_t, Arch> mul(const Vec<int16_t, Arch>& self, const Vec<int16_t, Arch>& other, requires_arch<SSE>) noexcept
+Vec<int16_t, Arch> mul(const Vec<int16_t, Arch>& lhs, const Vec<int16_t, Arch>& rhs, requires_arch<SSE>) noexcept
 {
-    return _mm_mullo_epi16(self, other);
+    return _mm_mullo_epi16(lhs, rhs);
 }
 
 
 /// div
 template <typename Arch>
-Vec<float, Arch> div(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<SSE>) noexcept
+Vec<float, Arch> div(const Vec<float, Arch>& lhs, const Vec<float, Arch>& rhs, requires_arch<SSE>) noexcept
 {
-    return _mm_div_ps(self, other);
+    return _mm_div_ps(lhs, rhs);
 }
 
 template <typename Arch>
-Vec<double, Arch> div(const Vec<double, Arch>& self, const Vec<float, Arch>& other, requires_arch<SSE>) noexcept
+Vec<double, Arch> div(const Vec<double, Arch>& lhs, const Vec<float, Arch>& rhs, requires_arch<SSE>) noexcept
 {
-    return _mm_div_pd(self, other);
+    return _mm_div_pd(lhs, rhs);
 }
 
 /// neg
 template <typename Arch>
-Vec<float, Arch> neg(const Vec<float, Arch>& self, requires_arch<SSE>) noexcept
+Vec<float, Arch> neg(const Vec<float, Arch>& lhs, requires_arch<SSE>) noexcept
 {
-    return _mm_xor_ps(self,
+    return _mm_xor_ps(lhs,
                 _mm_castsi128_ps(_mm_set1_epi32(0x80000000))
             );
 }
 
 template <typename Arch>
-Vec<float, Arch> neg(const Vec<float, Arch>& self, requires_arch<SSE>) noexcept
+Vec<float, Arch> neg(const Vec<float, Arch>& lhs, requires_arch<SSE>) noexcept
 {
-    return _mm_xor_pd(self,
+    return _mm_xor_pd(lhs,
                 _mm_castsi128_pd(
                     _mm_setr_epi32(0, 0x80000000, 0, 0x80000000))
             );
@@ -128,9 +179,9 @@ Vec<float, Arch> neg(const Vec<float, Arch>& self, requires_arch<SSE>) noexcept
 
 template <typename Arch, typename T,
     typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-Vec<T, Arch> neg(const Vec<T, Arch>& self, requires_arch<SSE>) noexcept
+Vec<T, Arch> neg(const Vec<T, Arch>& lhs, requires_arch<SSE>) noexcept
 {
-    return 0 - self;
+    return 0 - lhs;
 }
 
 /// fnma
@@ -192,6 +243,7 @@ Vec<double, Arch> fma(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
 {
     return _mm_fmsub_pd(x, y, z);
 }
+#endif
+
 }  // namespace kernel
 }  // namespace simd
-#endif

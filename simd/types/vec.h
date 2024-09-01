@@ -11,8 +11,30 @@ class Vec;
 template <typename T, size_t W>
 class VecBool;
 
+// These functions are forwarded declared here so that they can be used
+// by friend functions with Vec<T, W>. Their implementation must appear
+// only once the kernel implementations have been included.
+namespace ops {
+template <typename T, size_t W>
+Vec<T, W> add(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+template <typename T, size_t W>
+Vec<T, W> sub(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+template <typename T, size_t W>
+Vec<T, W> mul(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+template <typename T, size_t W>
+Vec<T, W> div(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+template <typename T, size_t W>
+Vec<T, W> bitwise_and(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+template <typename T, size_t W>
+Vec<T, W> bitwise_or(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+template <typename T, size_t W>
+Vec<T, W> bitwise_xor(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+template <typename T, size_t W>
+Vec<T, W> logical_and(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+template <typename T, size_t W>
+Vec<T, W> logical_or(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+
 #if 0
-namespace detail {
 template <typename T, size_t W>
 VecBool<T, W> eq(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
@@ -43,8 +65,8 @@ VecBool<T, W> lt(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
     return kernel::lt<W>(lhs, rhs, A{});
 }
-}  // namepace detail
 #endif
+}  // namepace ops
 
 template <typename T, size_t W>
 class Vec
@@ -139,30 +161,33 @@ public:
         return kernel::scatter<A>(*this, dst, index, A{});
     }
 
+#endif
+#if 0
+
     // comparison operators
     friend VecBool<T, W> operator ==(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return detail::eq<T, W>(lhs, rhs);
+        return kernel::eq<W>(lhs, rhs, A{});
     }
     friend VecBool<T, W> operator !=(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return detail::ne<T, W>(lhs, rhs);
+        return kernel::ne<W>(lhs, rhs, A{});
     }
     friend VecBool<T, W> operator >=(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return detail::ge<A, W>(lhs, rhs);
+        return kernel::ge<W>(lhs, rhs, A{});
     }
     friend VecBool<T, W> operator <=(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return detail::le<A, W>(lhs, rhs);
+        return kernel::le<W>(lhs, rhs, A{});
     }
     friend VecBool<T, W> operator >(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return detail::gt<A, W>(lhs, rhs);
+        return kernel::gt<W>(lhs, rhs, A{});
     }
     friend VecBool<T, W> operator <(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return detail::lt<A, W>(lhs, rhs);
+        return kernel::lt<W>(lhs, rhs, A{});
     }
 
     /// in-place update operators
@@ -219,55 +244,47 @@ public:
     Vec operator +() const noexcept {
         return *this;
     }
-
+#endif
     /// arithmetic operators
     /// defined as friend to enable conversion from scalar to vector
     friend Vec operator +(const Vec& lhs, const Vec& rhs)
     {
-        return Vec(lhs) += rhs;
+        return ops::add<T, W>(lhs, rhs);
     }
-
     friend Vec operator -(const Vec& lhs, const Vec& rhs)
     {
-        return Vec(lhs) -= rhs;
+        return ops::sub<T, W>(lhs, rhs);
     }
+    #if 0
     friend Vec operator *(const Vec& lhs, const Vec& rhs)
     {
-        return Vec(lhs) *= rhs;
+        return ops::mul<T, W>(lhs, rhs);
     }
     friend Vec operator /(const Vec& lhs, const Vec& rhs)
     {
-        return Vec(lhs) /= rhs;
+        return ops::div<T, W>(lhs, rhs);
     }
     friend Vec operator &(const Vec& lhs, const Vec& rhs)
     {
-        return Vec(lhs) &= rhs;
+        return ops::bitwise_and<T, W>(lhs, rhs);
     }
     friend Vec operator |(const Vec& lhs, const Vec& rhs)
     {
-        return Vec(lhs) |= rhs;
+        return ops::bitwise_or<T, W>(lhs, rhs);
     }
     friend Vec operator ^(const Vec& lhs, const Vec& rhs)
     {
-        return Vec(lhs) ^= rhs;
+        return ops::bitwise_xor<T, W>(lhs, rhs, A{});
     }
     friend Vec operator &&(const Vec& lhs, const Vec& rhs)
     {
-        return Vec(lhs).logical_and(rhs);
+        return ops::logical_and<T, W>(lhs, rhs, A{});
     }
     friend Vec operator ||(const Vec& lhs, const Vec& rhs)
     {
-        return Vec(lhs).logical_or(rhs);
+        return ops::logical_or<W>(lhs, rhs, A{});
     }
 
-private:
-    Vec logical_and(const Vec& other) const noexcept {
-        return kernel::logical_and<W>(*this, other, A{});
-    }
-
-    Vec logical_or(const Vec& other) const noexcept {
-        return kernel::logical_and<W>(*this, other, A{});
-    }
     #endif
 };
 
@@ -420,3 +437,4 @@ private:
 }  // namespace simd
 
 #include "simd/types/vec.tcc"
+#include "simd/types/vec_ops.h"
