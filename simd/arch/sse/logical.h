@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cstddef>
 
+#if 0
 namespace simd {
 namespace kernel {
 using namespace types;
@@ -233,3 +234,4 @@ bool any(const Vec<T, Arch>& self, requires_arch<SSE>) noexcept
 
 }  // namespace kernel
 }  // namespace simd
+#endif

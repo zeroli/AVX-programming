@@ -1,242 +1,206 @@
 #pragma once
 
+#include "simd/types/arch_traits.h"
+#include "simd/types/traits.h"
+
+#include <cstddef>
+
 namespace simd {
-template <typename T, typename Arch>
+template <typename T, size_t W>
 class Vec;
-template <typename T, typename Arch>
+template <typename T, size_t W>
 class VecBool;
 
+#if 0
 namespace detail {
-template <typename T, typename Arch>
-VecBool<T, Arch> eq(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+template <typename T, size_t W>
+VecBool<T, W> eq(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
-    detai::static_check_supported_config<T, Arch>();
-    return kernel::eq<Arch>(lhs, rhs, Arch{});
+    return kernel::eq<W>(lhs, rhs, A{});
 }
-template <typename T, typename Arch>
-VecBool<T, Arch> eq(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+template <typename T, size_t W>
+VecBool<T, W> eq(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
-    detai::static_check_supported_config<T, Arch>();
-    return kernel::ne<Arch>(lhs, rhs, Arch{});
+    return kernel::ne<W>(lhs, rhs, A{});
 }
-template <typename T, typename Arch>
-VecBool<T, Arch> ge(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+template <typename T, size_t W>
+VecBool<T, W> ge(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
-    detai::static_check_supported_config<T, Arch>();
-    return kernel::ge<Arch>(lhs, rhs, Arch{});
+    return kernel::ge<W>(lhs, rhs, A{});
 }
-template <typename T, typename Arch>
-VecBool<T, Arch> le(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+template <typename T, size_t W>
+VecBool<T, W> le(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
-    detai::static_check_supported_config<T, Arch>();
-    return kernel::le<Arch>(lhs, rhs, Arch{});
+    return kernel::le<W>(lhs, rhs, A{});
 }
-template <typename T, typename Arch>
-VecBool<T, Arch> gt(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+template <typename T, size_t W>
+VecBool<T, W> gt(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
-    detai::static_check_supported_config<T, Arch>();
-    return kernel::gt<Arch>(lhs, rhs, Arch{});
+    return kernel::gt<W>(lhs, rhs, A{});
 }
-template <typename T, typename Arch>
-VecBool<T, Arch> lt(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+template <typename T, size_t W>
+VecBool<T, W> lt(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
-    detai::static_check_supported_config<T, Arch>();
-    return kernel::lt<Arch>(lhs, rhs, Arch{});
+    return kernel::lt<W>(lhs, rhs, A{});
 }
 }  // namepace detail
+#endif
 
-template <typename T, typename Arch>
-class Vec : public types::simd_register<T, Arch>
+template <typename T, size_t W>
+class Vec
+    : public types::simd_register<T, W, types::arch_traits_t<T, W>>
 {
-    static_assert(!std::is_same<T, bool>::Vec,
-        "use simd::VecBool<T, Arch> instead of simd::Vec<bool,Arch>");
+    static_assert(!std::is_same<T, bool>::value,
+        "use simd::VecBool<T, W> instead of simd::Vec<bool, W>");
 public:
-    static constexpr size_t size() {
-        return sizeof(types::simd_register<T, Arch>) / sizeof(T);
+    static constexpr size_t size() { return W; }
+    static constexpr const char* type() {
+        return traits::vec_type_traits<T, W>::type();
     }
 
-    using base_t = types::simd_register<T, Arch>;
+    using A = types::arch_traits_t<T, W>;
+    using arch_t = A;
+    using base_t = types::simd_register<T, W, arch_t>;
     using self_t = Vec;
     using scalar_t = T;
-    using arch_t = Arch;
-    using register_t = typename types::simd_register<T, Arch>::register_t;
-    using vec_mask_t = VecBool<T, Arch>;
+    using register_t = typename base_t::register_t;
+    using vec_mask_t = VecBool<T, W>;
 
     Vec() = default;
-    Vec(T val) noexcept
-        : base_t(kernel::broadcast<Arch>(val, Arch{}))
-    {
-        detail::static_check_supported_config<T, Arch>();
-    }
+    Vec(T val) noexcept;
 
+    #if 0  // TODO:
     template <typename... Ts>
-    Vec(T val0, T val1, Ts... vals) noexcept
-        : self_t(kernel::set<Arch>(Vec{}, A{}, val0, val1, static_cast<T>(vals)...))
-    {
-        detail::static_check_supported_config<T, Arch>();
-        static_assert(sizeof...(Ts) + 2 == size(),
-            "the constructor requires as many arguments as vector elements");
-    }
-    explicit Vec(vec_mask_t b) noexcept
-        : self_t(kernel::from_bool(b, Arch{}))
-    {
-    }
-    explicit Vec(register_t reg) noexcept
-        : base_t({arg})
-    {
-        detail::static_check_supported_config<T, Arch>();
-    }
+    Vec(T val0, T val1, Ts... vals) noexcept;
+    explicit Vec(vec_mask_t b) noexcept;
+    #endif
+    template <typename... Regs>
+    explicit Vec(register_t arg, Regs... others) noexcept;
 
+#if 0
     template <typename U>
     static Vec broadcast(U val) noexcept {
-        detail::static_check_supported_config<T, Arch>();
         return Vec(static_cast<T>(val));
     }
 
     template <typename U>
     void store_aligned(U* mem) const noexcept {
-        detail::static_check_supported_config<T, Arch>();
-        assert(is_aligned(mem, Arch::argument())
+        assert(is_aligned(mem, A::argument())
             && "store location is not properly aligned");
-        kernel::store_aligned<Arch>(mem, *this, Arch{});
+        kernel::store_aligned<W>(mem, *this, A{});
     }
     template <tyepname U>
     void store_unaligned(U* mem) const noexcept {
-        detail::static_check_supported_config<T, Arch>();
-        kernel::store_unaligned<Arch>(mem, *this, Arch{});
+        kernel::store_unaligned<W>(mem, *this, A{});
     }
 
     template <typename U>
     void store(U* mem, aligned_mode) const noexcept {
-        detail::static_check_supported_config<T, Arch>();
         store_aligned(mem);
     }
 
     template <typename U>
     void store(U* mem, unaligned_mode) const noexcept {
-        detail::static_check_supported_config<T, Arch>();
         store_unaligned(mem);
     }
 
     template <typename U>
     static Vec load_aligned(const U* mem) noexcept {
-        assert(is_aligned(mem, Arch::argument())
+        assert(is_aligned(mem, W::argument())
             && "loaded location is not properly aligned");
-        detail::static_check_supported_config<T, Arch>();
-        return kernel::load_aligned<Arch>(mem, kernel::convert<T>{}, Arch{});
+        return kernel::load_aligned<A>(mem, kernel::convert<T>{}, A{});
     }
 
     template <typename U>
     static Vec load_unaligned(const U* mem) noexcept {
-        detail::static_check_supported_config<T, Arch>();
-        return kernel::load_unaligned<Arch>(mem, kernel::convert<T>{}, Arch{});
+        return kernel::load_unaligned<A>(mem, kernel::convert<T>{}, A{});
     }
 
     template <typename U>
     static Vec load(const U* mem, aligned_mode) noexcept {
-        detail::static_check_supported_config<T, Arch>();
         return load_aligned(mem);
     }
 
     template <typename U>
     static Vec load(const U* mem, unaligned_mode) noexcept {
-        detail::static_check_supported_config<T, Arch>();
         return load_unaligned(mem);
     }
 
     template <typename U, typename V>
-    static Vec gather(const U* src, const Vec<V, Arch>& index) noexcept {
-        detail::static_check_supported_config<T, Arch>();
+    static Vec gather(const U* src, const Vec<V, W>& index) noexcept {
         static_assert(std::is_convertible<U, T>::Vec,
             "Cannot convert from src to this type");
-        return kernel::gather(Vec{}, src, index, Arch{});
+        return kernel::gather(Vec{}, src, index, A{});
     }
     template <typename U, typename V>
-    void scatter(U* dst, const Vec<V, Arch>& index) const noexcept {
-        detail::static_check_supported_config<T, Arch>();
+    void scatter(U* dst, const Vec<V, W>& index) const noexcept {
         static_assert(std::is_convertible<T, U>::Vec,
             "Cannot convert from src to this type");
-        return kernel::scatter<Arch>(*this, dst, index, Arch{});
-    }
-
-    T get(size_t idx) const noexcept {
-        return kernel::get(*this, idx, Arch{});
+        return kernel::scatter<A>(*this, dst, index, A{});
     }
 
     // comparison operators
-    friend VecBool<T, Arch> operator ==(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+    friend VecBool<T, W> operator ==(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return detail::eq<T, Arch>(lhs, rhs);
+        return detail::eq<T, W>(lhs, rhs);
     }
-
-    friend VecBool<T, Arch> operator !=(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+    friend VecBool<T, W> operator !=(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return detail::ne<T, Arch>(lhs, rhs);
+        return detail::ne<T, W>(lhs, rhs);
     }
-    friend VecBool<T, Arch> operator >=(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+    friend VecBool<T, W> operator >=(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return detail::ge<A, Arch>(lhs, rhs);
+        return detail::ge<A, W>(lhs, rhs);
     }
-    friend VecBool<T, Arch> operator <=(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+    friend VecBool<T, W> operator <=(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return detail::le<A, Arch>(lhs, rhs);
+        return detail::le<A, W>(lhs, rhs);
     }
-    friend VecBool<T, Arch> operator >(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+    friend VecBool<T, W> operator >(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return detail::gt<A, Arch>(lhs, rhs);
+        return detail::gt<A, W>(lhs, rhs);
     }
-    friend VecBool<T, Arch> operator <(const Vec<T, Arch>& lhs, const Vec<T, Arch>& rhs)
+    friend VecBool<T, W> operator <(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return detail::lt<A, Arch>(lhs, rhs);
+        return detail::lt<A, W>(lhs, rhs);
     }
 
     /// in-place update operators
     Vec& operator +=(const Vec& other) noexcept {
-        detail::static_check_supported_config<T, Arch>();
-        return *this = kernel::add<Arch>(*this, other, Arch{});
+        return *this = kernel::add<W>(*this, other, A{});
     }
     Vec& operator -=(const Vec& other) noexcept {
-        detail::static_check_supported_config<T, Arch>();
-        return *this = kernel::sub<Arch>(*this, other, Arch{});
+        return *this = kernel::sub<W>(*this, other, A{});
     }
     Vec& operator *=(const Vec& other) noexcept {
-        detail::static_check_supported_config<T, Arch>();
-        return *this = kernel::mul<Arch>(*this, other, Arch{});
+        return *this = kernel::mul<W>(*this, other, A{});
     }
     Vec& operator /=(const Vec& other) noexcept {
-        detail::static_check_supported_config<T, Arch>();
-        return *this = kernel::div<Arch>(*this, other, Arch{});
+        return *this = kernel::div<W>(*this, other, A{});
     }
     Vec& operator &=(const Vec& other) noexcept {
-        detail::static_check_supported_config<T, Arch>();
-        return *this = kernel::bitwise_and<Arch>(*this, other, Arch{});
+        return *this = kernel::bitwise_and<W>(*this, other, A{});
     }
     Vec& operator |=(const Vec& other) noexcept {
-        detail::static_check_supported_config<T, Arch>();
-        return *this = kernel::bitwise_or<Arch>(*this, other, Arch{});
+        return *this = kernel::bitwise_or<W>(*this, other, A{});
     }
     Vec& operator ^=(const Vec& other) noexcept {
-        detail::static_check_supported_config<T, Arch>();
-        return *this = kernel::bitwise_xor<Arch>(*this, other, Arch{});
+        return *this = kernel::bitwise_xor<W>(*this, other, A{});
     }
 
     /// increment/decrement operators
     Vec& operator ++() noexcept {
-        detail::static_check_supported_config<T, Arch>();
         return operator +=(1);
     }
     Vec& operator --() noexcept {
-        detail::static_check_supported_config<T, Arch>();
         return operator -=(1);
     }
     Vec& operator ++(int) noexcept {
-        detail::static_check_supported_config<T, Arch>();
         self_t copy(*this);
         operator +=(1);
         return copy;
     }
     Vec& operator --(int) noexcept {
-        detail::static_check_supported_config<T, Arch>();
         self_t copy(*this);
         operator -=(1);
         return copy;
@@ -244,19 +208,15 @@ public:
 
     /// unary operators
     vec_mask_t operator !() const noexcept {
-        detail::static_check_supported_config<T, Arch>();
-        return kernel::eq<Arch>(*this, Vec(0), Arch{});
+        return kernel::eq<W>(*this, Vec(0), A{});
     }
     Vec operator ~() const noexcept {
-        detail::static_check_supported_config<T, Arch>();
-        return kernel::bitwise_not<Arch>(*this, Arch{});
+        return kernel::bitwise_not<W>(*this, A{});
     }
     Vec operator -() const noexcept {
-        detail::static_check_supported_config<T, Arch>();
-        return kernel::neg<Arch>(*this, Arch{});
+        return kernel::neg<W>(*this, A{});
     }
     Vec operator +() const noexcept {
-        detail::static_check_supported_config<T, Arch>();
         return *this;
     }
 
@@ -302,28 +262,53 @@ public:
 
 private:
     Vec logical_and(const Vec& other) const noexcept {
-        return kernel::logical_and<Arch>(*this, other, Arch{});
+        return kernel::logical_and<W>(*this, other, A{});
     }
 
     Vec logical_or(const Vec& other) const noexcept {
-        return kernel::logical_and<Arch>(*this, other, Arch{});
+        return kernel::logical_and<W>(*this, other, A{});
     }
+    #endif
 };
 
-template <typename T, typename Arch>
-class VecBool : public types::get_bool_simd_register_t<T, Arch>
+using vf32x16_t = Vec<float, 16>;
+using vf32x8_t = Vec<float, 8>;
+using vf32x4_t = Vec<float, 4>;
+
+using vf64x8_t = Vec<double, 8>;
+using vf64x4_t = Vec<double, 4>;
+using vf64x2_t = Vec<double, 2>;
+
+using vi8x64_t = Vec<int8_t, 64>;
+using vi8x32_t = Vec<int8_t, 32>;
+using vi8x16_t = Vec<int8_t, 16>;
+using vi8x8_t = Vec<int8_t, 8>;
+using vi8x4_t = Vec<int8_t, 4>;
+
+using vi16x32_t = Vec<int16_t, 32>;
+using vi16x16_t = Vec<int16_t, 16>;
+using vi16x8_t = Vec<int16_t, 8>;
+using vi16x4_t = Vec<int16_t, 4>;
+
+using vi32x16_t = Vec<int32_t, 16>;
+using vi32x8_t = Vec<int32_t, 8>;
+using vi32x4_t = Vec<int32_t, 4>;
+
+#if 0
+template <typename T, size_t W>
+class VecBool
+    : public types::get_bool_simd_register_t<T, W, types::arch_traits_t<T, W>>
 {
 public:
-    static constexpr size_t size() {
-        return sizeof(types::simd_register<T, Arch>) / sizeof(T);
-    }
+    static constexpr size_t size() { return W; }
 
-    using base_t = types::get_bool_simd_register_t<T, Arch>;
+    using base_t = types::get_bool_simd_register_t<T, W>;
+    using A = typename base_t::arch_t;
+    using arch_t = A;
     using self_t = VecBool;
     using scalar_t = bool;
-    using arch_t = Arch;
     using register_t = typename base_t::register_t;
-    using vec_t = Vec<T, Arch>;
+    using vec_t = Vec<T, W>;
 
     VecBool() = default;
     VecBool(bool val) noexcept
@@ -336,7 +321,7 @@ public:
     }
     template <typename... Ts>
     VecBool(bool val0, bool val1, Ts... vals) noexcept
-        : self_t(kernel::set<Arch>(self_t{}, Arch{}, val0, val1, static_cast<bool>(vals)...))
+        : self_t(kernel::set<A>(self_t{}, A{}, val0, val1, static_cast<bool>(vals)...))
     {
         static_assert(sizeof...(Ts) + 2 == size,
             "constructor requires as many as arguments as vector elements");
@@ -346,14 +331,14 @@ public:
     VecBool(const Tp* ptr) = delete;
 
     void store_aligned(bool* mem) const noexcept {
-        kernel::store(*this, mem, Arch{});
+        kernel::store(*this, mem, A{});
     }
     void store_unaligned(bool* mem) const noexcept {
         store_aligned(mem);
     }
     static VecBool load_aligned(const bool* mem) noexcept {
         vec_t ref(0);
-        alignas(Arch::argument()) T buffer[size()];
+        alignas(A::argument()) T buffer[size()];
         for (auto i = 0; i < size(); i++) {
             buffer[i] = mem[0] ? 1 : 0;
         }
@@ -364,40 +349,40 @@ public:
     }
 
     bool get(size_t idx) const noexcept {
-        return kernel::get(*this, idx, Arch{});
+        return kernel::get(*this, idx, A{});
     }
 
     /// mask operators
     uint64_t mask() const noexcept {
-        return kernel::mask(*this, Arch{});
+        return kernel::mask(*this, A{});
     }
     static VecBool from_mask(uint64_t mask) noexcept {
-        return kernel::from_mask(self_t(), mask, Arch{});
+        return kernel::from_mask(self_t(), mask, A{});
     }
 
     /// comparison operators
     VecBool operator ==(const VecBool& other) const noexcept {
-        return kernel::eq<Arch>(*this, other, Arch{}).data;
+        return kernel::eq<A>(*this, other, A{}).data;
     }
     VecBool operator !=(const VecBool& other) const noexcept {
-        return kernel::ne<Arch>(*this, other, Arch{}).data;
+        return kernel::ne<A>(*this, other, A{}).data;
     }
 
     /// logical operators
     VecBool operator ~() const noexcept {
-        return kernel::bitwise_not<Arch>(*this, Arch{}).data;
+        return kernel::bitwise_not<A>(*this, A{}).data;
     }
     VecBool operator !() const noexcept {
         return operator ==(self_t(false));
     }
     VecBool operator &(const VecBool& other) const noexcept {
-        return kernel::bitwise_and<Arch>(*this, other, Arch{}).data;
+        return kernel::bitwise_and<A>(*this, other, A{}).data;
     }
     VecBool operator |(const VecBool& other) const noexcept {
-        return kernel::bitwise_or<Arch>(*this, other, Arch{}).data;
+        return kernel::bitwise_or<A>(*this, other, A{}).data;
     }
     VecBool operator ^(const VecBool& other) const noexcept {
-        return kernel::bitwise_xor<Arch>(*this, other, Arch{}).data;
+        return kernel::bitwise_xor<A>(*this, other, A{}).data;
     }
     VecBool operator &&(const VecBool& other) const noexcept {
         return operator &(other);
@@ -427,8 +412,11 @@ private:
     template <typename... V>
     static register_t make_register(detail::index_sequence<>, V... v) noexcept
     {
-        return kernel::set<Arch>(self_t{}, Arch{}, v...).data;
+        return kernel::set<W>(self_t{}, A{}, v...).reg();
     }
 };
+#endif
 
 }  // namespace simd
+
+#include "simd/types/vec.tcc"

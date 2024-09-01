@@ -3,6 +3,7 @@
 #include "simd/types/sse_register.h"
 #include "simd/types/vec.h"
 
+#if 0
 namespace simd {
 namespace kernel {
 using namespace types;
@@ -111,3 +112,4 @@ Vec<double, Arch> sqrt(const Vec<double, Arch>& self, requires_arch<SSE>) noexce
 
 }  // namespace kernel
 }  // namespace simd
+#endif

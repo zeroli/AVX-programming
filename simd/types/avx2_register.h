@@ -8,7 +8,7 @@ struct AVX2 : AVX
 {
     static constexpr bool supported() noexcept { return SIMD_WITH_AVX2; }
     static constexpr bool available() noexcept { return true; }
-    static constexpr const char* name() noexcept { return "avx2"; }
+    static constexpr const char* name() noexcept { return "AVX2"; }
 };
 }  // namespace simd
 

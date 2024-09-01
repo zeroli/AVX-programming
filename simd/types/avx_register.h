@@ -4,17 +4,17 @@
 
 namespace simd {
 /// AVX instructions
-struct AVX : Generic
+struct AVX : generic
 {
     static constexpr bool supported() noexcept { return SIMD_WITH_AVX; }
     static constexpr bool available() noexcept { return true; }
     static constexpr size_t alignment() noexcept { return 32; }
     static constexpr bool requires_alignment() noexcept { return true; }
-    static constexpr const char* name() noexcept { return "avx"; }
+    static constexpr const char* name() noexcept { return "AVX"; }
 };
 }  // namespace simd
 
-#if 1 // SIMD_WITH_AVX
+#if SIMD_WITH_AVX
 #include <immintrin.h>
 
 namespace simd {

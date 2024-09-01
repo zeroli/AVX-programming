@@ -7,7 +7,7 @@
 
 namespace simd {
 /// generic architecture
-struct Generic {
+struct generic {
     static constexpr bool supported() noexcept { return true; }
     static constexpr bool available() noexcept { return true; }
     static constexpr size_t alignment() noexcept { return 1; }
@@ -15,6 +15,6 @@ struct Generic {
     static constexpr const char* name() noexcept { return "generic"; }
 };
 
-struct Unsupported { };
+struct unsupported { };
 
 }  // namespace simd

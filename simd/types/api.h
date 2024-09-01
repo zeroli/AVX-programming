@@ -1,5 +1,6 @@
 #pragma once
 
+#include "simd/arch/isa.h"
 #include "simd/types/vec.h"
 #include "simd/types/traits.h"
 
@@ -9,6 +10,7 @@
 #include <ostream>
 
 namespace simd {
+#if 0
 template <typename T, typename Arch>
 Vec<T, Arch> abs(const Vec<T, Arch>& x) noexcept
 {
@@ -567,23 +569,22 @@ bool none(const VecBool<T, Arch>& x) noexcept
     detail::static_check_supported_config<T, Arch>();
     return !kernel::any<Arch>(x, Arch{});
 }
+#endif
 
-template <typename T, typename Arch>
-std::ostream& operator <<(std::ostream& os, const Vec<T, Arch>& x)
+template <typename T, size_t W>
+std::ostream& operator <<(std::ostream& os, const Vec<T, W>& x) noexcept
 {
-    detail::static_check_supported_config<T, Arch>();
-    constexpr auto size = Vec<T, Arch>::size();
-    alignas(Arch::alignment()) T buffer[size];
-    x.store_aligned(&buffer[0]);
-    os << "(";
+    constexpr auto size = Vec<T, W>::size();
+    os << Vec<T, W>::type() << "[";
     for (auto i = 0; i < size - 1; i++) {
-        os << buffer[i] << ", ";
+        os << x[i] << ", ";
     }
-    return os << buffer[size - 1] << ")";
+    return os << x[size - 1] << "]";
 }
 
+#if 0
 template <typename T, typename Arch>
-std::ostream& operator <<(std::ostream& os, const VecBool<T, Arch>& x)
+std::ostream& operator <<(std::ostream& os, const VecBool<T, Arch>& x) noexcept
 {
     detail::static_check_supported_config<T, Arch>();
     constexpr auto size = VecBool<T, Arch>::size();
@@ -595,5 +596,5 @@ std::ostream& operator <<(std::ostream& os, const VecBool<T, Arch>& x)
     }
     return os << buffer[size - 1] << ")";
 }
-
+#endif
 }  // namespace simd

@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <cstdint>
 
+#if 0
 namespace simd {
 namespace kernel {
 using namespace types;
@@ -132,5 +133,65 @@ Vec<T, Arch> neg(const Vec<T, Arch>& self, requires_arch<SSE>) noexcept
     return 0 - self;
 }
 
+/// fnma
+template <typename Arch>
+Vec<float, Arch> fnma(const Vec<float, Arch>& x, const Vec<float, Arch>& y,
+        const Vec<float, Arch>& z, requires_arch<SSE>) noexcept
+{
+    return _mm_fnmadd_ps(x, y, z);
+}
+
+template <typename Arch>
+Vec<double, Arch> fnma(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
+        const Vec<double, Arch>& z, requires_arch<SSE>) noexcept
+{
+    return _mm_fnmadd_pd(x, y, z);
+}
+
+/// fnms
+template <typename Arch>
+Vec<float, Arch> fnms(const Vec<float, Arch>& x, const Vec<float, Arch>& y,
+        const Vec<float, Arch>& z, requires_arch<SSE>) noexcept
+{
+    return _mm_fnmsub_ps(x, y, z);
+}
+
+template <typename Arch>
+Vec<double, Arch> fnms(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
+        const Vec<double, Arch>& z, requires_arch<SSE>) noexcept
+{
+    return _mm_fnmsub_pd(x, y, z);
+}
+
+/// fma
+template <typename Arch>
+Vec<float, Arch> fma(const Vec<float, Arch>& x, const Vec<float, Arch>& y,
+        const Vec<float, Arch>& z, requires_arch<SSE>) noexcept
+{
+    return _mm_fmadd_ps(x, y, z);
+}
+
+template <typename Arch>
+Vec<double, Arch> fma(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
+        const Vec<double, Arch>& z, requires_arch<SSE>) noexcept
+{
+    return _mm_fmadd_pd(x, y, z);
+}
+
+/// fms
+template <typename Arch>
+Vec<float, Arch> fma(const Vec<float, Arch>& x, const Vec<float, Arch>& y,
+        const Vec<float, Arch>& z, requires_arch<SSE>) noexcept
+{
+    return _mm_fmsub_ps(x, y, z);
+}
+
+template <typename Arch>
+Vec<double, Arch> fma(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
+        const Vec<double, Arch>& z, requires_arch<SSE>) noexcept
+{
+    return _mm_fmsub_pd(x, y, z);
+}
 }  // namespace kernel
 }  // namespace simd
+#endif

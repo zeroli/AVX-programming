@@ -311,5 +311,67 @@ VecBool<T, Arch> from_mask(uint64_t mask, requires_arch<AVX>) noexcept
         return {};
     }
 }
+
+/// fnma
+template <typename Arch>
+Vec<float, Arch> fnma(const Vec<float, Arch>& x, const Vec<float, Arch>& y,
+            const Vec<float, Arch>& z, requries_arch<AVX>) noexcept
+{
+    return _mm256_fnmadd_ps(x, y, z);
+}
+
+template <typename Arch>
+Vec<double, Arch> fnma(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
+            const Vec<double, Arch>& z, requries_arch<AVX>) noexcept
+{
+    return _mm256_fnmadd_pd(x, y, z);
+}
+
+/// fnms
+template <typename Arch>
+Vec<float, Arch> fnms(const Vec<float, Arch>& x, const Vec<float, Arch>& y,
+            const Vec<float, Arch>& z, requries_arch<AVX>) noexcept
+{
+    return _mm256_fnmsub_ps(x, y, z);
+}
+
+template <typename Arch>
+Vec<double, Arch> fnms(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
+            const Vec<double, Arch>& z, requries_arch<AVX>) noexcept
+{
+    return _mm256_fnmsub_pd(x, y, z);
+}
+
+/// fma
+template <typename Arch>
+Vec<float, Arch> fma(const Vec<float, Arch>& x, const Vec<float, Arch>& y,
+            const Vec<float, Arch>& z, requries_arch<AVX>) noexcept
+{
+    return _mm256_fmadd_ps(x, y, z);
+}
+
+template <typename Arch>
+Vec<double, Arch> fma(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
+            const Vec<double, Arch>& z, requries_arch<AVX>) noexcept
+{
+    return _mm256_fmadd_pd(x, y, z);
+}
+
+/// fms
+template <typename Arch>
+Vec<float, Arch> fms(const Vec<float, Arch>& x, const Vec<float, Arch>& y,
+            const Vec<float, Arch>& z, requries_arch<AVX>) noexcept
+{
+    return _mm256_fmsub_ps(x, y, z);
+}
+
+template <typename Arch>
+Vec<double, Arch> fms(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
+            const Vec<double, Arch>& z, requries_arch<AVX>) noexcept
+{
+    return _mm256_fmsub_pd(x, y, z);
+}
+
+
 }  // namespace kernel
 }  // namespace simd

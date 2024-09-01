@@ -16,4 +16,4 @@
 #include "simd/arch/avx512.h"
 #endif
 
-#include "simd/arch/generic.h"
+//#include "simd/arch/generic.h"

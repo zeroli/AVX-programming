@@ -3,23 +3,23 @@
 #include "simd/types/generic_arch.h"
 
 #if SIMD_WITH_SSE
-#include <emmintrin.h>  // sse2
-#include <xmmintrin.h>  // sse2
-#include <pmmintrin.h>  // sse3
-#include <smmintrin.h>  // sse4.1
-#include <nmmintrin.h>  // sse4.2
-#include <tmmintrin.h>  // ssse3
+#include <emmintrin.h>  // SSE2
+#include <xmmintrin.h>  // SSE2
+#include <pmmintrin.h>  // SSE3
+#include <smmintrin.h>  // SSE4.1
+#include <nmmintrin.h>  // SSE4.2
+#include <tmmintrin.h>  // sSSE3
 #endif
 
 namespace simd {
-/// SSE instructions
-struct SSE : Generic
+/// all SSE instructions
+struct SSE : generic
 {
     static constexpr bool supported() noexcept { return SIMD_WITH_SSE; }
     static constexpr bool available() noexcept { return true; }
     static constexpr size_t alignment() noexcept { return 16; }
     static constexpr bool requires_alignment() noexcept { return true; }
-    static constexpr const char* name() noexcept { return "sse"; }
+    static constexpr const char* name() noexcept { return "SSE"; }
 };
 }  // namespace simd
 

@@ -74,7 +74,7 @@ public:
         }
         return res;
     }
-    void deallocate(pointer p, size_type n) {
+    void deallocate(pointer p, size_type n = 0) {
         aligned_free(p);
     }
 

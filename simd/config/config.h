@@ -1,13 +1,15 @@
 #pragma once
 
+#define SIMD_WITH_SSE 1
+
 #ifdef __AVX__
-#define SIMD_WITH_AVX 1
+#define SIMD_WITH_AVX 0
 #else
 #define SIMD_WITH_AVX 0
 #endif
 
 #ifdef __AVX2__
-#define SIMD_WITH_AVX2 1
+#define SIMD_WITH_AVX2 0
 #else
 #define SIMD_WITH_AVX2 0
 #endif
@@ -28,14 +30,8 @@
 
 #endif  // __FMA__
 
-#ifdef __FMA4__
-#define SIMD_WITH_FMA4  1
-#else
-#define SIMD_WITH_FMA4  0
-#endif  // __FMA4__
-
 #ifdef __AVX512F__
-#define SIMD_WITH_AVX512F 1
+#define SIMD_WITH_AVX512F 0
 #else
 #define SIMD_WITH_AVX512F 0
 #endif  // __AVX512F__
