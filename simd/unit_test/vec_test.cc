@@ -23,6 +23,53 @@ TEST(vec, test_1)
     }
 }
 
+template <typename T, size_t W>
+void check_vec_aligned()
+{
+    simd::Vec<T, W> a;
+    EXPECT_TRUE(simd::is_aligned(&a, sizeof(T) * W));
+    EXPECT_TRUE(simd::is_aligned(&a, sizeof(a)));
+}
+
+TEST(vec, test_alignment)
+{
+    /// 128bits
+    check_vec_aligned<int8_t, 16>();
+    check_vec_aligned<uint8_t, 16>();
+    check_vec_aligned<int16_t, 8>();
+    check_vec_aligned<uint16_t, 8>();
+    check_vec_aligned<int32_t, 4>();
+    check_vec_aligned<uint32_t, 4>();
+    check_vec_aligned<int64_t, 2>();
+    check_vec_aligned<uint64_t, 2>();
+    check_vec_aligned<float, 4>();
+    check_vec_aligned<double, 2>();
+
+    /// 256bits
+    // check_vec_aligned<int8_t, 32>();
+    // check_vec_aligned<uint8_t, 32>();
+    // check_vec_aligned<int16_t, 16>();
+    // check_vec_aligned<uint16_t, 16>();
+    // check_vec_aligned<int32_t, 8>();
+    // check_vec_aligned<uint32_t, 8>();
+    // check_vec_aligned<int64_t, 4>();
+    // check_vec_aligned<uint64_t, 4>();
+    // check_vec_aligned<float, 8>();
+    // check_vec_aligned<double, 4>();
+
+    /// 512bits
+    // check_vec_aligned<int8_t, 64>();
+    // check_vec_aligned<uint8_t, 64>();
+    // check_vec_aligned<int16_t, 32>();
+    // check_vec_aligned<uint16_t, 32>();
+    // check_vec_aligned<int32_t, 16>();
+    // check_vec_aligned<uint32_t, 16>();
+    // check_vec_aligned<int64_t, 8>();
+    // check_vec_aligned<uint64_t, 8>();
+    // check_vec_aligned<float, 16>();
+    // check_vec_aligned<double, 8>();
+}
+
 TEST(vec, test_add)
 {
     {

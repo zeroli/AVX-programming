@@ -18,6 +18,12 @@ using enable_if_t = typename std::enable_if<cond, V>::type;
 #define REQUIRE_INTEGRAL(T) \
     traits::enable_if_t<std::is_integral<T>::value>* = nullptr
 
+#define REQUIRE_FLOAT32(T) \
+    traits::enable_if_t<std::is_same<T, float>::value>* = nullptr
+
+#define REQUIRE_FLOAT64(T) \
+    traits::enable_if_t<std::is_same<T, double>::value>* = nullptr
+
 #define REQUIRE_INTEGRAL_SIZE_MATCH(T, SIZE) \
     traits::enable_if_t<std::is_integral<T>::value && sizeof(T) == SIZE>* = nullptr
 

@@ -17,8 +17,7 @@ struct simd_register {
 
 #define DECLARE_SIMD_REGISTER(SCALAR_TYPE, ISA, VECTOR_TYPE) \
 template <size_t W> \
-struct alignas(ISA::alignment()) \
-simd_register<SCALAR_TYPE, W, ISA> \
+struct simd_register<SCALAR_TYPE, W, ISA> \
 { \
     using scalar_t = SCALAR_TYPE; \
     using arch_t = ISA; \
@@ -26,7 +25,9 @@ simd_register<SCALAR_TYPE, W, ISA> \
     static constexpr size_t n_regs() { \
         return sizeof(scalar_t) * W / sizeof(register_t); \
     } \
-    union { \
+\
+    /* aligned to the whole vector */ \
+    union alignas(n_regs() * ISA::alignment()) { \
         register_t regs[n_regs()]; \
         std::array<scalar_t, W> array; \
     } u; \

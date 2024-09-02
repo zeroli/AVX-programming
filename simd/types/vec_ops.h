@@ -9,14 +9,14 @@ template <typename T, size_t W>
 Vec<T, W> add(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
     using A = typename Vec<T, W>::arch_t;
-    return kernel::add<W>(lhs, rhs, A{});
+    return kernel::add<T, W>(lhs, rhs, A{});
 }
 
 template <typename T, size_t W>
 Vec<T, W> sub(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
     using A = typename Vec<T, W>::arch_t;
-    return kernel::sub<W>(lhs, rhs, A{});
+    return kernel::sub<T, W>(lhs, rhs, A{});
 }
 
 #if 0

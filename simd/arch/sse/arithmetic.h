@@ -13,31 +13,7 @@ namespace kernel {
 using namespace types;
 
 /// add
-template <size_t W>
-Vec<float, W> add(const Vec<float, W>& lhs, const Vec<float, W>& rhs, requires_arch<SSE>) noexcept
-{
-    Vec<float, W> ret;
-    constexpr int nregs = Vec<float, W>::n_regs();
-    #pragma unroll
-    for (auto idx = 0; idx < nregs; idx++) {
-        ret.reg(idx) = _mm_add_ps(lhs.reg(idx), rhs.reg(idx));
-    }
-    return ret;
-}
-
-template <size_t W>
-Vec<double, W> add(const Vec<double, W>& lhs, const Vec<double, W>& rhs, requires_arch<SSE>) noexcept
-{
-    Vec<double, W> ret;
-    constexpr int nregs = Vec<double, W>::n_regs();
-    #pragma unroll
-    for (auto idx = 0; idx < nregs; idx++) {
-        ret.reg(idx) = _mm_add_ps(lhs.reg(idx), rhs.reg(idx));
-    }
-    return ret;
-}
-
-template <size_t W, typename T, REQUIRE_INTEGRAL(T)>
+template <typename T, size_t W, REQUIRE_INTEGRAL(T)>
 Vec<T, W> add(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
 {
     Vec<T, W> ret;
@@ -68,32 +44,32 @@ Vec<T, W> add(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) no
     return ret;
 }
 
-/// sub
-template <size_t W>
-Vec<float, W> sub(const Vec<float, W>& lhs, const Vec<float, W>& rhs, requires_arch<SSE>) noexcept
+template <typename T, size_t W, REQUIRE_FLOAT32(T)>
+Vec<float, W> add(const Vec<float, W>& lhs, const Vec<float, W>& rhs, requires_arch<SSE>) noexcept
 {
     Vec<float, W> ret;
     constexpr int nregs = Vec<float, W>::n_regs();
     #pragma unroll
     for (auto idx = 0; idx < nregs; idx++) {
-        ret.reg(idx) = _mm_sub_ps(lhs.reg(idx), rhs.reg(idx));
+        ret.reg(idx) = _mm_add_ps(lhs.reg(idx), rhs.reg(idx));
     }
     return ret;
 }
 
-template <size_t W>
-Vec<double, W> sub(const Vec<double, W>& lhs, const Vec<double, W>& rhs, requires_arch<SSE>) noexcept
+template <typename T, size_t W, REQUIRE_FLOAT64(T)>
+Vec<double, W> add(const Vec<double, W>& lhs, const Vec<double, W>& rhs, requires_arch<SSE>) noexcept
 {
     Vec<double, W> ret;
     constexpr int nregs = Vec<double, W>::n_regs();
     #pragma unroll
     for (auto idx = 0; idx < nregs; idx++) {
-        ret.reg(idx) = _mm_sub_ps(lhs.reg(idx), rhs.reg(idx));
+        ret.reg(idx) = _mm_add_ps(lhs.reg(idx), rhs.reg(idx));
     }
     return ret;
 }
 
-template <size_t W, typename T, REQUIRE_INTEGRAL(T)>
+/// sub
+template <typename T, size_t W, REQUIRE_INTEGRAL(T)>
 Vec<T, W> sub(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
 {
     Vec<T, W> ret;
@@ -123,6 +99,31 @@ Vec<T, W> sub(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) no
     }
     return ret;
 }
+
+template <typename T, size_t W, REQUIRE_FLOAT32(T)>
+Vec<float, W> sub(const Vec<float, W>& lhs, const Vec<float, W>& rhs, requires_arch<SSE>) noexcept
+{
+    Vec<float, W> ret;
+    constexpr int nregs = Vec<float, W>::n_regs();
+    #pragma unroll
+    for (auto idx = 0; idx < nregs; idx++) {
+        ret.reg(idx) = _mm_sub_ps(lhs.reg(idx), rhs.reg(idx));
+    }
+    return ret;
+}
+
+template <typename T, size_t W, REQUIRE_FLOAT64(T)>
+Vec<double, W> sub(const Vec<double, W>& lhs, const Vec<double, W>& rhs, requires_arch<SSE>) noexcept
+{
+    Vec<double, W> ret;
+    constexpr int nregs = Vec<double, W>::n_regs();
+    #pragma unroll
+    for (auto idx = 0; idx < nregs; idx++) {
+        ret.reg(idx) = _mm_sub_ps(lhs.reg(idx), rhs.reg(idx));
+    }
+    return ret;
+}
+
 
 #if 0
 
