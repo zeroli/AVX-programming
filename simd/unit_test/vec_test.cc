@@ -4,13 +4,21 @@
 
 #include <sstream>
 
-TEST(vec, test_1)
+TEST(vec, test_integral)
 {
     {
         simd::Vec<int32_t, 4> a, b;
     }
     {
         simd::Vec<int32_t, 4> a(1), b(2);
+        for (int i = 0; i < 4; i++) {
+            EXPECT_EQ(1, a[i]);
+            EXPECT_EQ(1, a.at(i));
+        }
+        for (int i = 0; i < 4; i++) {
+            EXPECT_EQ(2, b[i]);
+            EXPECT_EQ(2, b.at(i));
+        }
     }
     {
         simd::Vec<int32_t, 4> a(1), b(2);
@@ -23,12 +31,29 @@ TEST(vec, test_1)
     }
 }
 
-TEST(vec, test_1a)
+TEST(vec, test_complex)
 {
     {
         simd::Vec<std::complex<float>, 2> a(std::complex<float>(1.f, 2.f));
-        simd::Vec<std::complex<float>, 2> b(std::complex<float>(1.f, 2.f));
-        auto c = a + b;
+        std::ostringstream os;
+        os << a;
+        EXPECT_EQ("vcf32x2[(1,2), (1,2)]", os.str());
+    }
+    {
+        simd::Vec<std::complex<double>, 1> a({1.0, 2.0});
+        std::ostringstream os;
+        os << a;
+        EXPECT_EQ("vcf64x1[(1,2)]", os.str());
+    }
+    {
+        simd::Vec<std::complex<float>, 2> a({1.f, 2.f});
+        EXPECT_FLOAT_EQ(1.f, a[0].real());
+        EXPECT_FLOAT_EQ(2.f, a[0].imag());
+    }
+    {
+        simd::Vec<std::complex<double>, 1> a({1.0, 2.0});
+        EXPECT_FLOAT_EQ(1.0, a[0].real());
+        EXPECT_FLOAT_EQ(2.0, a[0].imag());
     }
 }
 
@@ -53,6 +78,8 @@ TEST(vec, test_alignment)
     check_vec_aligned<uint64_t, 2>();
     check_vec_aligned<float, 4>();
     check_vec_aligned<double, 2>();
+    check_vec_aligned<std::complex<float>, 2>();
+    check_vec_aligned<std::complex<double>, 1>();
 
     /// 256bits
     // check_vec_aligned<int8_t, 32>();
@@ -65,6 +92,8 @@ TEST(vec, test_alignment)
     // check_vec_aligned<uint64_t, 4>();
     // check_vec_aligned<float, 8>();
     // check_vec_aligned<double, 4>();
+    // check_vec_aligned<std::complex<float>, 4>();
+    // check_vec_aligned<std::complex<double>, 2>();
 
     /// 512bits
     // check_vec_aligned<int8_t, 64>();
@@ -77,48 +106,6 @@ TEST(vec, test_alignment)
     // check_vec_aligned<uint64_t, 8>();
     // check_vec_aligned<float, 16>();
     // check_vec_aligned<double, 8>();
-}
-
-TEST(vec, test_add)
-{
-    {
-        simd::Vec<int32_t, 4> a(1), b(2), p(3);
-        auto c = a + b;
-        std::cout << a << "(a)" << " + " << b << "(b) = " << c << "(c)\n";
-        //EXPECT_EQ(p, c);
-    }
-    {
-        simd::Vec<int32_t, 4> a(1);
-        int b = 2;
-        auto c = a + b;
-        std::cout << a << "(a)" << " + " << b << "(b) = " << c << "(c)\n";
-    }
-    {
-        simd::Vec<int32_t, 4> a(1);
-        int b = 2;
-        auto c = b + a;
-        std::cout << b << "(b)" << " + " << a << "() = " << c << "(c)\n";
-    }
-}
-
-TEST(vec, test_sub)
-{
-    {
-        simd::Vec<int32_t, 4> a(1), b(2), p(3);
-        auto c = a + b;
-        std::cout << a << "(a)" << " - " << b << "(b) = " << c << "(c)\n";
-        //EXPECT_EQ(p, c);
-    }
-    {
-        simd::Vec<int32_t, 4> a(1);
-        int b = 2;
-        auto c = a - b;
-        std::cout << a << "(a)" << " - " << b << "(b) = " << c << "(c)\n";
-    }
-    {
-        simd::Vec<int32_t, 4> a(1);
-        int b = 2;
-        auto c = b - a;
-        std::cout << b << "(b)" << " - " << a << "(a) = " << c << "(c)\n";
-    }
+    // check_vec_aligned<std::complex<float>, 8>();
+    // check_vec_aligned<std::complex<double>, 4>();
 }

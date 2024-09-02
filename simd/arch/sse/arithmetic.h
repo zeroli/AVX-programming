@@ -73,7 +73,7 @@ struct add<T, W, REQUIRE_FLOAT64(T)>
         constexpr int nregs = Vec<double, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_add_ps(lhs.reg(idx), rhs.reg(idx));
+            ret.reg(idx) = _mm_add_pd(lhs.reg(idx), rhs.reg(idx));
         }
         return ret;
     }
@@ -144,40 +144,73 @@ struct sub<double, W>
     }
 };
 
+/// mul
+template <size_t W>
+struct mul<float, W>
+{
+    static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
+    {
+        Vec<float, W> ret;
+        constexpr int nregs = Vec<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_mul_ps(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct mul<double, W>
+{
+    static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
+    {
+        Vec<double, W> ret;
+        constexpr int nregs = Vec<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_mul_pd(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
+    }
+};
+
+/// div
+template <size_t W>
+struct div<float, W>
+{
+    static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
+    {
+        Vec<float, W> ret;
+        constexpr int nregs = Vec<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_div_ps(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct div<double, W>
+{
+    static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
+    {
+        Vec<double, W> ret;
+        constexpr int nregs = Vec<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_div_pd(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
+    }
+};
 
 #if 0
-
-/// mul
-template <typename Arch>
-Vec<float, Arch> mul(const Vec<float, Arch>& lhs, const Vec<float, Arch>& rhs, requires_arch<SSE>) noexcept
-{
-    return _mm_mul_ps(lhs, rhs);
-}
-
-template <typename Arch>
-Vec<double, Arch> mul(const Vec<double, Arch>& lhs, const Vec<float, Arch>& rhs, requires_arch<SSE>) noexcept
-{
-    return _mm_mul_pd(lhs, rhs);
-}
-
 template <typename Arch>
 Vec<int16_t, Arch> mul(const Vec<int16_t, Arch>& lhs, const Vec<int16_t, Arch>& rhs, requires_arch<SSE>) noexcept
 {
     return _mm_mullo_epi16(lhs, rhs);
-}
-
-
-/// div
-template <typename Arch>
-Vec<float, Arch> div(const Vec<float, Arch>& lhs, const Vec<float, Arch>& rhs, requires_arch<SSE>) noexcept
-{
-    return _mm_div_ps(lhs, rhs);
-}
-
-template <typename Arch>
-Vec<double, Arch> div(const Vec<double, Arch>& lhs, const Vec<float, Arch>& rhs, requires_arch<SSE>) noexcept
-{
-    return _mm_div_pd(lhs, rhs);
 }
 
 /// neg

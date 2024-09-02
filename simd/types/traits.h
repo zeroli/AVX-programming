@@ -50,28 +50,35 @@ struct vec_type_traits<T, W> { \
 } \
 ///
 
-DEFINE_VEC_TYPE_TRAITS(float, 4, "f32");
-DEFINE_VEC_TYPE_TRAITS(float, 8, "f32");
-DEFINE_VEC_TYPE_TRAITS(float, 16, "f32");
-
-DEFINE_VEC_TYPE_TRAITS(double, 8, "f64");
-DEFINE_VEC_TYPE_TRAITS(double, 16, "f64");
-
+/// 128bits
 DEFINE_VEC_TYPE_TRAITS(int8_t, 16, "i8");
-DEFINE_VEC_TYPE_TRAITS(int8_t, 32, "i8");
-DEFINE_VEC_TYPE_TRAITS(int8_t, 64, "i8");
-
 DEFINE_VEC_TYPE_TRAITS(int16_t, 8, "i16");
-DEFINE_VEC_TYPE_TRAITS(int16_t, 16, "i16");
-DEFINE_VEC_TYPE_TRAITS(int16_t, 32, "i16");
-
 DEFINE_VEC_TYPE_TRAITS(int32_t, 4, "i32");
-DEFINE_VEC_TYPE_TRAITS(int32_t, 8, "i32");
-DEFINE_VEC_TYPE_TRAITS(int32_t, 16, "i32");
-
 DEFINE_VEC_TYPE_TRAITS(int64_t, 2, "i64");
+DEFINE_VEC_TYPE_TRAITS(float, 4, "f32");
+DEFINE_VEC_TYPE_TRAITS(double, 2, "f64");
+DEFINE_VEC_TYPE_TRAITS(std::complex<float>, 2, "cf32");
+DEFINE_VEC_TYPE_TRAITS(std::complex<double>, 1, "cf64");
+
+/// 256bits
+DEFINE_VEC_TYPE_TRAITS(int8_t, 32, "i8");
+DEFINE_VEC_TYPE_TRAITS(int16_t, 16, "i16");
+DEFINE_VEC_TYPE_TRAITS(int32_t, 8, "i32");
 DEFINE_VEC_TYPE_TRAITS(int64_t, 4, "i64");
+DEFINE_VEC_TYPE_TRAITS(float, 8, "f32");
+DEFINE_VEC_TYPE_TRAITS(double, 4, "f64");
+DEFINE_VEC_TYPE_TRAITS(std::complex<float>, 4, "cf32");
+DEFINE_VEC_TYPE_TRAITS(std::complex<double>, 2, "cf64");
+
+/// 512bits
+DEFINE_VEC_TYPE_TRAITS(int8_t, 64, "i8");
+DEFINE_VEC_TYPE_TRAITS(int16_t, 32, "i16");
+DEFINE_VEC_TYPE_TRAITS(int32_t, 16, "i32");
 DEFINE_VEC_TYPE_TRAITS(int64_t, 8, "i64");
+DEFINE_VEC_TYPE_TRAITS(float, 16, "f32");
+DEFINE_VEC_TYPE_TRAITS(double, 8, "f64");
+DEFINE_VEC_TYPE_TRAITS(std::complex<float>, 8, "cf32");
+DEFINE_VEC_TYPE_TRAITS(std::complex<double>, 4, "cf64");
 
 }  // namespace traits
 }  // namespace simd

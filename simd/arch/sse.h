@@ -24,6 +24,18 @@ Vec<T, W> sub(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) no
 }
 
 template <typename T, size_t W>
+Vec<T, W> mul(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
+{
+    return impl::mul<T, W>::apply(lhs, rhs);
+}
+
+template <typename T, size_t W>
+Vec<T, W> div(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
+{
+    return impl::div<T, W>::apply(lhs, rhs);
+}
+
+template <typename T, size_t W>
 Vec<T, W> broadcast(T val, requires_arch<SSE>) noexcept
 {
     return impl::broadcast<T, W>::apply(val);
