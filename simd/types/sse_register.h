@@ -24,6 +24,7 @@ struct SSE : generic
 }  // namespace simd
 
 #if SIMD_WITH_SSE
+#include <complex>
 
 namespace simd {
 namespace types {
@@ -40,6 +41,8 @@ DECLARE_SIMD_REGISTER(unsigned long long int, SSE, __m128i);
 DECLARE_SIMD_REGISTER(long long int, SSE, __m128i);
 DECLARE_SIMD_REGISTER(float, SSE, __m128);
 DECLARE_SIMD_REGISTER(double, SSE, __m128d);
+DECLARE_SIMD_REGISTER(std::complex<float>, SSE, __m128);
+DECLARE_SIMD_REGISTER(std::complex<double>, SSE, __m128d);
 }  // namespace types
 }  // namespace simd
 #endif  // SIMD_WITH_SSE

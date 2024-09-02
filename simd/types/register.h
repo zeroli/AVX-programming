@@ -22,40 +22,46 @@ struct simd_register<SCALAR_TYPE, W, ISA> \
     using scalar_t = SCALAR_TYPE; \
     using arch_t = ISA; \
     using register_t = VECTOR_TYPE; \
+    /* how many register for this vector */ \
     static constexpr size_t n_regs() { \
         return sizeof(scalar_t) * W / sizeof(register_t); \
     } \
 \
     /* aligned to the whole vector */ \
-    union alignas(n_regs() * ISA::alignment()) { \
-        register_t regs[n_regs()]; \
-        std::array<scalar_t, W> array; \
+    union alignas(n_regs() * ISA::alignment()) DATA { \
+        register_t regs_[n_regs()]; \
+        std::array<scalar_t, W> array_; \
+\
+        /* explicit default ctor (not =default) to workaround */ \
+        /* element type: complex<T>, but still without initialization for it */ \
+        DATA() { } \
     } u; \
 \
     simd_register() = default; \
     template <typename... Regs> \
     simd_register(register_t val, Regs... others) \
     { \
-        u.regs = {val, others...}; \
+        u.regs_ = {val, others...}; \
     } \
 \
     operator register_t() const noexcept { \
-        return u.regs[0]; \
+        return u.regs_[0]; \
     } \
     register_t reg(size_t idx = 0) const noexcept { \
-        return u.regs[idx]; \
+        return u.regs_[idx]; \
     } \
     register_t& reg(size_t idx = 0) noexcept { \
-        return u.regs[idx]; \
+        return u.regs_[idx]; \
     } \
     scalar_t operator[](size_t idx) const noexcept { \
-        return u.array[idx]; \
+        return u.array_[idx]; \
     } \
-    scalar_t at(size_t idx) const noexcept { \
-        return u.array[idx]; \
+    /* exception out-of-range may be thrown, same as std::array::at */ \
+    scalar_t at(size_t idx) const { \
+        return u.array_.at(idx); \
     } \
     scalar_t get(size_t idx) const noexcept { \
-        return u.array[idx]; \
+        return u.array_[idx]; \
     } \
 }; \
 template <size_t W> \

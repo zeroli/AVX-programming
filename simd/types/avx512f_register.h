@@ -32,6 +32,8 @@ DECLARE_SIMD_REGISTER(unsigned long long int, AVX512F, __m512i);
 DECLARE_SIMD_REGISTER(long long int, AVX512F, __m512i);
 DECLARE_SIMD_REGISTER(float, AVX512F, __m512);
 DECLARE_SIMD_REGISTER(double, AVX512F, __m512d);
+DECLARE_SIMD_REGISTER(std::complex<float>, AVX512F, __m512);
+DECLARE_SIMD_REGISTER(std::complex<double>, AVX512F, __m512d);
 }  // namespace types
 }  // namespace simd
 #endif  // SIMD_WITH_AVX512F

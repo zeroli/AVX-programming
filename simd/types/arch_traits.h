@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <cstddef>
 #include <cstdint>
+#include <complex>
 
 namespace simd {
 namespace types {
@@ -66,6 +67,8 @@ struct arch_traits<T, 512/sizeof(T)/8> { \
 // DEFINE_ARCH_TRAITS_512_BITS(uint64_t);
 // DEFINE_ARCH_TRAITS_512_BITS(float);
 // DEFINE_ARCH_TRAITS_512_BITS(double);
+// DEFINE_ARCH_TRAITS_512_BITS(std::complex<float>);
+// DEFINE_ARCH_TRAITS_512_BITS(std::complex<double>);
 
 #undef DEFINE_ARCH_TRAITS_512_BITS
 
@@ -105,6 +108,8 @@ struct arch_traits<T, 256/sizeof(T)/8> { \
 // DEFINE_ARCH_TRAITS_256_BITS(uint64_t);
 // DEFINE_ARCH_TRAITS_256_BITS(float);
 // DEFINE_ARCH_TRAITS_256_BITS(double);
+// DEFINE_ARCH_TRAITS_256_BITS(std::complex<float>);
+// DEFINE_ARCH_TRAITS_256_BITS(std::complex<double>);
 
 #undef DEFINE_ARCH_TRAITS_256_BITS
 
@@ -137,6 +142,8 @@ DEFINE_ARCH_TRAITS_128_BITS(int64_t);
 DEFINE_ARCH_TRAITS_128_BITS(uint64_t);
 DEFINE_ARCH_TRAITS_128_BITS(float);
 DEFINE_ARCH_TRAITS_128_BITS(double);
+DEFINE_ARCH_TRAITS_128_BITS(std::complex<float>);
+DEFINE_ARCH_TRAITS_128_BITS(std::complex<double>);
 
 #undef DEFINE_ARCH_TRAITS_128_BITS
 }  // namespace types

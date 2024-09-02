@@ -85,7 +85,7 @@ Vec<U, Arch> bitwise_cast(const Vec<T, Arch>& self, requires_arch<AVX>) noexcept
 
 /// float => double
 template <typename Arch>
-Vec<double, Arch> bitwise_cast(const Vec<float, Arch>& self, requries_arch<AVX>) noexcept
+Vec<double, Arch> bitwise_cast(const Vec<float, Arch>& self, requires_arch<AVX>) noexcept
 {
     return _mm256_castps_pd(self);
 }
@@ -100,7 +100,7 @@ Vec<T, Arch> bitwise_cast(const Vec<float, Arch>& self, requires_arch<AVX>) noex
 
 /// double => float
 template <typename Arch>
-Vec<float, Arch> bitwise_cast(const Vec<double, Arch>& self, requries_arch<AVX>) noexcept
+Vec<float, Arch> bitwise_cast(const Vec<double, Arch>& self, requires_arch<AVX>) noexcept
 {
     return _mm256_castpd_ps(self);
 }
@@ -133,26 +133,26 @@ Vec<T, Arch> broadcast(T val, requires_arch<AVX>) noexcept
 }
 
 template <typename Arch>
-Vec<float, Arch> broadcast(float val, requries_arch<AVX>) noexcept
+Vec<float, Arch> broadcast(float val, requires_arch<AVX>) noexcept
 {
     return _mm256_set1_ps(val);
 }
 
 template <typename Arch>
-Vec<double, Arch> broadcast(double val, requries_arch<AVX>) noexcept
+Vec<double, Arch> broadcast(double val, requires_arch<AVX>) noexcept
 {
     return _mm256_set1_pd(val);
 }
 
 /// ceil
 template <typename Arch>
-Vec<float, Arch> ceil(const Vec<float, Arch>& self, requries_arch<AVX>) noexcept
+Vec<float, Arch> ceil(const Vec<float, Arch>& self, requires_arch<AVX>) noexcept
 {
     return _mm256_ceil_ps(self);
 }
 
 template <typename Arch>
-Vec<double, Arch> broadcast(const Vec<float, Arch>& self, requries_arch<AVX>) noexcept
+Vec<double, Arch> broadcast(const Vec<float, Arch>& self, requires_arch<AVX>) noexcept
 {
     return _mm256_ceil_pd(val);
 }
@@ -182,24 +182,24 @@ Vec<T, Arch> decr_if(const Vec<T, Arch>& self, const VecBool<T, Arch>& mask, req
 
 /// div
 template <typename Arch>
-Vec<float, Arch> div(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requries_arch<AVX>) noexcept
+Vec<float, Arch> div(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<AVX>) noexcept
 {
     return _mm256_div_ps(self, other);
 }
 template <typename Arch>
-Vec<double, Arch> div(const Vec<double, Arch>& self, const Vec<double, Arch>& other, requries_arch<AVX>) noexcept
+Vec<double, Arch> div(const Vec<double, Arch>& self, const Vec<double, Arch>& other, requires_arch<AVX>) noexcept
 {
     return _mm256_div_pd(self, other);
 }
 
 /// floor
 template <typename Arch>
-Vec<float, Arch> floor(const Vec<float, Arch>& self, requries_arch<AVX>) noexcept
+Vec<float, Arch> floor(const Vec<float, Arch>& self, requires_arch<AVX>) noexcept
 {
     return _mm256_floor_ps(self);
 }
 template <typename Arch>
-Vec<double, Arch> floor(const Vec<double, Arch>& self, requries_arch<AVX>) noexcept
+Vec<double, Arch> floor(const Vec<double, Arch>& self, requires_arch<AVX>) noexcept
 {
     return _mm256_floor_pd(self);
 }
@@ -315,14 +315,14 @@ VecBool<T, Arch> from_mask(uint64_t mask, requires_arch<AVX>) noexcept
 /// fnma
 template <typename Arch>
 Vec<float, Arch> fnma(const Vec<float, Arch>& x, const Vec<float, Arch>& y,
-            const Vec<float, Arch>& z, requries_arch<AVX>) noexcept
+            const Vec<float, Arch>& z, requires_arch<AVX>) noexcept
 {
     return _mm256_fnmadd_ps(x, y, z);
 }
 
 template <typename Arch>
 Vec<double, Arch> fnma(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
-            const Vec<double, Arch>& z, requries_arch<AVX>) noexcept
+            const Vec<double, Arch>& z, requires_arch<AVX>) noexcept
 {
     return _mm256_fnmadd_pd(x, y, z);
 }
@@ -330,14 +330,14 @@ Vec<double, Arch> fnma(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
 /// fnms
 template <typename Arch>
 Vec<float, Arch> fnms(const Vec<float, Arch>& x, const Vec<float, Arch>& y,
-            const Vec<float, Arch>& z, requries_arch<AVX>) noexcept
+            const Vec<float, Arch>& z, requires_arch<AVX>) noexcept
 {
     return _mm256_fnmsub_ps(x, y, z);
 }
 
 template <typename Arch>
 Vec<double, Arch> fnms(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
-            const Vec<double, Arch>& z, requries_arch<AVX>) noexcept
+            const Vec<double, Arch>& z, requires_arch<AVX>) noexcept
 {
     return _mm256_fnmsub_pd(x, y, z);
 }
@@ -345,14 +345,14 @@ Vec<double, Arch> fnms(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
 /// fma
 template <typename Arch>
 Vec<float, Arch> fma(const Vec<float, Arch>& x, const Vec<float, Arch>& y,
-            const Vec<float, Arch>& z, requries_arch<AVX>) noexcept
+            const Vec<float, Arch>& z, requires_arch<AVX>) noexcept
 {
     return _mm256_fmadd_ps(x, y, z);
 }
 
 template <typename Arch>
 Vec<double, Arch> fma(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
-            const Vec<double, Arch>& z, requries_arch<AVX>) noexcept
+            const Vec<double, Arch>& z, requires_arch<AVX>) noexcept
 {
     return _mm256_fmadd_pd(x, y, z);
 }
@@ -360,14 +360,14 @@ Vec<double, Arch> fma(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
 /// fms
 template <typename Arch>
 Vec<float, Arch> fms(const Vec<float, Arch>& x, const Vec<float, Arch>& y,
-            const Vec<float, Arch>& z, requries_arch<AVX>) noexcept
+            const Vec<float, Arch>& z, requires_arch<AVX>) noexcept
 {
     return _mm256_fmsub_ps(x, y, z);
 }
 
 template <typename Arch>
 Vec<double, Arch> fms(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
-            const Vec<double, Arch>& z, requries_arch<AVX>) noexcept
+            const Vec<double, Arch>& z, requires_arch<AVX>) noexcept
 {
     return _mm256_fmsub_pd(x, y, z);
 }

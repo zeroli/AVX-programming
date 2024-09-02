@@ -23,6 +23,15 @@ TEST(vec, test_1)
     }
 }
 
+TEST(vec, test_1a)
+{
+    {
+        simd::Vec<std::complex<float>, 2> a(std::complex<float>(1.f, 2.f));
+        simd::Vec<std::complex<float>, 2> b(std::complex<float>(1.f, 2.f));
+        auto c = a + b;
+    }
+}
+
 template <typename T, size_t W>
 void check_vec_aligned()
 {

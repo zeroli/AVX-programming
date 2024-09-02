@@ -1,5 +1,6 @@
 #pragma once
 
+#include "simd/arch/kernel_impl.h"
 #include "simd/types/sse_register.h"
 #include "simd/types/traits.h"
 
@@ -10,119 +11,138 @@
 
 namespace simd {
 namespace kernel {
+namespace impl {
 using namespace types;
 
 /// add
-template <typename T, size_t W, REQUIRE_INTEGRAL(T)>
-Vec<T, W> add(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
+template <typename T, size_t W>
+struct add<T, W, REQUIRE_INTEGRAL(T)>
 {
-    Vec<T, W> ret;
-    constexpr int nregs = Vec<T, W>::n_regs();
-    SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_add_epi8(lhs.reg(idx), rhs.reg(idx));
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        Vec<T, W> ret;
+        constexpr int nregs = Vec<T, W>::n_regs();
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_add_epi8(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_add_epi16(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_add_epi32(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_add_epi64(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else {
+            assert(0 && "unsupported arch/op combination");
         }
-    } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_add_epi16(lhs.reg(idx), rhs.reg(idx));
-        }
-    } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_add_epi32(lhs.reg(idx), rhs.reg(idx));
-        }
-    } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_add_epi64(lhs.reg(idx), rhs.reg(idx));
-        }
-    } else {
-        assert(0 && "unsupported arch/op combination");
+        return ret;
     }
-    return ret;
-}
+};
 
-template <typename T, size_t W, REQUIRE_FLOAT32(T)>
-Vec<float, W> add(const Vec<float, W>& lhs, const Vec<float, W>& rhs, requires_arch<SSE>) noexcept
+template <typename T, size_t W>
+struct add<T, W, REQUIRE_FLOAT32(T)>
 {
-    Vec<float, W> ret;
-    constexpr int nregs = Vec<float, W>::n_regs();
-    #pragma unroll
-    for (auto idx = 0; idx < nregs; idx++) {
-        ret.reg(idx) = _mm_add_ps(lhs.reg(idx), rhs.reg(idx));
+    static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
+    {
+        Vec<float, W> ret;
+        constexpr int nregs = Vec<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_add_ps(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
     }
-    return ret;
-}
+};
 
-template <typename T, size_t W, REQUIRE_FLOAT64(T)>
-Vec<double, W> add(const Vec<double, W>& lhs, const Vec<double, W>& rhs, requires_arch<SSE>) noexcept
+template <typename T, size_t W>
+struct add<T, W, REQUIRE_FLOAT64(T)>
 {
-    Vec<double, W> ret;
-    constexpr int nregs = Vec<double, W>::n_regs();
-    #pragma unroll
-    for (auto idx = 0; idx < nregs; idx++) {
-        ret.reg(idx) = _mm_add_ps(lhs.reg(idx), rhs.reg(idx));
+    static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
+    {
+        Vec<double, W> ret;
+        constexpr int nregs = Vec<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_add_ps(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
     }
-    return ret;
-}
+};
 
 /// sub
-template <typename T, size_t W, REQUIRE_INTEGRAL(T)>
-Vec<T, W> sub(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
+template <typename T, size_t W>
+struct sub<T, W, REQUIRE_INTEGRAL(T)>
 {
-    Vec<T, W> ret;
-    constexpr int nregs = Vec<T, W>::n_regs();
-    SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_sub_epi8(lhs.reg(idx), rhs.reg(idx));
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        Vec<T, W> ret;
+        constexpr int nregs = Vec<T, W>::n_regs();
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_sub_epi8(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_sub_epi16(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_sub_epi32(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_sub_epi64(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else {
+            assert(0 && "unsupported arch/op combination");
         }
-    } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_sub_epi16(lhs.reg(idx), rhs.reg(idx));
-        }
-    } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_sub_epi32(lhs.reg(idx), rhs.reg(idx));
-        }
-    } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_sub_epi64(lhs.reg(idx), rhs.reg(idx));
-        }
-    } else {
-        assert(0 && "unsupported arch/op combination");
+        return ret;
     }
-    return ret;
-}
+};
 
-template <typename T, size_t W, REQUIRE_FLOAT32(T)>
-Vec<float, W> sub(const Vec<float, W>& lhs, const Vec<float, W>& rhs, requires_arch<SSE>) noexcept
+template <size_t W>
+struct sub<float, W>
 {
-    Vec<float, W> ret;
-    constexpr int nregs = Vec<float, W>::n_regs();
-    #pragma unroll
-    for (auto idx = 0; idx < nregs; idx++) {
-        ret.reg(idx) = _mm_sub_ps(lhs.reg(idx), rhs.reg(idx));
+    static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
+    {
+        Vec<float, W> ret;
+        constexpr int nregs = Vec<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_sub_ps(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
     }
-    return ret;
-}
+};
 
-template <typename T, size_t W, REQUIRE_FLOAT64(T)>
-Vec<double, W> sub(const Vec<double, W>& lhs, const Vec<double, W>& rhs, requires_arch<SSE>) noexcept
+template <size_t W>
+struct sub<double, W>
 {
-    Vec<double, W> ret;
-    constexpr int nregs = Vec<double, W>::n_regs();
-    #pragma unroll
-    for (auto idx = 0; idx < nregs; idx++) {
-        ret.reg(idx) = _mm_sub_ps(lhs.reg(idx), rhs.reg(idx));
+    static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
+    {
+        Vec<double, W> ret;
+        constexpr int nregs = Vec<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_sub_ps(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
     }
-    return ret;
-}
+};
 
 
 #if 0
@@ -245,6 +265,6 @@ Vec<double, Arch> fma(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
     return _mm_fmsub_pd(x, y, z);
 }
 #endif
-
+}  // namespace impl
 }  // namespace kernel
 }  // namespace simd

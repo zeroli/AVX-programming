@@ -16,16 +16,19 @@ template <bool cond, typename V = void>
 using enable_if_t = typename std::enable_if<cond, V>::type;
 
 #define REQUIRE_INTEGRAL(T) \
-    traits::enable_if_t<std::is_integral<T>::value>* = nullptr
+    traits::enable_if_t<std::is_integral<T>::value>
+
+#define REQUIRE_FLOATING(T) \
+    traits::enable_if_t<std::is_floating_point<T>::value>
 
 #define REQUIRE_FLOAT32(T) \
-    traits::enable_if_t<std::is_same<T, float>::value>* = nullptr
+    traits::enable_if_t<std::is_same<T, float>::value>
 
 #define REQUIRE_FLOAT64(T) \
-    traits::enable_if_t<std::is_same<T, double>::value>* = nullptr
+    traits::enable_if_t<std::is_same<T, double>::value>
 
 #define REQUIRE_INTEGRAL_SIZE_MATCH(T, SIZE) \
-    traits::enable_if_t<std::is_integral<T>::value && sizeof(T) == SIZE>* = nullptr
+    traits::enable_if_t<std::is_integral<T>::value && sizeof(T) == SIZE>
 
 #define REQUIRE_INTEGRAL_SIZE_1(T) REQUIRE_INTEGRAL_SIZE_MATCH(T, 1)
 #define REQUIRE_INTEGRAL_SIZE_2(T) REQUIRE_INTEGRAL_SIZE_MATCH(T, 2)
