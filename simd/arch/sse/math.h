@@ -77,6 +77,44 @@ struct abs<double, W>
     }
 };
 
+/// sqrt
+template <typename T, size_t W>
+struct sqrt<T, W, REQUIRE_INTEGRAL(T)>
+{
+    /// non-supported sqrt for integral types
+    static Vec<T, W> apply(const Vec<T, W>& self) noexcept = delete;
+};
+
+template <size_t W>
+struct sqrt<float, W>
+{
+    static Vec<float, W> apply(const Vec<float, W>& self) noexcept
+    {
+        Vec<float, W> ret;
+        constexpr int nregs = Vec<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_sqrt_ps(self.reg(idx));
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct sqrt<double, W>
+{
+    static Vec<double, W> apply(const Vec<double, W>& self) noexcept
+    {
+        Vec<double, W> ret;
+        constexpr int nregs = Vec<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_sqrt_pd(self.reg(idx));
+        }
+        return ret;
+    }
+};
+
 #if 0
 
 /// reciprocal
@@ -96,18 +134,6 @@ template <typename Arch>
 Vec<double, Arch> rsqrt(const Vec<double, Arch>& self, requires_arch<SSE>) noexcept
 {
     return _mm_cvtps_pd(_mm_rsqrt_ps(_mm_cvtpd_ps(self)));
-}
-
-/// sqrt
-template <typename Arch>
-Vec<float, Arch> sqrt(const Vec<float, Arch>& self, requires_arch<SSE>) noexcept
-{
-    return _mm_sqrt_ps(self);
-}
-template <typename Arch>
-Vec<double, Arch> sqrt(const Vec<double, Arch>& self, requires_arch<SSE>) noexcept
-{
-    return _mm_sqrt_pd(self);
 }
 
 #endif

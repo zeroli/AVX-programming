@@ -11,70 +11,100 @@ TEST(vec_binary_op_sse, test_add)
         auto c = a + b;
         std::cout << a << "(a)" << " + " << b << "(b) = " << c << "(c)\n";
         //EXPECT_EQ(p, c);
+        auto d = simd::add(a, b);
     }
     {
         simd::Vec<int32_t, 4> a(1);
         int b = 2;
         auto c = a + b;
         std::cout << a << "(a)" << " + " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::add(a, b);
     }
     {
         simd::Vec<int32_t, 4> a(1);
         int b = 2;
         auto c = b + a;
         std::cout << b << "(b)" << " + " << a << "() = " << c << "(c)\n";
+        auto d = simd::add(b, a);
     }
     {
-        simd::Vec<float, 4> a(1.f);
-        float b = 2.f;
+        simd::Vec<float, 4> a(1.f), b(2.f);
         auto c = a + b;
+        auto d = a + 2.f;
         std::cout << a << "(a)" << " + " << b << "(b) = " << c << "(c)\n";
+        auto e = simd::add(a, b);
+        auto f = simd::add(a, 2.f);
+        auto g = simd::add(1.f, b);
     }
     {
-        simd::Vec<double, 2> a(1.0);
-        double b = 2.0;
+        simd::Vec<double, 2> a(1.0), b(2.0);
         auto c = a + b;
+        auto d = a + 2.0;
         std::cout << a << "(a)" << " + " << b << "(b) = " << c << "(c)\n";
+        auto e = simd::add(a, b);
+        auto f = simd::add(a, 2.0);
+        auto g = simd::add(1.0, b);
     }
     {
         simd::Vec<std::complex<float>, 2> a({1.f, 2.f}), b({1.f, 2.f});
         auto c = a + b;
+        auto d = simd::add(a, b);
     }
     {
         simd::Vec<std::complex<double>, 1> a({1.0, 2.0}), b({1.0, 2.0});
         auto c = a + b;
+        auto d = simd::add(a, b);
     }
 }
 
 TEST(vec_binary_op_sse, test_sub)
 {
     {
-        simd::Vec<int32_t, 4> a(1), b(2), p(3);
-        auto c = a + b;
+        simd::Vec<int32_t, 4> a(1), b(2);
+        auto c = a - b;
         std::cout << a << "(a)" << " - " << b << "(b) = " << c << "(c)\n";
         //EXPECT_EQ(p, c);
+        auto d = simd::sub(a, b);
     }
     {
         simd::Vec<int32_t, 4> a(1);
         int b = 2;
         auto c = a - b;
         std::cout << a << "(a)" << " - " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::sub(a, b);
     }
     {
         simd::Vec<int32_t, 4> a(1);
         int b = 2;
         auto c = b - a;
         std::cout << b << "(b)" << " - " << a << "(a) = " << c << "(c)\n";
+        auto d = simd::sub(b, a);
     }
     {
         simd::Vec<float, 4> a(2.f), b(1.f);
         auto c = a - b;
         std::cout << a << "(a)" << " - " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::sub(a, b);
+        auto e = simd::sub(a, 1.f);
+        auto f = simd::sub(2.f, b);
     }
     {
         simd::Vec<double, 2> a(2.0), b(1.0);
         auto c = a - b;
         std::cout << a << "(a)" << " - " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::sub(a, b);
+        auto e = simd::sub(a, 1.0);
+        auto f = simd::sub(2.0, b);
+    }
+    {
+        simd::Vec<std::complex<float>, 2> a({1.f, 2.f}), b({1.f, 2.f});
+        auto c = a - b;
+        auto d = simd::sub(a, b);
+    }
+    {
+        simd::Vec<std::complex<double>, 1> a({1.0, 2.0}), b({1.0, 2.0});
+        auto c = a - b;
+        auto d = simd::sub(a, b);
     }
 }
 
@@ -84,11 +114,17 @@ TEST(vec_binary_op_sse, test_mul)
         simd::Vec<float, 4> a(2.f), b(1.f);
         auto c = a * b;
         std::cout << a << "(a)" << " * " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::mul(a, b);
+        auto e = simd::mul(a, 1.f);
+        auto f = simd::mul(2.f, b);
     }
     {
         simd::Vec<double, 2> a(2.0), b(1.0);
         auto c = a * b;
         std::cout << a << "(a)" << " * " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::mul(a, b);
+        auto e = simd::mul(a, 1.0);
+        auto f = simd::mul(2.0, b);
     }
 }
 
@@ -98,11 +134,17 @@ TEST(vec_binary_op_sse, test_div)
         simd::Vec<float, 4> a(4.f), b(2.f);
         auto c = a / b;
         std::cout << a << "(a)" << " / " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::div(a, b);
+        auto e = simd::div(a, 2.f);
+        auto f = simd::div(4.f, b);
     }
     {
         simd::Vec<double, 2> a(8.0), b(2.0);
         auto c = a / b;
         std::cout << a << "(a)" << " / " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::div(a, b);
+        auto e = simd::div(a, 2.0);
+        auto f = simd::div(8.0, b);
     }
 }
 
@@ -245,5 +287,26 @@ TEST(vec_binary_op_sse, test_abs)
         simd::Vec<double, 2> a(-4.0);
         auto c = simd::abs(a);
         std::cout << "abs(" << a << "(a)" <<") = " << c << "(c)\n";
+    }
+}
+
+TEST(vec_binary_op_sse, test_sqrt)
+{
+    #if 0 // compilation error, non supported op for integral types
+    {
+        simd::Vec<int32_t, 4> a(-3);
+        auto c = simd::sqrt(a);
+        std::cout << "sqrt(" << a << "(a)" <<") = " << c << "(c)\n";
+    }
+    #endif
+    {
+        simd::Vec<float, 4> a(4.f);
+        auto c = simd::sqrt(a);
+        std::cout << "sqrt(" << a << "(a)" <<") = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<double, 2> a(4.0);
+        auto c = simd::sqrt(a);
+        std::cout << "sqrt(" << a << "(a)" <<") = " << c << "(c)\n";
     }
 }

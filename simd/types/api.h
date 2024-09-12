@@ -10,11 +10,84 @@
 #include <ostream>
 
 namespace simd {
+/// arithmetic operations
+template <typename T, size_t W>
+Vec<T, W> add(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
+{
+    return x + y;
+}
+template <typename T, size_t W>
+Vec<T, W> add(const Vec<T, W>& x, T y) noexcept
+{
+    return x + y;
+}
+template <typename T, size_t W>
+Vec<T, W> add(T x, const Vec<T, W>& y) noexcept
+{
+    return x + y;
+}
+
+template <typename T, size_t W>
+Vec<T, W> sub(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
+{
+    return x - y;
+}
+template <typename T, size_t W>
+Vec<T, W> sub(const Vec<T, W>& x, T y) noexcept
+{
+    return x - y;
+}
+template <typename T, size_t W>
+Vec<T, W> sub(T x, const Vec<T, W>& y) noexcept
+{
+    return x - y;
+}
+
+template <typename T, size_t W>
+Vec<T, W> mul(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
+{
+    return x * y;
+}
+template <typename T, size_t W>
+Vec<T, W> mul(const Vec<T, W>& x, T y) noexcept
+{
+    return x * y;
+}
+template <typename T, size_t W>
+Vec<T, W> mul(T x, const Vec<T, W>& y) noexcept
+{
+    return x * y;
+}
+
+template <typename T, size_t W>
+Vec<T, W> div(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
+{
+    return x / y;
+}
+template <typename T, size_t W>
+Vec<T, W> div(const Vec<T, W>& x, T y) noexcept
+{
+    return x / y;
+}
+template <typename T, size_t W>
+Vec<T, W> div(T x, const Vec<T, W>& y) noexcept
+{
+    return x / y;
+}
+
+/// math operations
 template <typename T, size_t W>
 Vec<T, W> abs(const Vec<T, W>& x) noexcept
 {
     using A = typename Vec<T, W>::arch_t;
     return kernel::abs<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+Vec<T, W> sqrt(const Vec<T, W>& x) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::sqrt<T, W>(x, A{});
 }
 
 #if 0
@@ -24,13 +97,6 @@ Vec<T, Arch> abs(const Vec<std::complex<T>, Arch>& x) noexcept
 {
     detail::static_check_supported_config<T, Arch>();
     return kernel::abs<Arch>(x, Arch{});
-}
-
-template <typename T, typename Arch>
-Vec<T, Arch> add(const Vec<T, Arch>& x, const Vec<T, Arch>& y) noexcept
-{
-    detail::static_check_supported_config<T, Arch>();
-    return x + y;
 }
 
 template <typename T, typename Arch>

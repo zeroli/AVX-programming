@@ -61,5 +61,11 @@ Vec<T, W> abs(const Vec<T, W>& self, requires_arch<SSE>) noexcept
 {
     return impl::abs<T, W>::apply(self);
 }
+/// sqrt
+template <typename T, size_t W>
+Vec<T, W> sqrt(const Vec<T, W>& self, requires_arch<SSE>) noexcept
+{
+    return impl::sqrt<T, W>::apply(self);
+}
 }  // namespace kernel
 }  // namespace simd
