@@ -257,45 +257,42 @@ public:
 #endif
     /// arithmetic operators
     /// defined as friend to enable conversion from scalar to vector
-    friend Vec operator +(const Vec& lhs, const Vec& rhs)
+    friend Vec operator +(const Vec& lhs, const Vec& rhs) noexcept
     {
         return ops::add<T, W>(lhs, rhs);
     }
-    friend Vec operator -(const Vec& lhs, const Vec& rhs)
+    friend Vec operator -(const Vec& lhs, const Vec& rhs) noexcept
     {
         return ops::sub<T, W>(lhs, rhs);
     }
-    friend Vec operator *(const Vec& lhs, const Vec& rhs)
+    friend Vec operator *(const Vec& lhs, const Vec& rhs) noexcept
     {
         return ops::mul<T, W>(lhs, rhs);
     }
-    friend Vec operator /(const Vec& lhs, const Vec& rhs)
+    friend Vec operator /(const Vec& lhs, const Vec& rhs) noexcept
     {
         return ops::div<T, W>(lhs, rhs);
     }
-    friend Vec operator &(const Vec& lhs, const Vec& rhs)
+    friend Vec operator &(const Vec& lhs, const Vec& rhs) noexcept
     {
         return ops::bitwise_and<T, W>(lhs, rhs);
     }
-    friend Vec operator |(const Vec& lhs, const Vec& rhs)
+    friend Vec operator |(const Vec& lhs, const Vec& rhs) noexcept
     {
         return ops::bitwise_or<T, W>(lhs, rhs);
     }
-    friend Vec operator ^(const Vec& lhs, const Vec& rhs)
+    friend Vec operator ^(const Vec& lhs, const Vec& rhs) noexcept
     {
         return ops::bitwise_xor<T, W>(lhs, rhs);
     }
-    #if 0
-    friend Vec operator &&(const Vec& lhs, const Vec& rhs)
+    friend Vec operator &&(const Vec& lhs, const Vec& rhs) noexcept
     {
-        return ops::logical_and<T, W>(lhs, rhs, A{});
+        return ops::logical_and<T, W>(lhs, rhs);
     }
-    friend Vec operator ||(const Vec& lhs, const Vec& rhs)
+    friend Vec operator ||(const Vec& lhs, const Vec& rhs) noexcept
     {
-        return ops::logical_or<W>(lhs, rhs, A{});
+        return ops::logical_or<T, W>(lhs, rhs);
     }
-
-    #endif
 };
 
 using vf32x16_t = Vec<float, 16>;

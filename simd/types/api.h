@@ -10,7 +10,7 @@
 #include <ostream>
 
 namespace simd {
-#define DEFINE_ARITH_BINARY_OP(OP) \
+#define DEFINE_API_BINARY_OP(OP) \
 template <typename T, size_t W> \
 Vec<T, W> OP(const Vec<T, W>& x, const Vec<T, W>& y) noexcept \
 { \
@@ -30,21 +30,24 @@ Vec<T, W> OP(T x, const Vec<T, W>& y) noexcept \
 ///
 
 /// arithmetic binary operations
-DEFINE_ARITH_BINARY_OP(add);
-DEFINE_ARITH_BINARY_OP(sub);
-DEFINE_ARITH_BINARY_OP(mul);
-DEFINE_ARITH_BINARY_OP(div);
+DEFINE_API_BINARY_OP(add);
+DEFINE_API_BINARY_OP(sub);
+DEFINE_API_BINARY_OP(mul);
+DEFINE_API_BINARY_OP(div);
 
 /// bitwise operations
-DEFINE_ARITH_BINARY_OP(bitwise_and);
-DEFINE_ARITH_BINARY_OP(bitwise_or);
-DEFINE_ARITH_BINARY_OP(bitwise_xor);
-DEFINE_ARITH_BINARY_OP(bitwise_andnot);
+DEFINE_API_BINARY_OP(bitwise_and);
+DEFINE_API_BINARY_OP(bitwise_or);
+DEFINE_API_BINARY_OP(bitwise_xor);
+DEFINE_API_BINARY_OP(bitwise_andnot);
 
-#undef DEFINE_ARITH_BINARY_OP
+DEFINE_API_BINARY_OP(logical_and);
+DEFINE_API_BINARY_OP(logical_or);
+
+#undef DEFINE_API_BINARY_OP
 
 /// math operations
-#define DEFINE_MATH_UNARY_OP(OP) \
+#define DEFINE_API_MATH_UNARY_OP(OP) \
 template <typename T, size_t W> \
 Vec<T, W> OP(const Vec<T, W>& x) noexcept \
 { \
@@ -53,10 +56,10 @@ Vec<T, W> OP(const Vec<T, W>& x) noexcept \
 } \
 ///
 
-DEFINE_MATH_UNARY_OP(abs);
-DEFINE_MATH_UNARY_OP(sqrt);
+DEFINE_API_MATH_UNARY_OP(abs);
+DEFINE_API_MATH_UNARY_OP(sqrt);
 
-#undef DEFINE_MATH_UNARY_OP
+#undef DEFINE_API_MATH_UNARY_OP
 
 #if 0
 

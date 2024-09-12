@@ -52,7 +52,6 @@ Vec<T, W> bitwise_xor(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     return kernel::bitwise_xor<T, W>(lhs, rhs, A{});
 }
 
-#if 0
 template <typename T, size_t W>
 Vec<T, W> logical_and(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
@@ -65,6 +64,5 @@ Vec<T, W> logical_or(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     using A = typename Vec<T, W>::arch_t;
     return kernel::logical_or<W>(lhs, rhs, A{});
 }
-#endif
 }  // namespace ops
 }  // namespace simd
