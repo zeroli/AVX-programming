@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-TEST(vec_op_sse, test_add)
+TEST(vec_op_sse, test_arith_add)
 {
     {
         simd::Vec<int32_t, 4> a(1), b(2), p(3);
@@ -57,7 +57,7 @@ TEST(vec_op_sse, test_add)
     }
 }
 
-TEST(vec_op_sse, test_add_inplace)
+TEST(vec_op_sse, test_arith_add_inplace)
 {
     {
         simd::Vec<int32_t, 4> a(1), b(2), p(3);
@@ -77,7 +77,7 @@ TEST(vec_op_sse, test_add_inplace)
     }
 }
 
-TEST(vec_op_sse, test_sub)
+TEST(vec_op_sse, test_arith_sub)
 {
     {
         simd::Vec<int32_t, 4> a(1), b(2);
@@ -128,7 +128,7 @@ TEST(vec_op_sse, test_sub)
     }
 }
 
-TEST(vec_op_sse, test_sub_inplace)
+TEST(vec_op_sse, test_arith_sub_inplace)
 {
     {
         simd::Vec<int32_t, 4> a(1), b(2), p(3);
@@ -148,7 +148,7 @@ TEST(vec_op_sse, test_sub_inplace)
     }
 }
 
-TEST(vec_op_sse, test_mul)
+TEST(vec_op_sse, test_arith_mul)
 {
     {
         simd::Vec<float, 4> a(2.f), b(1.f);
@@ -182,7 +182,7 @@ TEST(vec_op_sse, test_mul_inplace)
     }
 }
 
-TEST(vec_op_sse, test_div)
+TEST(vec_op_sse, test_arith_div)
 {
     {
         simd::Vec<float, 4> a(4.f), b(2.f);
@@ -324,7 +324,7 @@ TEST(vec_op_sse, test_max)
     }
 }
 
-TEST(vec_op_sse, test_abs)
+TEST(vec_op_sse, test_math_abs)
 {
     {
         simd::Vec<int8_t, 16> a(-3);
@@ -358,7 +358,7 @@ TEST(vec_op_sse, test_abs)
     }
 }
 
-TEST(vec_op_sse, test_sqrt)
+TEST(vec_op_sse, test_math_sqrt)
 {
     #if 0 // compilation error, non supported op for integral types
     {

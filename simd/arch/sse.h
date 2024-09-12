@@ -12,29 +12,41 @@
 
 namespace simd {
 namespace kernel {
-template <typename T, size_t W>
-Vec<T, W> add(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
-{
-    return impl::add<T, W>::apply(lhs, rhs);
-}
+#define DEFINE_SSE_BINARY_OP(OP) \
+template <typename T, size_t W> \
+Vec<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept \
+{ \
+    return impl::OP<T, W>::apply(lhs, rhs); \
+} \
+///
 
-template <typename T, size_t W>
-Vec<T, W> sub(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
-{
-    return impl::sub<T, W>::apply(lhs, rhs);
-}
+DEFINE_SSE_BINARY_OP(add);
+DEFINE_SSE_BINARY_OP(sub);
+DEFINE_SSE_BINARY_OP(mul);
+DEFINE_SSE_BINARY_OP(div);
 
-template <typename T, size_t W>
-Vec<T, W> mul(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
-{
-    return impl::mul<T, W>::apply(lhs, rhs);
-}
+DEFINE_SSE_BINARY_OP(bitwise_and);
+DEFINE_SSE_BINARY_OP(bitwise_or);
+DEFINE_SSE_BINARY_OP(bitwise_xor);
+DEFINE_SSE_BINARY_OP(bitwise_andnot);
 
-template <typename T, size_t W>
-Vec<T, W> div(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
-{
-    return impl::div<T, W>::apply(lhs, rhs);
-}
+DEFINE_SSE_BINARY_OP(max);
+DEFINE_SSE_BINARY_OP(min);
+
+#undef DEFINE_SSE_BINARY_OP
+
+#define DEFINE_SSE_UNARY_OP(OP) \
+template <typename T, size_t W> \
+Vec<T, W> OP(const Vec<T, W>& self, requires_arch<SSE>) noexcept \
+{ \
+    return impl::OP<T, W>::apply(self); \
+} \
+///
+
+DEFINE_SSE_UNARY_OP(abs);
+DEFINE_SSE_UNARY_OP(sqrt);
+
+#undef DEFINE_SSE_UNARY_OP
 
 template <typename T, size_t W>
 Vec<T, W> broadcast(T val, requires_arch<SSE>) noexcept
@@ -42,46 +54,5 @@ Vec<T, W> broadcast(T val, requires_arch<SSE>) noexcept
     return impl::broadcast<T, W>::apply(val);
 }
 
-template <typename T, size_t W>
-Vec<T, W> bitwise_and(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
-{
-    return impl::bitwise_and<T, W>::apply(lhs, rhs);
-}
-template <typename T, size_t W>
-Vec<T, W> bitwise_or(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
-{
-    return impl::bitwise_or<T, W>::apply(lhs, rhs);
-}
-template <typename T, size_t W>
-Vec<T, W> bitwise_xor(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
-{
-    return impl::bitwise_xor<T, W>::apply(lhs, rhs);
-}
-
-template <typename T, size_t W>
-Vec<T, W> max(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
-{
-    return impl::max<T, W>::apply(lhs, rhs);
-}
-
-template <typename T, size_t W>
-Vec<T, W> min(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
-{
-    return impl::min<T, W>::apply(lhs, rhs);
-}
-
-/// math operations
-/// abs
-template <typename T, size_t W>
-Vec<T, W> abs(const Vec<T, W>& self, requires_arch<SSE>) noexcept
-{
-    return impl::abs<T, W>::apply(self);
-}
-/// sqrt
-template <typename T, size_t W>
-Vec<T, W> sqrt(const Vec<T, W>& self, requires_arch<SSE>) noexcept
-{
-    return impl::sqrt<T, W>::apply(self);
-}
 }  // namespace kernel
 }  // namespace simd

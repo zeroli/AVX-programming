@@ -39,6 +39,7 @@ DEFINE_ARITH_BINARY_OP(div);
 DEFINE_ARITH_BINARY_OP(bitwise_and);
 DEFINE_ARITH_BINARY_OP(bitwise_or);
 DEFINE_ARITH_BINARY_OP(bitwise_xor);
+DEFINE_ARITH_BINARY_OP(bitwise_andnot);
 
 #undef DEFINE_ARITH_BINARY_OP
 
@@ -51,6 +52,7 @@ Vec<T, W> OP(const Vec<T, W>& x) noexcept \
     return kernel::OP<T, W>(x, A{}); \
 } \
 ///
+
 DEFINE_MATH_UNARY_OP(abs);
 DEFINE_MATH_UNARY_OP(sqrt);
 
