@@ -12,6 +12,104 @@ namespace impl {
 
 using namespace types;
 
+namespace detail {
+struct and_functor {
+    __m128i operator ()(const __m128i& x, const __m128i& y) const noexcept {
+        return _mm_and_si128(x, y);
+    }
+    __m128 operator ()(const __m128& x, const __m128& y) const noexcept {
+        return _mm_and_ps(x, y);
+    }
+    __m128d operator ()(const __m128d& x, const __m128d& y) const noexcept {
+        return _mm_and_pd(x, y);
+    }
+};
+struct or_functor {
+    __m128i operator ()(const __m128i& x, const __m128i& y) const noexcept {
+        return _mm_or_si128(x, y);
+    }
+    __m128 operator ()(const __m128& x, const __m128& y) const noexcept {
+        return _mm_or_ps(x, y);
+    }
+    __m128d operator ()(const __m128d& x, const __m128d& y) const noexcept {
+        return _mm_or_pd(x, y);
+    }
+};
+struct xor_functor {
+    __m128i operator ()(const __m128i& x, const __m128i& y) const noexcept {
+        return _mm_xor_si128(x, y);
+    }
+    __m128 operator ()(const __m128& x, const __m128& y) const noexcept {
+        return _mm_xor_ps(x, y);
+    }
+    __m128d operator ()(const __m128d& x, const __m128d& y) const noexcept {
+        return _mm_xor_pd(x, y);
+    }
+};
+
+template <typename T, size_t W, typename F>
+struct bitwise_op
+{
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        static_check_supported_type<T>();
+
+        Vec<T, W> ret;
+        constexpr int nregs = Vec<T, W>::n_regs();
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = F()(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
+    }
+};
+}  // namespace detail
+
+template <typename T, size_t W>
+struct bitwise_and<T, W, REQUIRE_INTEGRAL(T)> : detail::bitwise_op<T, W, detail::and_functor>
+{
+};
+
+template <size_t W>
+struct bitwise_and<float, W> : detail::bitwise_op<float, W, detail::and_functor>
+{
+};
+
+template <size_t W>
+struct bitwise_and<double, W> : detail::bitwise_op<double, W, detail::and_functor>
+{
+};
+
+template <typename T, size_t W>
+struct bitwise_or<T, W, REQUIRE_INTEGRAL(T)> : detail::bitwise_op<T, W, detail::or_functor>
+{
+};
+
+template <size_t W>
+struct bitwise_or<float, W> : detail::bitwise_op<float, W, detail::or_functor>
+{
+};
+
+template <size_t W>
+struct bitwise_or<double, W> : detail::bitwise_op<double, W, detail::or_functor>
+{
+};
+
+template <typename T, size_t W>
+struct bitwise_xor<T, W, REQUIRE_INTEGRAL(T)> : detail::bitwise_op<T, W, detail::xor_functor>
+{
+};
+
+template <size_t W>
+struct bitwise_xor<float, W> : detail::bitwise_op<float, W, detail::xor_functor>
+{
+};
+
+template <size_t W>
+struct bitwise_xor<double, W> : detail::bitwise_op<double, W, detail::xor_functor>
+{
+};
+
+
 #if 0
 /// eq
 template <typename Arch>

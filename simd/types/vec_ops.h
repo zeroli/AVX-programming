@@ -33,25 +33,26 @@ Vec<T, W> div(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     return kernel::div<T, W>(lhs, rhs, A{});
 }
 
-#if 0
 template <typename T, size_t W>
 Vec<T, W> bitwise_and(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
     using A = typename Vec<T, W>::arch_t;
-    return kernel::bitwise_and<W>(lhs, rhs, A{});
+    return kernel::bitwise_and<T, W>(lhs, rhs, A{});
 }
 template <typename T, size_t W>
 Vec<T, W> bitwise_or(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
     using A = typename Vec<T, W>::arch_t;
-    return kernel::bitwise_or<W>(lhs, rhs, A{});
+    return kernel::bitwise_or<T, W>(lhs, rhs, A{});
 }
 template <typename T, size_t W>
 Vec<T, W> bitwise_xor(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
     using A = typename Vec<T, W>::arch_t;
-    return kernel::bitwise_xor<W>(lhs, rhs, A{});
+    return kernel::bitwise_xor<T, W>(lhs, rhs, A{});
 }
+
+#if 0
 template <typename T, size_t W>
 Vec<T, W> logical_and(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {

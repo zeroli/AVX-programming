@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-TEST(vec_binary_op_sse, test_add)
+TEST(vec_op_sse, test_add)
 {
     {
         simd::Vec<int32_t, 4> a(1), b(2), p(3);
@@ -57,7 +57,7 @@ TEST(vec_binary_op_sse, test_add)
     }
 }
 
-TEST(vec_binary_op_sse, test_add_inplace)
+TEST(vec_op_sse, test_add_inplace)
 {
     {
         simd::Vec<int32_t, 4> a(1), b(2), p(3);
@@ -77,7 +77,7 @@ TEST(vec_binary_op_sse, test_add_inplace)
     }
 }
 
-TEST(vec_binary_op_sse, test_sub)
+TEST(vec_op_sse, test_sub)
 {
     {
         simd::Vec<int32_t, 4> a(1), b(2);
@@ -128,7 +128,7 @@ TEST(vec_binary_op_sse, test_sub)
     }
 }
 
-TEST(vec_binary_op_sse, test_sub_inplace)
+TEST(vec_op_sse, test_sub_inplace)
 {
     {
         simd::Vec<int32_t, 4> a(1), b(2), p(3);
@@ -148,7 +148,7 @@ TEST(vec_binary_op_sse, test_sub_inplace)
     }
 }
 
-TEST(vec_binary_op_sse, test_mul)
+TEST(vec_op_sse, test_mul)
 {
     {
         simd::Vec<float, 4> a(2.f), b(1.f);
@@ -168,7 +168,7 @@ TEST(vec_binary_op_sse, test_mul)
     }
 }
 
-TEST(vec_binary_op_sse, test_mul_inplace)
+TEST(vec_op_sse, test_mul_inplace)
 {
     {
         simd::Vec<float, 4> a(1.f), b(2.f);
@@ -182,7 +182,7 @@ TEST(vec_binary_op_sse, test_mul_inplace)
     }
 }
 
-TEST(vec_binary_op_sse, test_div)
+TEST(vec_op_sse, test_div)
 {
     {
         simd::Vec<float, 4> a(4.f), b(2.f);
@@ -202,7 +202,7 @@ TEST(vec_binary_op_sse, test_div)
     }
 }
 
-TEST(vec_binary_op_sse, test_div_inplace)
+TEST(vec_op_sse, test_div_inplace)
 {
     {
         simd::Vec<float, 4> a(1.f), b(2.f);
@@ -216,7 +216,7 @@ TEST(vec_binary_op_sse, test_div_inplace)
     }
 }
 
-TEST(vec_binary_op_sse, test_min)
+TEST(vec_op_sse, test_min)
 {
     {
         simd::Vec<int8_t, 16> a(4), b(-2);
@@ -270,7 +270,7 @@ TEST(vec_binary_op_sse, test_min)
     }
 }
 
-TEST(vec_binary_op_sse, test_max)
+TEST(vec_op_sse, test_max)
 {
     {
         simd::Vec<int8_t, 16> a(4), b(-2);
@@ -324,7 +324,7 @@ TEST(vec_binary_op_sse, test_max)
     }
 }
 
-TEST(vec_binary_op_sse, test_abs)
+TEST(vec_op_sse, test_abs)
 {
     {
         simd::Vec<int8_t, 16> a(-3);
@@ -358,7 +358,7 @@ TEST(vec_binary_op_sse, test_abs)
     }
 }
 
-TEST(vec_binary_op_sse, test_sqrt)
+TEST(vec_op_sse, test_sqrt)
 {
     #if 0 // compilation error, non supported op for integral types
     {
@@ -376,5 +376,80 @@ TEST(vec_binary_op_sse, test_sqrt)
         simd::Vec<double, 2> a(4.0);
         auto c = simd::sqrt(a);
         std::cout << "sqrt(" << a << "(a)" <<") = " << c << "(c)\n";
+    }
+}
+
+TEST(vec_op_sse, test_bitwise_and)
+{
+    {
+        simd::Vec<int32_t, 4> a(1), b(3);
+        auto c = a & b;
+        std::cout << a << "(a)" <<" & " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::bitwise_and(a, b);
+        a &= b;
+    }
+    {
+        simd::Vec<float, 4> a(1), b(3);
+        auto c = a & b;
+        std::cout << a << "(a)" <<" & " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::bitwise_and(a, b);
+        a &= b;
+    }
+    {
+        simd::Vec<double, 2> a(1), b(3);
+        auto c = a & b;
+        std::cout << a << "(a)" <<" & " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::bitwise_and(a, b);
+        a &= b;
+    }
+}
+
+TEST(vec_op_sse, test_bitwise_or)
+{
+    {
+        simd::Vec<int32_t, 4> a(1), b(3);
+        auto c = a | b;
+        std::cout << a << "(a)" <<" & " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::bitwise_or(a, b);
+        a |= b;
+    }
+    {
+        simd::Vec<float, 4> a(1), b(3);
+        auto c = a | b;
+        std::cout << a << "(a)" <<" & " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::bitwise_or(a, b);
+        a |= b;
+    }
+    {
+        simd::Vec<double, 2> a(1), b(3);
+        auto c = a | b;
+        std::cout << a << "(a)" <<" & " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::bitwise_or(a, b);
+        a |= b;
+    }
+}
+
+TEST(vec_op_sse, test_bitwise_xor)
+{
+    {
+        simd::Vec<int32_t, 4> a(1), b(3);
+        auto c = a ^ b;
+        std::cout << a << "(a)" <<" & " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::bitwise_xor(a, b);
+        a ^= b;
+    }
+    {
+        simd::Vec<float, 4> a(1), b(3);
+        auto c = a ^ b;
+        std::cout << a << "(a)" <<" & " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::bitwise_xor(a, b);
+        a ^= b;
+    }
+    {
+        simd::Vec<double, 2> a(1), b(3);
+        auto c = a ^ b;
+        std::cout << a << "(a)" <<" & " << b << "(b) = " << c << "(c)\n";
+        auto d = simd::bitwise_xor(a, b);
+        a ^= b;
     }
 }

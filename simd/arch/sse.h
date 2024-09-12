@@ -43,6 +43,22 @@ Vec<T, W> broadcast(T val, requires_arch<SSE>) noexcept
 }
 
 template <typename T, size_t W>
+Vec<T, W> bitwise_and(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
+{
+    return impl::bitwise_and<T, W>::apply(lhs, rhs);
+}
+template <typename T, size_t W>
+Vec<T, W> bitwise_or(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
+{
+    return impl::bitwise_or<T, W>::apply(lhs, rhs);
+}
+template <typename T, size_t W>
+Vec<T, W> bitwise_xor(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
+{
+    return impl::bitwise_xor<T, W>::apply(lhs, rhs);
+}
+
+template <typename T, size_t W>
 Vec<T, W> max(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
 {
     return impl::max<T, W>::apply(lhs, rhs);

@@ -17,6 +17,10 @@ DECLAE_OP_KERNEL(div);
 
 DECLAE_OP_KERNEL(broadcast);
 
+DECLAE_OP_KERNEL(bitwise_and);
+DECLAE_OP_KERNEL(bitwise_or);
+DECLAE_OP_KERNEL(bitwise_xor);
+
 DECLAE_OP_KERNEL(max);
 DECLAE_OP_KERNEL(min);
 

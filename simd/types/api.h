@@ -10,85 +10,51 @@
 #include <ostream>
 
 namespace simd {
-/// arithmetic operations
-template <typename T, size_t W>
-Vec<T, W> add(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
-{
-    return x + y;
-}
-template <typename T, size_t W>
-Vec<T, W> add(const Vec<T, W>& x, T y) noexcept
-{
-    return x + y;
-}
-template <typename T, size_t W>
-Vec<T, W> add(T x, const Vec<T, W>& y) noexcept
-{
-    return x + y;
-}
+#define DEFINE_ARITH_BINARY_OP(OP) \
+template <typename T, size_t W> \
+Vec<T, W> OP(const Vec<T, W>& x, const Vec<T, W>& y) noexcept \
+{ \
+    using A = typename Vec<T, W>::arch_t; \
+    return kernel::OP<T, W>(x, y, A{}); \
+} \
+template <typename T, size_t W> \
+Vec<T, W> OP(const Vec<T, W>& x, T y) noexcept \
+{ \
+    return OP(x, Vec<T, W>(y)); \
+} \
+template <typename T, size_t W> \
+Vec<T, W> OP(T x, const Vec<T, W>& y) noexcept \
+{ \
+    return OP(Vec<T, W>(x), y); \
+} \
+///
 
-template <typename T, size_t W>
-Vec<T, W> sub(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
-{
-    return x - y;
-}
-template <typename T, size_t W>
-Vec<T, W> sub(const Vec<T, W>& x, T y) noexcept
-{
-    return x - y;
-}
-template <typename T, size_t W>
-Vec<T, W> sub(T x, const Vec<T, W>& y) noexcept
-{
-    return x - y;
-}
+/// arithmetic binary operations
+DEFINE_ARITH_BINARY_OP(add);
+DEFINE_ARITH_BINARY_OP(sub);
+DEFINE_ARITH_BINARY_OP(mul);
+DEFINE_ARITH_BINARY_OP(div);
 
-template <typename T, size_t W>
-Vec<T, W> mul(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
-{
-    return x * y;
-}
-template <typename T, size_t W>
-Vec<T, W> mul(const Vec<T, W>& x, T y) noexcept
-{
-    return x * y;
-}
-template <typename T, size_t W>
-Vec<T, W> mul(T x, const Vec<T, W>& y) noexcept
-{
-    return x * y;
-}
+/// bitwise operations
+DEFINE_ARITH_BINARY_OP(bitwise_and);
+DEFINE_ARITH_BINARY_OP(bitwise_or);
+DEFINE_ARITH_BINARY_OP(bitwise_xor);
 
-template <typename T, size_t W>
-Vec<T, W> div(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
-{
-    return x / y;
-}
-template <typename T, size_t W>
-Vec<T, W> div(const Vec<T, W>& x, T y) noexcept
-{
-    return x / y;
-}
-template <typename T, size_t W>
-Vec<T, W> div(T x, const Vec<T, W>& y) noexcept
-{
-    return x / y;
-}
+#undef DEFINE_ARITH_BINARY_OP
 
 /// math operations
-template <typename T, size_t W>
-Vec<T, W> abs(const Vec<T, W>& x) noexcept
-{
-    using A = typename Vec<T, W>::arch_t;
-    return kernel::abs<T, W>(x, A{});
-}
+#define DEFINE_MATH_UNARY_OP(OP) \
+template <typename T, size_t W> \
+Vec<T, W> OP(const Vec<T, W>& x) noexcept \
+{ \
+    using A = typename Vec<T, W>::arch_t; \
+    return kernel::OP<T, W>(x, A{}); \
+} \
+///
+DEFINE_MATH_UNARY_OP(abs);
+DEFINE_MATH_UNARY_OP(sqrt);
 
-template <typename T, size_t W>
-Vec<T, W> sqrt(const Vec<T, W>& x) noexcept
-{
-    using A = typename Vec<T, W>::arch_t;
-    return kernel::sqrt<T, W>(x, A{});
-}
+#undef DEFINE_MATH_UNARY_OP
 
 #if 0
 

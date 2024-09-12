@@ -203,6 +203,15 @@ public:
     Vec& operator /=(const Vec& other) noexcept {
         return *this = ops::div<T, W>(*this, other);
     }
+    Vec& operator &=(const Vec& other) noexcept {
+        return *this = ops::bitwise_and<T, W>(*this, other);
+    }
+    Vec& operator |=(const Vec& other) noexcept {
+        return *this = ops::bitwise_or<T, W>(*this, other);
+    }
+    Vec& operator ^=(const Vec& other) noexcept {
+        return *this = ops::bitwise_xor<T, W>(*this, other);
+    }
 #if 0
     Vec& operator &=(const Vec& other) noexcept {
         return *this = kernel::bitwise_and<W>(*this, other, A{});
@@ -264,7 +273,6 @@ public:
     {
         return ops::div<T, W>(lhs, rhs);
     }
-    #if 0
     friend Vec operator &(const Vec& lhs, const Vec& rhs)
     {
         return ops::bitwise_and<T, W>(lhs, rhs);
@@ -275,8 +283,9 @@ public:
     }
     friend Vec operator ^(const Vec& lhs, const Vec& rhs)
     {
-        return ops::bitwise_xor<T, W>(lhs, rhs, A{});
+        return ops::bitwise_xor<T, W>(lhs, rhs);
     }
+    #if 0
     friend Vec operator &&(const Vec& lhs, const Vec& rhs)
     {
         return ops::logical_and<T, W>(lhs, rhs, A{});
