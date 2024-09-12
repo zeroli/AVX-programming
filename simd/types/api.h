@@ -10,13 +10,14 @@
 #include <ostream>
 
 namespace simd {
-#if 0
-template <typename T, typename Arch>
-Vec<T, Arch> abs(const Vec<T, Arch>& x) noexcept
+template <typename T, size_t W>
+Vec<T, W> abs(const Vec<T, W>& x) noexcept
 {
-    detail::static_check_supported_config<T, Arch>();
-    return kernel::abs<Arch>(x, Arch{});
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::abs<T, W>(x, A{});
 }
+
+#if 0
 
 template <typename T, typename Arch>
 Vec<T, Arch> abs(const Vec<std::complex<T>, Arch>& x) noexcept

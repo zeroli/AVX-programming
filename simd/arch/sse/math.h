@@ -1,82 +1,83 @@
 #pragma once
 
+#include "simd/arch/kernel_impl.h"
 #include "simd/types/sse_register.h"
 #include "simd/types/vec.h"
 
-#if 0
 namespace simd {
 namespace kernel {
+namespace impl {
 using namespace types;
 
 /// abs
-template <typename Arch>
-Vec<float, Arch> abs(const Vec<float, Arch>& self, requires_arch<SSE>) noexcept
+template <typename T, size_t W>
+struct abs<T, W, REQUIRE_INTEGRAL(T)>
 {
-    auto sign_mask = _mm_set1_ps(-0.f);  // -0.f = 1 << 31
-    return _mm_andnot_ps(sign_mask, self);
-}
+    static Vec<T, W> apply(const Vec<T, W>& self) noexcept
+    {
+        static_check_supported_type<T, 4>();
 
-template <typename Arch>
-Vec<double, Arch> abs(const Vec<double, Arch>& self, requires_arch<SSE>) noexcept
-{
-    auto sign_mask = _mm_set1_pd(-0.f);  // -0.f = 1 << 31
-    return _mm_andnot_pd(sign_mask, self);
-}
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-Vec<T, Arch> abs(const Vec<T, Arch>& self, requires_arch<SSE>) noexcept
-{
-    if (sizeof(T) == 1) {
-        return _mm_abs_epi8(self);
-    } else if (sizeof(T) == 2) {
-        return _mm_abs_epi16(self);
-    } else if (sizeof(T) == 4) {
-        return _mm_abs_epi32(self);
-    } else if (sizeof(T) == 8) {
-        return _mm_abs_epi64(self);
-    } else {
-        assert(0 && "unsupported abs op for sizeof(T) in SSE arch");
-        return {};
+        Vec<T, W> ret;
+        constexpr int nregs = Vec<T, W>::n_regs();
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_abs_epi8(self.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_abs_epi16(self.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_abs_epi32(self.reg(idx));
+            }
+        // _mm_abs_epi64 is provided in AVX512F
+        // } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+        //     #pragma unroll
+        //     for (auto idx = 0; idx < nregs; idx++) {
+        //         ret.reg(idx) = _mm_abs_epi64(self.reg(idx));
+        //     }
+        }
+        return ret;
     }
-}
+};
 
-/// max
-template <typename Arch>
-Vec<float, Arch> max(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<SSE>) noexcept
+template <size_t W>
+struct abs<float, W>
 {
-    return _mm_max_ps(self, other);
-}
-template <typename Arch>
-Vec<double, Arch> max(const Vec<double, Arch>& self, const Vec<float, Arch>& other, requires_arch<SSE>) noexcept
-{
-    return _mm_max_pd(self, other);
-}
+    static Vec<float, W> apply(const Vec<float, W>& self) noexcept
+    {
+        Vec<float, W> ret;
+        auto sign_mask = _mm_set1_ps(-0.f);  // -0.f = 1 << 31
+        constexpr int nregs = Vec<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_andnot_ps(sign_mask, self.reg(idx));
+        }
+        return ret;
+    }
+};
 
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-Vec<T, Arch> max(const Vec<T, Arch>& self, requires_arch<SSE>) noexcept
+template <size_t W>
+struct abs<double, W>
 {
-    return select(self > other, self, other);
-}
+    static Vec<double, W> apply(const Vec<double, W>& self) noexcept
+    {
+        Vec<double, W> ret;
+        auto sign_mask = _mm_set1_pd(-0.f);  // -0.f = 1 << 63
+        constexpr int nregs = Vec<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_andnot_pd(sign_mask, self.reg(idx));
+        }
+        return ret;
+    }
+};
 
-/// min
-template <typename Arch>
-Vec<float, Arch> min(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<SSE>) noexcept
-{
-    return _mm_min_ps(self, other);
-}
-template <typename Arch>
-Vec<double, Arch> min(const Vec<double, Arch>& self, const Vec<float, Arch>& other, requires_arch<SSE>) noexcept
-{
-    return _mm_min_pd(self, other);
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-Vec<T, Arch> min(const Vec<T, Arch>& self, requires_arch<SSE>) noexcept
-{
-    return select(self <= other, self, other);
-}
+#if 0
 
 /// reciprocal
 template <typename Arch>
@@ -109,7 +110,8 @@ Vec<double, Arch> sqrt(const Vec<double, Arch>& self, requires_arch<SSE>) noexce
     return _mm_sqrt_pd(self);
 }
 
+#endif
 
+}  // namespace impl
 }  // namespace kernel
 }  // namespace simd
-#endif

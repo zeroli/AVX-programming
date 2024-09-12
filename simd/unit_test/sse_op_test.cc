@@ -213,3 +213,37 @@ TEST(vec_binary_op_sse, test_max)
         std::cout << "max(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
     }
 }
+
+TEST(vec_binary_op_sse, test_abs)
+{
+    {
+        simd::Vec<int8_t, 16> a(-3);
+        auto c = simd::abs(a);
+        std::cout << "abs(" << a << "(a)" <<") = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<int16_t, 8> a(-3);
+        auto c = simd::abs(a);
+        std::cout << "abs(" << a << "(a)" <<") = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<int32_t, 4> a(-3);
+        auto c = simd::abs(a);
+        std::cout << "abs(" << a << "(a)" <<") = " << c << "(c)\n";
+    }
+    // {
+    //     simd::Vec<int64_t, 2> a(-3);
+    //     auto c = simd::abs(a);
+    //     std::cout << "abs(" << a << "(a)" <<") = " << c << "(c)\n";
+    // }
+    {
+        simd::Vec<float, 4> a(-4.f);
+        auto c = simd::abs(a);
+        std::cout << "abs(" << a << "(a)" <<") = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<double, 2> a(-4.0);
+        auto c = simd::abs(a);
+        std::cout << "abs(" << a << "(a)" <<") = " << c << "(c)\n";
+    }
+}

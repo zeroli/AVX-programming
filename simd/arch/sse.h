@@ -54,5 +54,12 @@ Vec<T, W> min(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) no
     return impl::min<T, W>::apply(lhs, rhs);
 }
 
+/// math operations
+/// abs
+template <typename T, size_t W>
+Vec<T, W> abs(const Vec<T, W>& self, requires_arch<SSE>) noexcept
+{
+    return impl::abs<T, W>::apply(self);
+}
 }  // namespace kernel
 }  // namespace simd

@@ -20,6 +20,8 @@ DECLAE_OP_KERNEL(broadcast);
 DECLAE_OP_KERNEL(max);
 DECLAE_OP_KERNEL(min);
 
+DECLAE_OP_KERNEL(abs);
+
 #undef DECLAE_OP_KERNEL
 
 }  // namespace impl
