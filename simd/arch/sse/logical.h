@@ -8,6 +8,8 @@
 
 namespace simd {
 namespace kernel {
+namespace impl {
+
 using namespace types;
 
 #if 0
@@ -233,5 +235,6 @@ bool any(const Vec<T, Arch>& self, requires_arch<SSE>) noexcept
 }
 #endif
 
+}  // namespace impl
 }  // namespace kernel
 }  // namespace simd

@@ -14,6 +14,8 @@ struct broadcast<T, W, REQUIRE_INTEGRAL(T)>
 {
     static Vec<T, W> apply(T val) noexcept
     {
+        static_check_supported_type<T, 8>();
+
         Vec<T, W> ret;
         constexpr int nregs = Vec<T, W>::n_regs();
         SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
@@ -36,8 +38,6 @@ struct broadcast<T, W, REQUIRE_INTEGRAL(T)>
             for (auto idx = 0; idx < nregs; idx++) {
                 ret.reg(idx) = _mm_set1_epi64x(val);
             }
-        } else {
-            assert(0 && "unsupported arch/op combination");
         }
         return ret;
     }

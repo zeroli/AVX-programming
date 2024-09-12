@@ -5,7 +5,9 @@
 
 namespace simd {
 namespace kernel {
+namespace impl {
 using namespace types;
 
+}  // namespace impl
 }  // namespace kernel
 }  // namespace simd

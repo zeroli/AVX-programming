@@ -189,19 +189,21 @@ public:
         return kernel::lt<W>(lhs, rhs, A{});
     }
 
+#endif
     /// in-place update operators
     Vec& operator +=(const Vec& other) noexcept {
-        return *this = kernel::add<W>(*this, other, A{});
+        return *this = ops::add<T, W>(*this, other);
     }
     Vec& operator -=(const Vec& other) noexcept {
-        return *this = kernel::sub<W>(*this, other, A{});
+        return *this = ops::sub<T, W>(*this, other);
     }
     Vec& operator *=(const Vec& other) noexcept {
-        return *this = kernel::mul<W>(*this, other, A{});
+        return *this = ops::mul<T, W>(*this, other);
     }
     Vec& operator /=(const Vec& other) noexcept {
-        return *this = kernel::div<W>(*this, other, A{});
+        return *this = ops::div<T, W>(*this, other);
     }
+#if 0
     Vec& operator &=(const Vec& other) noexcept {
         return *this = kernel::bitwise_and<W>(*this, other, A{});
     }

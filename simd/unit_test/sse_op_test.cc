@@ -57,6 +57,26 @@ TEST(vec_binary_op_sse, test_add)
     }
 }
 
+TEST(vec_binary_op_sse, test_add_inplace)
+{
+    {
+        simd::Vec<int32_t, 4> a(1), b(2), p(3);
+        a += b;
+        std::cout << a << "(a)\n";
+        //EXPECT_EQ(p, c);
+    }
+    {
+        simd::Vec<float, 4> a(1.f), b(2.f);
+        a += b;
+        std::cout << a << "(a)\n";
+    }
+    {
+        simd::Vec<double, 2> a(1.0), b(2.0);
+        a += b;
+        std::cout << a << "(a)\n";
+    }
+}
+
 TEST(vec_binary_op_sse, test_sub)
 {
     {
@@ -108,6 +128,26 @@ TEST(vec_binary_op_sse, test_sub)
     }
 }
 
+TEST(vec_binary_op_sse, test_sub_inplace)
+{
+    {
+        simd::Vec<int32_t, 4> a(1), b(2), p(3);
+        a -= b;
+        std::cout << a << "(a)\n";
+        //EXPECT_EQ(p, c);
+    }
+    {
+        simd::Vec<float, 4> a(1.f), b(2.f);
+        a -= b;
+        std::cout << a << "(a)\n";
+    }
+    {
+        simd::Vec<double, 2> a(1.0), b(2.0);
+        a -= b;
+        std::cout << a << "(a)\n";
+    }
+}
+
 TEST(vec_binary_op_sse, test_mul)
 {
     {
@@ -128,6 +168,20 @@ TEST(vec_binary_op_sse, test_mul)
     }
 }
 
+TEST(vec_binary_op_sse, test_mul_inplace)
+{
+    {
+        simd::Vec<float, 4> a(1.f), b(2.f);
+        a *= b;
+        std::cout << a << "(a)\n";
+    }
+    {
+        simd::Vec<double, 2> a(1.0), b(2.0);
+        a *= b;
+        std::cout << a << "(a)\n";
+    }
+}
+
 TEST(vec_binary_op_sse, test_div)
 {
     {
@@ -145,6 +199,20 @@ TEST(vec_binary_op_sse, test_div)
         auto d = simd::div(a, b);
         auto e = simd::div(a, 2.0);
         auto f = simd::div(8.0, b);
+    }
+}
+
+TEST(vec_binary_op_sse, test_div_inplace)
+{
+    {
+        simd::Vec<float, 4> a(1.f), b(2.f);
+        a /= b;
+        std::cout << a << "(a)\n";
+    }
+    {
+        simd::Vec<double, 2> a(1.0), b(2.0);
+        a /= b;
+        std::cout << a << "(a)\n";
     }
 }
 
