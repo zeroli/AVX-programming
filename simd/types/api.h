@@ -475,21 +475,23 @@ auto lt(const Vec<T, Arch>& x, const Vec<T, Arch>& y) noexcept => decltype(x < y
     detail::static_check_supported_config<T, Arch>();
     return x < y;
 }
+#endif
 
-template <typename T, typename Arch>
-Vec<T, Arch> max(const Vec<T, Arch>& x, const Vec<T, Arch>& y) noexcept
+template <typename T, size_t W>
+Vec<T, W> max(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
 {
-    detail::static_check_supported_config<T, Arch>();
-    return kernel::max<Arch>(x, y, Arch{});
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::max<T, W>(x, y, A{});
 }
 
-template <typename T, typename Arch>
-Vec<T, Arch> min(const Vec<T, Arch>& x, const Vec<T, Arch>& y) noexcept
+template <typename T, size_t W>
+Vec<T, W> min(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
 {
-    detail::static_check_supported_config<T, Arch>();
-    return kernel::min<Arch>(x, y, Arch{});
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::min<T, W>(x, y, A{});
 }
 
+#if 0
 template <typename B>
 B minus_infinity()
 {

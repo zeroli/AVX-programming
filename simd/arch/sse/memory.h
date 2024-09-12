@@ -34,7 +34,7 @@ struct broadcast<T, W, REQUIRE_INTEGRAL(T)>
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm_set1_epi32(val);
+                ret.reg(idx) = _mm_set1_epi64x(val);
             }
         } else {
             assert(0 && "unsupported arch/op combination");

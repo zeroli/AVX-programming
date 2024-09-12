@@ -105,3 +105,111 @@ TEST(vec_binary_op_sse, test_div)
         std::cout << a << "(a)" << " / " << b << "(b) = " << c << "(c)\n";
     }
 }
+
+TEST(vec_binary_op_sse, test_min)
+{
+    {
+        simd::Vec<int8_t, 16> a(4), b(-2);
+        auto c = simd::min(a, b);
+        std::cout << "min(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<uint8_t, 16> a(4), b(2);
+        auto c = simd::min(a, b);
+        std::cout << "min(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<int16_t, 8> a(4), b(-2);
+        auto c = simd::min(a, b);
+        std::cout << "min(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<uint16_t, 8> a(4), b(2);
+        auto c = simd::min(a, b);
+        std::cout << "min(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<int32_t, 4> a(4), b(-2);
+        auto c = simd::min(a, b);
+        std::cout << "min(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<uint32_t, 4> a(4), b(2);
+        auto c = simd::min(a, b);
+        std::cout << "min(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    // {
+    //     simd::Vec<int64_t, 2> a(4), b(-2);
+    //     auto c = simd::min(a, b);
+    //     std::cout << "min(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    // }
+    // {
+    //     simd::Vec<uint64_t, 2> a(4), b(2);
+    //     auto c = simd::min(a, b);
+    //     std::cout << "min(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    // }
+    {
+        simd::Vec<float, 4> a(4.f), b(2.f);
+        auto c = simd::min(a, b);
+        std::cout << "min(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<double, 2> a(8.0), b(2.0);
+        auto c = simd::min(a, b);
+        std::cout << "min(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+}
+
+TEST(vec_binary_op_sse, test_max)
+{
+    {
+        simd::Vec<int8_t, 16> a(4), b(-2);
+        auto c = simd::max(a, b);
+        std::cout << "max(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<uint8_t, 16> a(4), b(2);
+        auto c = simd::max(a, b);
+        std::cout << "max(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<int16_t, 8> a(4), b(-2);
+        auto c = simd::max(a, b);
+        std::cout << "max(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<uint16_t, 8> a(4), b(2);
+        auto c = simd::max(a, b);
+        std::cout << "max(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<int32_t, 4> a(4), b(-2);
+        auto c = simd::max(a, b);
+        std::cout << "max(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<uint32_t, 4> a(4), b(2);
+        auto c = simd::max(a, b);
+        std::cout << "max(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    // {
+    //     simd::Vec<int64_t, 2> a(4), b(-2);
+    //     auto c = simd::max(a, b);
+    //     std::cout << "max(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    // }
+    // {
+    //     simd::Vec<uint64_t, 2> a(4), b(2);
+    //     auto c = simd::max(a, b);
+    //     std::cout << "max(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    // }
+    {
+        simd::Vec<float, 4> a(4.f), b(2.f);
+        auto c = simd::max(a, b);
+        std::cout << "max(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<double, 2> a(8.0), b(2.0);
+        auto c = simd::max(a, b);
+        std::cout << "max(" << a << "(a)" << ", " << b << "(b)) = " << c << "(c)\n";
+    }
+}

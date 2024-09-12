@@ -74,6 +74,7 @@ struct broadcast<std::complex<double>, W>
         return ret;
     }
 };
+
 }  // namespace impl
 }  // namespace kernel
 }  // namespace simd

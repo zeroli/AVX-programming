@@ -20,6 +20,8 @@ struct add<T, W, REQUIRE_INTEGRAL(T)>
 {
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
+        static_check_supported_type<T>();
+
         Vec<T, W> ret;
         constexpr int nregs = Vec<T, W>::n_regs();
         SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
@@ -42,8 +44,6 @@ struct add<T, W, REQUIRE_INTEGRAL(T)>
             for (auto idx = 0; idx < nregs; idx++) {
                 ret.reg(idx) = _mm_add_epi64(lhs.reg(idx), rhs.reg(idx));
             }
-        } else {
-            assert(0 && "unsupported arch/op combination");
         }
         return ret;
     }
@@ -85,6 +85,8 @@ struct sub<T, W, REQUIRE_INTEGRAL(T)>
 {
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
+        static_check_supported_type<T>();
+
         Vec<T, W> ret;
         constexpr int nregs = Vec<T, W>::n_regs();
         SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
@@ -107,8 +109,6 @@ struct sub<T, W, REQUIRE_INTEGRAL(T)>
             for (auto idx = 0; idx < nregs; idx++) {
                 ret.reg(idx) = _mm_sub_epi64(lhs.reg(idx), rhs.reg(idx));
             }
-        } else {
-            assert(0 && "unsupported arch/op combination");
         }
         return ret;
     }
@@ -150,6 +150,8 @@ struct mul<T, W, REQUIRE_INTEGRAL(T)>
 {
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
+        static_check_supported_type<T>();
+
         Vec<T, W> ret;
         constexpr int nregs = Vec<T, W>::n_regs();
         SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
@@ -172,8 +174,6 @@ struct mul<T, W, REQUIRE_INTEGRAL(T)>
             for (auto idx = 0; idx < nregs; idx++) {
                 ret.reg(idx) = _mm_sub_epi64(lhs.reg(idx), rhs.reg(idx));
             }
-        } else {
-            assert(0 && "unsupported arch/op combination");
         }
         return ret;
     }
@@ -210,6 +210,40 @@ struct mul<double, W>
 };
 
 /// div
+template <typename T, size_t W>
+struct div<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        static_check_supported_type<T>();
+
+        Vec<T, W> ret;
+        constexpr int nregs = Vec<T, W>::n_regs();
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_sub_epi8(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_sub_epi16(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_sub_epi32(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_sub_epi64(lhs.reg(idx), rhs.reg(idx));
+            }
+        }
+        return ret;
+    }
+};
+
 template <size_t W>
 struct div<float, W>
 {
