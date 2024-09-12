@@ -23,14 +23,14 @@ template <typename T, size_t W>
 Vec<T, W> mul(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
     using A = typename Vec<T, W>::arch_t;
-    return kernel::mul<W>(lhs, rhs, A{});
+    return kernel::mul<T, W>(lhs, rhs, A{});
 }
 
 template <typename T, size_t W>
 Vec<T, W> div(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
 {
     using A = typename Vec<T, W>::arch_t;
-    return kernel::div<W>(lhs, rhs, A{});
+    return kernel::div<T, W>(lhs, rhs, A{});
 }
 
 #if 0

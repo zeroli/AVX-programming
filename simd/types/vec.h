@@ -163,7 +163,6 @@ public:
 
 #endif
 #if 0
-
     // comparison operators
     friend VecBool<T, W> operator ==(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
@@ -255,7 +254,6 @@ public:
     {
         return ops::sub<T, W>(lhs, rhs);
     }
-    #if 0
     friend Vec operator *(const Vec& lhs, const Vec& rhs)
     {
         return ops::mul<T, W>(lhs, rhs);
@@ -264,6 +262,7 @@ public:
     {
         return ops::div<T, W>(lhs, rhs);
     }
+    #if 0
     friend Vec operator &(const Vec& lhs, const Vec& rhs)
     {
         return ops::bitwise_and<T, W>(lhs, rhs);

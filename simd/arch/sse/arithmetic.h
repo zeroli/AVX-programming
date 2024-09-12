@@ -49,8 +49,8 @@ struct add<T, W, REQUIRE_INTEGRAL(T)>
     }
 };
 
-template <typename T, size_t W>
-struct add<T, W, REQUIRE_FLOAT32(T)>
+template <size_t W>
+struct add<float, W>
 {
     static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
@@ -64,8 +64,8 @@ struct add<T, W, REQUIRE_FLOAT32(T)>
     }
 };
 
-template <typename T, size_t W>
-struct add<T, W, REQUIRE_FLOAT64(T)>
+template <size_t W>
+struct add<double, W>
 {
     static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
@@ -138,13 +138,47 @@ struct sub<double, W>
         constexpr int nregs = Vec<double, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_sub_ps(lhs.reg(idx), rhs.reg(idx));
+            ret.reg(idx) = _mm_sub_pd(lhs.reg(idx), rhs.reg(idx));
         }
         return ret;
     }
 };
 
 /// mul
+template <typename T, size_t W>
+struct mul<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        Vec<T, W> ret;
+        constexpr int nregs = Vec<T, W>::n_regs();
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_sub_epi8(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_sub_epi16(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_sub_epi32(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_sub_epi64(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else {
+            assert(0 && "unsupported arch/op combination");
+        }
+        return ret;
+    }
+};
+
 template <size_t W>
 struct mul<float, W>
 {

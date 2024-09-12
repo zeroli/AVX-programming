@@ -66,4 +66,42 @@ TEST(vec_binary_op_sse, test_sub)
         auto c = b - a;
         std::cout << b << "(b)" << " - " << a << "(a) = " << c << "(c)\n";
     }
+    {
+        simd::Vec<float, 4> a(2.f), b(1.f);
+        auto c = a - b;
+        std::cout << a << "(a)" << " - " << b << "(b) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<double, 2> a(2.0), b(1.0);
+        auto c = a - b;
+        std::cout << a << "(a)" << " - " << b << "(b) = " << c << "(c)\n";
+    }
+}
+
+TEST(vec_binary_op_sse, test_mul)
+{
+    {
+        simd::Vec<float, 4> a(2.f), b(1.f);
+        auto c = a * b;
+        std::cout << a << "(a)" << " * " << b << "(b) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<double, 2> a(2.0), b(1.0);
+        auto c = a * b;
+        std::cout << a << "(a)" << " * " << b << "(b) = " << c << "(c)\n";
+    }
+}
+
+TEST(vec_binary_op_sse, test_div)
+{
+    {
+        simd::Vec<float, 4> a(4.f), b(2.f);
+        auto c = a / b;
+        std::cout << a << "(a)" << " / " << b << "(b) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<double, 2> a(8.0), b(2.0);
+        auto c = a / b;
+        std::cout << a << "(a)" << " / " << b << "(b) = " << c << "(c)\n";
+    }
 }
