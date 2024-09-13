@@ -220,12 +220,12 @@ public:
     Vec& operator --() noexcept {
         return operator -=(1);
     }
-    Vec& operator ++(int) noexcept {
+    Vec operator ++(int) noexcept {
         self_t copy(*this);
         operator +=(1);
         return copy;
     }
-    Vec& operator --(int) noexcept {
+    Vec operator --(int) noexcept {
         self_t copy(*this);
         operator -=(1);
         return copy;

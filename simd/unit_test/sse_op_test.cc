@@ -475,3 +475,66 @@ TEST(vec_op_sse, test_bitwise_not)
         auto d = simd::bitwise_not(a);
     }
 }
+
+TEST(vec_op_sse, test_inc_by1)
+{
+    {
+        simd::Vec<int32_t, 4> a(1);
+        auto c = ++a;
+        std::cout << "++a: " << a << "(a) = " << c << "(c)\n";
+        auto d = a++;
+    }
+    {
+        simd::Vec<float, 4> a(1.f);
+        auto c = ++a;
+        std::cout << "++a: " << a << "(a) = " << c << "(c)\n";
+        auto d = a++;
+    }
+    {
+        simd::Vec<double, 2> a(1.0);
+        auto c = ++a;
+        std::cout << "++a: " << a << "(a) = " << c << "(c)\n";
+        auto d = a++;
+    }
+}
+
+TEST(vec_op_sse, test_dec_by1)
+{
+    {
+        simd::Vec<int32_t, 4> a(1);
+        auto c = --a;
+        std::cout << "--a: " << a << "(a) = " << c << "(c)\n";
+        auto d = a--;
+    }
+    {
+        simd::Vec<float, 4> a(1.f);
+        auto c = --a;
+        std::cout << "--a: " << a << "(a) = " << c << "(c)\n";
+        auto d = a--;
+    }
+    {
+        simd::Vec<double, 2> a(1.0);
+        auto c = --a;
+        std::cout << "--a: " << a << "(a) = " << c << "(c)\n";
+        auto d = a--;
+    }
+}
+
+TEST(vec_op_sse, test_neg)
+{
+    {
+        simd::Vec<int32_t, 4> a(1);
+        auto c = -a;
+        std::cout << "-a: " << a << "(a) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<float, 4> a(1.f);
+        auto c = -a;
+        std::cout << "-a: " << a << "(a) = " << c << "(c)\n";
+    }
+    {
+        simd::Vec<double, 2> a(1.0);
+        auto c = -a;
+        std::cout << "-a: " << a << "(a) = " << c << "(c)\n";
+    }
+}

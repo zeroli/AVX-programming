@@ -191,7 +191,7 @@ struct neg<double, W>
 {
     static Vec<double, W> apply(const Vec<double, W>& self) noexcept
     {
-        Vec<float, W> ret;
+        Vec<double, W> ret;
         constexpr int nregs = Vec<double, W>::n_regs();
         auto mask = _mm_castsi128_pd(_mm_setr_epi32(0, 0x80000000, 0, 0x80000000));
         #pragma unroll
