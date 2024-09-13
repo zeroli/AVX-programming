@@ -32,4 +32,17 @@ Vec<T, W>::Vec(register_t arg, Regs... others) noexcept
 {
 }
 
+template <typename T, size_t W>
+Vec<T, W> Vec<T, W>::operator ~() const noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::bitwise_not<T, W>(*this, A{});
+}
+
+template <typename T, size_t W>
+Vec<T, W> Vec<T, W>::operator -() const noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::neg<T, W>(*this, A{});
+}
 }  // namespace simd

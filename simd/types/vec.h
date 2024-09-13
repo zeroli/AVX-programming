@@ -212,16 +212,6 @@ public:
     Vec& operator ^=(const Vec& other) noexcept {
         return *this = ops::bitwise_xor<T, W>(*this, other);
     }
-#if 0
-    Vec& operator &=(const Vec& other) noexcept {
-        return *this = kernel::bitwise_and<W>(*this, other, A{});
-    }
-    Vec& operator |=(const Vec& other) noexcept {
-        return *this = kernel::bitwise_or<W>(*this, other, A{});
-    }
-    Vec& operator ^=(const Vec& other) noexcept {
-        return *this = kernel::bitwise_xor<W>(*this, other, A{});
-    }
 
     /// increment/decrement operators
     Vec& operator ++() noexcept {
@@ -242,19 +232,19 @@ public:
     }
 
     /// unary operators
+#if 0
     vec_mask_t operator !() const noexcept {
-        return kernel::eq<W>(*this, Vec(0), A{});
+        return ops::eq<T, W>(*this, Vec(0));
     }
-    Vec operator ~() const noexcept {
-        return kernel::bitwise_not<W>(*this, A{});
-    }
-    Vec operator -() const noexcept {
-        return kernel::neg<W>(*this, A{});
-    }
+#endif
+    /// bitwise not
+    Vec operator ~() const noexcept;
+    /// negation
+    Vec operator -() const noexcept;
     Vec operator +() const noexcept {
         return *this;
     }
-#endif
+
     /// arithmetic operators
     /// defined as friend to enable conversion from scalar to vector
     friend Vec operator +(const Vec& lhs, const Vec& rhs) noexcept

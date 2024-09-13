@@ -47,7 +47,7 @@ DEFINE_API_BINARY_OP(logical_or);
 #undef DEFINE_API_BINARY_OP
 
 /// math operations
-#define DEFINE_API_MATH_UNARY_OP(OP) \
+#define DEFINE_API_UNARY_OP(OP) \
 template <typename T, size_t W> \
 Vec<T, W> OP(const Vec<T, W>& x) noexcept \
 { \
@@ -56,10 +56,13 @@ Vec<T, W> OP(const Vec<T, W>& x) noexcept \
 } \
 ///
 
-DEFINE_API_MATH_UNARY_OP(abs);
-DEFINE_API_MATH_UNARY_OP(sqrt);
+DEFINE_API_UNARY_OP(bitwise_not);
+DEFINE_API_UNARY_OP(neg);
 
-#undef DEFINE_API_MATH_UNARY_OP
+DEFINE_API_UNARY_OP(abs);
+DEFINE_API_UNARY_OP(sqrt);
+
+#undef DEFINE_API_UNARY_OP
 
 #if 0
 

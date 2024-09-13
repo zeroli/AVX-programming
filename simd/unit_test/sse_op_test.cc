@@ -453,3 +453,25 @@ TEST(vec_op_sse, test_bitwise_xor)
         a ^= b;
     }
 }
+
+TEST(vec_op_sse, test_bitwise_not)
+{
+    {
+        simd::Vec<int32_t, 4> a(1);
+        auto c = ~a;
+        std::cout << "~a: " << a << "(a) = " << c << "(c)\n";
+        auto d = simd::bitwise_not(a);
+    }
+    {
+        simd::Vec<float, 4> a(1.f);
+        auto c = ~a;
+        std::cout << "~a: " << a << "(a) = " << c << "(c)\n";
+        auto d = simd::bitwise_not(a);
+    }
+    {
+        simd::Vec<double, 2> a(1.0);
+        auto c = ~a;
+        std::cout << "~a: " << a << "(a) = " << c << "(c)\n";
+        auto d = simd::bitwise_not(a);
+    }
+}

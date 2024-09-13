@@ -30,6 +30,9 @@ DEFINE_SSE_BINARY_OP(bitwise_or);
 DEFINE_SSE_BINARY_OP(bitwise_xor);
 DEFINE_SSE_BINARY_OP(bitwise_andnot);
 
+DEFINE_SSE_BINARY_OP(logical_and);
+DEFINE_SSE_BINARY_OP(logical_or);
+
 DEFINE_SSE_BINARY_OP(max);
 DEFINE_SSE_BINARY_OP(min);
 
@@ -42,6 +45,9 @@ Vec<T, W> OP(const Vec<T, W>& self, requires_arch<SSE>) noexcept \
     return impl::OP<T, W>::apply(self); \
 } \
 ///
+
+DEFINE_SSE_UNARY_OP(bitwise_not);
+DEFINE_SSE_UNARY_OP(neg);
 
 DEFINE_SSE_UNARY_OP(abs);
 DEFINE_SSE_UNARY_OP(sqrt);
