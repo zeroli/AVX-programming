@@ -3,6 +3,7 @@
 #include "simd/types/sse_register.h"
 #include "simd/arch/sse/algorithm.h"
 #include "simd/arch/sse/arithmetic.h"
+#include "simd/arch/sse/bitwise.h"
 #include "simd/arch/sse/cast.h"
 #include "simd/arch/sse/complex.h"
 #include "simd/arch/sse/logical.h"

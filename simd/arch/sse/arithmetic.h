@@ -220,6 +220,47 @@ struct div<double, W>
     }
 };
 
+template <typename T, size_t W>
+struct neg<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static Vec<T, W> apply(const Vec<T, W>& self) noexcept
+    {
+        return kernel::impl::sub<T, W>::apply(Vec<T, W>(0), self);
+    }
+};
+
+template <size_t W>
+struct neg<float, W>
+{
+    static Vec<float, W> apply(const Vec<float, W>& self) noexcept
+    {
+        Vec<float, W> ret;
+        constexpr int nregs = Vec<float, W>::n_regs();
+        auto mask = _mm_castsi128_ps(_mm_set1_epi32(0x80000000));
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_xor_ps(self.reg(idx), mask);
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct neg<double, W>
+{
+    static Vec<double, W> apply(const Vec<double, W>& self) noexcept
+    {
+        Vec<double, W> ret;
+        constexpr int nregs = Vec<double, W>::n_regs();
+        auto mask = _mm_castsi128_pd(_mm_setr_epi32(0, 0x80000000, 0, 0x80000000));
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_xor_pd(self.reg(idx), mask);
+        }
+        return ret;
+    }
+};
+
 #if 0
 template <typename Arch>
 Vec<int16_t, Arch> mul(const Vec<int16_t, Arch>& lhs, const Vec<int16_t, Arch>& rhs, requires_arch<SSE>) noexcept
