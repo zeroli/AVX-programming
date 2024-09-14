@@ -16,56 +16,37 @@ class VecBool;
 // only once the kernel implementations have been included.
 namespace ops {
 template <typename T, size_t W>
-Vec<T, W> add(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+Vec<T, W> add(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
-Vec<T, W> sub(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+Vec<T, W> sub(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
-Vec<T, W> mul(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+Vec<T, W> mul(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
-Vec<T, W> div(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+Vec<T, W> div(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
-Vec<T, W> bitwise_and(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+Vec<T, W> bitwise_and(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
-Vec<T, W> bitwise_or(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+Vec<T, W> bitwise_or(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
-Vec<T, W> bitwise_xor(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+Vec<T, W> bitwise_xor(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
-Vec<T, W> logical_and(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+Vec<T, W> logical_and(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
-Vec<T, W> logical_or(const Vec<T, W>& lhs, const Vec<T, W>& rhs);
+Vec<T, W> logical_or(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 
-#if 0
 template <typename T, size_t W>
-VecBool<T, W> eq(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
-{
-    return kernel::eq<W>(lhs, rhs, A{});
-}
+VecBool<T, W> eq(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
-VecBool<T, W> eq(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
-{
-    return kernel::ne<W>(lhs, rhs, A{});
-}
+VecBool<T, W> ne(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
-VecBool<T, W> ge(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
-{
-    return kernel::ge<W>(lhs, rhs, A{});
-}
+VecBool<T, W> gt(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
-VecBool<T, W> le(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
-{
-    return kernel::le<W>(lhs, rhs, A{});
-}
+VecBool<T, W> ge(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
-VecBool<T, W> gt(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
-{
-    return kernel::gt<W>(lhs, rhs, A{});
-}
+VecBool<T, W> lt(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
-VecBool<T, W> lt(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
-{
-    return kernel::lt<W>(lhs, rhs, A{});
-}
-#endif
+VecBool<T, W> le(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
+
 }  // namepace ops
 
 template <typename T, size_t W>
@@ -162,34 +143,32 @@ public:
     }
 
 #endif
-#if 0
     // comparison operators
     friend VecBool<T, W> operator ==(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return kernel::eq<W>(lhs, rhs, A{});
+        return ops::eq<T, W>(lhs, rhs);
     }
     friend VecBool<T, W> operator !=(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return kernel::ne<W>(lhs, rhs, A{});
+        return ops::ne<T, W>(lhs, rhs);
     }
     friend VecBool<T, W> operator >=(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return kernel::ge<W>(lhs, rhs, A{});
+        return ops::ge<T, W>(lhs, rhs);
     }
     friend VecBool<T, W> operator <=(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return kernel::le<W>(lhs, rhs, A{});
+        return ops::le<T, W>(lhs, rhs);
     }
     friend VecBool<T, W> operator >(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return kernel::gt<W>(lhs, rhs, A{});
+        return ops::gt<T, W>(lhs, rhs);
     }
     friend VecBool<T, W> operator <(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
-        return kernel::lt<W>(lhs, rhs, A{});
+        return ops::lt<T, W>(lhs, rhs);
     }
 
-#endif
     /// in-place update operators
     Vec& operator +=(const Vec& other) noexcept {
         return *this = ops::add<T, W>(*this, other);
@@ -232,11 +211,9 @@ public:
     }
 
     /// unary operators
-#if 0
     vec_mask_t operator !() const noexcept {
         return ops::eq<T, W>(*this, Vec(0));
     }
-#endif
     /// bitwise not
     Vec operator ~() const noexcept;
     /// negation
@@ -308,7 +285,6 @@ using vi32x16_t = Vec<int32_t, 16>;
 using vi32x8_t = Vec<int32_t, 8>;
 using vi32x4_t = Vec<int32_t, 4>;
 
-#if 0
 template <typename T, size_t W>
 class VecBool
     : public types::get_bool_simd_register_t<T, W, types::arch_traits_t<T, W>>
@@ -316,23 +292,26 @@ class VecBool
 public:
     static constexpr size_t size() { return W; }
 
-    using base_t = types::get_bool_simd_register_t<T, W>;
-    using A = typename base_t::arch_t;
+    using A = types::arch_traits_t<T, W>;
     using arch_t = A;
+    using base_t = types::get_bool_simd_register_t<T, W, A>;
     using self_t = VecBool;
     using scalar_t = bool;
     using register_t = typename base_t::register_t;
     using vec_t = Vec<T, W>;
 
     VecBool() = default;
-    VecBool(bool val) noexcept
-        : base_t(make_register(detail::make_index_sequence<size() - 1>(), val))
-    {
-    }
     VecBool(register_t reg) noexcept
         : base_t({reg})
     {
     }
+
+#if 0
+    VecBool(bool val) noexcept
+        : base_t(make_register(detail::make_index_sequence<size() - 1>(), val))
+    {
+    }
+
     template <typename... Ts>
     VecBool(bool val0, bool val1, Ts... vals) noexcept
         : self_t(kernel::set<A>(self_t{}, A{}, val0, val1, static_cast<bool>(vals)...))
@@ -365,7 +344,6 @@ public:
     bool get(size_t idx) const noexcept {
         return kernel::get(*this, idx, A{});
     }
-
     /// mask operators
     uint64_t mask() const noexcept {
         return kernel::mask(*this, A{});
@@ -373,31 +351,21 @@ public:
     static VecBool from_mask(uint64_t mask) noexcept {
         return kernel::from_mask(self_t(), mask, A{});
     }
+#endif
 
     /// comparison operators
-    VecBool operator ==(const VecBool& other) const noexcept {
-        return kernel::eq<A>(*this, other, A{}).data;
-    }
-    VecBool operator !=(const VecBool& other) const noexcept {
-        return kernel::ne<A>(*this, other, A{}).data;
-    }
+    VecBool operator ==(const VecBool& other) const noexcept;
+    VecBool operator !=(const VecBool& other) const noexcept;
 
     /// logical operators
-    VecBool operator ~() const noexcept {
-        return kernel::bitwise_not<A>(*this, A{}).data;
-    }
+    VecBool operator ~() const noexcept;
     VecBool operator !() const noexcept {
         return operator ==(self_t(false));
     }
-    VecBool operator &(const VecBool& other) const noexcept {
-        return kernel::bitwise_and<A>(*this, other, A{}).data;
-    }
-    VecBool operator |(const VecBool& other) const noexcept {
-        return kernel::bitwise_or<A>(*this, other, A{}).data;
-    }
-    VecBool operator ^(const VecBool& other) const noexcept {
-        return kernel::bitwise_xor<A>(*this, other, A{}).data;
-    }
+    VecBool operator &(const VecBool& other) const noexcept;
+    VecBool operator |(const VecBool& other) const noexcept;
+    VecBool operator ^(const VecBool& other) const noexcept;
+
     VecBool operator &&(const VecBool& other) const noexcept {
         return operator &(other);
     }
@@ -417,6 +385,7 @@ public:
     }
 
 private:
+#if 0
     template <typename U, typename... V, size_t I, size_t... Is>
     static register_t make_register(detail::index_sequence<I, Is...>, U u, V... V) noexcept
     {
@@ -428,8 +397,8 @@ private:
     {
         return kernel::set<W>(self_t{}, A{}, v...).reg();
     }
-};
 #endif
+};
 
 }  // namespace simd
 

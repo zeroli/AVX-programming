@@ -44,6 +44,13 @@ DEFINE_API_BINARY_OP(bitwise_andnot);
 DEFINE_API_BINARY_OP(logical_and);
 DEFINE_API_BINARY_OP(logical_or);
 
+DEFINE_API_BINARY_OP(eq);
+DEFINE_API_BINARY_OP(ne);
+DEFINE_API_BINARY_OP(gt);
+DEFINE_API_BINARY_OP(ge);
+DEFINE_API_BINARY_OP(lt);
+DEFINE_API_BINARY_OP(le);
+
 #undef DEFINE_API_BINARY_OP
 
 /// math operations
@@ -63,6 +70,20 @@ DEFINE_API_UNARY_OP(abs);
 DEFINE_API_UNARY_OP(sqrt);
 
 #undef DEFINE_API_UNARY_OP
+
+template <typename T, size_t W>
+bool all(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::all<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+bool any(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::any<T, W>(x, A{});
+}
 
 #if 0
 

@@ -45,4 +45,43 @@ Vec<T, W> Vec<T, W>::operator -() const noexcept
     using A = typename Vec<T, W>::arch_t;
     return kernel::neg<T, W>(*this, A{});
 }
+
+/// VecBool
+template <typename T, size_t W>
+VecBool<T, W> VecBool<T, W>::operator ==(const VecBool<T, W>& other) const noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::eq<T, W>(*this, other, A{});
+}
+template <typename T, size_t W>
+VecBool<T, W> VecBool<T, W>::operator !=(const VecBool<T, W>& other) const noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::ne<T, W>(*this, other, A{});
+}
+template <typename T, size_t W>
+VecBool<T, W> VecBool<T, W>::operator ~() const noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::bitwise_not<T, W>(*this, A{});
+}
+
+template <typename T, size_t W>
+VecBool<T, W> VecBool<T, W>::operator &(const VecBool& other) const noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::bitwise_and<A>(*this, other, A{});
+}
+template <typename T, size_t W>
+VecBool<T, W> VecBool<T, W>::operator |(const VecBool<T, W>& other) const noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::bitwise_or<T, W>(*this, other, A{});
+}
+template <typename T, size_t W>
+VecBool<T, W> VecBool<T, W>::operator ^(const VecBool<T, W>& other) const noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::bitwise_xor<T, W>(*this, other, A{});
+}
 }  // namespace simd

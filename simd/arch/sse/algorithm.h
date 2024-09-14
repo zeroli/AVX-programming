@@ -1,6 +1,5 @@
 #pragma once
 
-#include "simd/arch/kernel_impl.h"
 #include "simd/types/sse_register.h"
 #include "simd/types/traits.h"
 
@@ -11,7 +10,7 @@
 
 namespace simd {
 namespace kernel {
-namespace impl {
+namespace sse {
 using namespace types;
 
 /// min
@@ -148,6 +147,102 @@ struct max<double, W>
     }
 };
 
-}  // namespace impl
+/// all
+template <size_t W>
+struct all<float, W>
+{
+    static bool apply(const VecBool<float, W>& self) noexcept
+    {
+        bool ret = true;
+        constexpr int nregs = VecBool<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret &= _mm_movemask_ps(self.reg(idx)) == 0x0F;
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct all<double, W>
+{
+    static bool apply(const VecBool<double, W>& self) noexcept
+    {
+        bool ret = true;
+        constexpr int nregs = VecBool<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret &= _mm_movemask_pd(self.reg(idx)) == 0x03;
+        }
+        return ret;
+    }
+};
+
+template <typename T, size_t W>
+struct all<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static bool apply(const VecBool<T, W>& self) noexcept
+    {
+        static_check_supported_type<T>();
+
+        bool ret = true;
+        constexpr int nregs = VecBool<T, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret &= _mm_movemask_epi8(self.reg(idx)) == 0xFFFF;
+        }
+        return ret;
+    }
+};
+
+/// any
+template <size_t W>
+struct any<float, W>
+{
+    static bool apply(const VecBool<float, W>& self) noexcept
+    {
+        bool ret = false;
+        constexpr int nregs = VecBool<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret |= _mm_movemask_ps(self.reg(idx)) != 0;
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct any<double, W>
+{
+    static bool apply(const VecBool<double, W>& self) noexcept
+    {
+        bool ret = false;
+        constexpr int nregs = VecBool<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret |= _mm_movemask_pd(self.reg(idx)) != 0;
+        }
+        return ret;
+    }
+};
+
+template <typename T, size_t W>
+struct any<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static bool apply(const VecBool<T, W>& self) noexcept
+    {
+        static_check_supported_type<T>();
+
+        bool ret = false;
+        constexpr int nregs = VecBool<T, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret |= !_mm_testz_si128(self.reg(idx),self.reg(idx));
+        }
+        return ret;
+    }
+};
+
+}  // namespace sse
 }  // namespace kernel
 }  // namespace simd

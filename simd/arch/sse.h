@@ -1,5 +1,13 @@
 #pragma once
 
+namespace simd {
+namespace kernel {
+namespace sse {
+#include "simd/arch/kernel_impl.h"
+}  // namespace sse
+}  // namespace kernel
+}  // namespace simd
+
 #include "simd/types/sse_register.h"
 #include "simd/arch/sse/algorithm.h"
 #include "simd/arch/sse/arithmetic.h"
@@ -13,11 +21,12 @@
 
 namespace simd {
 namespace kernel {
+
 #define DEFINE_SSE_BINARY_OP(OP) \
 template <typename T, size_t W> \
 Vec<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept \
 { \
-    return impl::OP<T, W>::apply(lhs, rhs); \
+    return sse::OP<T, W>::apply(lhs, rhs); \
 } \
 ///
 
@@ -34,6 +43,23 @@ DEFINE_SSE_BINARY_OP(bitwise_andnot);
 DEFINE_SSE_BINARY_OP(logical_and);
 DEFINE_SSE_BINARY_OP(logical_or);
 
+#define DEFINE_SSE_BINARY_COMP_OP(OP) \
+template <typename T, size_t W> \
+VecBool<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept \
+{ \
+    return sse::OP<T, W>::apply(lhs, rhs); \
+} \
+///
+
+DEFINE_SSE_BINARY_COMP_OP(eq);
+DEFINE_SSE_BINARY_COMP_OP(ne);
+DEFINE_SSE_BINARY_COMP_OP(gt);
+DEFINE_SSE_BINARY_COMP_OP(ge);
+DEFINE_SSE_BINARY_COMP_OP(lt);
+DEFINE_SSE_BINARY_COMP_OP(le);
+
+#undef DEFINE_SSE_BINARY_COMP_OP
+
 DEFINE_SSE_BINARY_OP(max);
 DEFINE_SSE_BINARY_OP(min);
 
@@ -43,7 +69,7 @@ DEFINE_SSE_BINARY_OP(min);
 template <typename T, size_t W> \
 Vec<T, W> OP(const Vec<T, W>& self, requires_arch<SSE>) noexcept \
 { \
-    return impl::OP<T, W>::apply(self); \
+    return sse::OP<T, W>::apply(self); \
 } \
 ///
 
@@ -56,9 +82,21 @@ DEFINE_SSE_UNARY_OP(sqrt);
 #undef DEFINE_SSE_UNARY_OP
 
 template <typename T, size_t W>
+bool all(const VecBool<T, W>& self, requires_arch<SSE>) noexcept
+{
+    return sse::all<T, W>::apply(self);
+}
+
+template <typename T, size_t W>
+bool any(const VecBool<T, W>& self, requires_arch<SSE>) noexcept
+{
+    return sse::any<T, W>::apply(self);
+}
+
+template <typename T, size_t W>
 Vec<T, W> broadcast(T val, requires_arch<SSE>) noexcept
 {
-    return impl::broadcast<T, W>::apply(val);
+    return sse::broadcast<T, W>::apply(val);
 }
 
 }  // namespace kernel

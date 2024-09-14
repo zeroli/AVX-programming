@@ -8,8 +8,7 @@
 
 namespace simd {
 namespace kernel {
-namespace impl {
-
+namespace sse {
 using namespace types;
 
 namespace detail {
@@ -160,6 +159,6 @@ struct bitwise_not<double, W>
         return ret;
     }
 };
-}  // namespace impl
+}  // namespace sse
 }  // namespace kernel
 }  // namespace simd

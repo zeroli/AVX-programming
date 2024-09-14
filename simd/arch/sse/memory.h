@@ -1,12 +1,12 @@
 #pragma once
 
-#include "simd/arch/kernel_impl.h"
 #include "simd/types/sse_register.h"
 #include "simd/types/traits.h"
 
 namespace simd {
 namespace kernel {
-namespace impl {
+namespace sse {
+
 using namespace types;
 
 template <typename T, size_t W>
@@ -73,6 +73,6 @@ struct broadcast<double, W>
     }
 };
 
-}  // namespace impl
+}  // namespace sse
 }  // namespace kernel
 }  // namespace simd

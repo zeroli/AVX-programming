@@ -1,6 +1,5 @@
 #pragma once
 
-#include "simd/arch/kernel_impl.h"
 #include "simd/types/sse_register.h"
 #include "simd/types/traits.h"
 
@@ -11,7 +10,7 @@
 
 namespace simd {
 namespace kernel {
-namespace impl {
+namespace sse {
 using namespace types;
 
 /// add
@@ -225,7 +224,7 @@ struct neg<T, W, REQUIRE_INTEGRAL(T)>
 {
     static Vec<T, W> apply(const Vec<T, W>& self) noexcept
     {
-        return kernel::impl::sub<T, W>::apply(Vec<T, W>(0), self);
+        return sse::sub<T, W>::apply(Vec<T, W>(0), self);
     }
 };
 
@@ -353,6 +352,6 @@ Vec<double, Arch> fma(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
     return _mm_fmsub_pd(x, y, z);
 }
 #endif
-}  // namespace impl
+}  // namespace sse
 }  // namespace kernel
 }  // namespace simd

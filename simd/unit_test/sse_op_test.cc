@@ -10,40 +10,55 @@ TEST(vec_op_sse, test_arith_add)
         simd::Vec<int32_t, 4> a(1), b(2), p(3);
         auto c = a + b;
         std::cout << a << "(a)" << " + " << b << "(b) = " << c << "(c)\n";
-        //EXPECT_EQ(p, c);
+        EXPECT_TRUE(simd::all(p == c));
         auto d = simd::add(a, b);
+        EXPECT_TRUE(simd::all(p == d));
     }
     {
-        simd::Vec<int32_t, 4> a(1);
+        simd::Vec<int32_t, 4> a(1), p(3);
         int b = 2;
         auto c = a + b;
         std::cout << a << "(a)" << " + " << b << "(b) = " << c << "(c)\n";
+        EXPECT_TRUE(simd::all(p == c));
         auto d = simd::add(a, b);
+        EXPECT_TRUE(simd::all(p == d));
     }
     {
-        simd::Vec<int32_t, 4> a(1);
+        simd::Vec<int32_t, 4> a(1), p(3);
         int b = 2;
         auto c = b + a;
         std::cout << b << "(b)" << " + " << a << "() = " << c << "(c)\n";
+        EXPECT_TRUE(simd::all(p == c));
         auto d = simd::add(b, a);
+        EXPECT_TRUE(simd::all(p == d));
     }
     {
-        simd::Vec<float, 4> a(1.f), b(2.f);
+        simd::Vec<float, 4> a(1.f), b(2.f), p(3.f);
         auto c = a + b;
+        EXPECT_TRUE(simd::all(p == c));
         auto d = a + 2.f;
+        EXPECT_TRUE(simd::all(p == d));
         std::cout << a << "(a)" << " + " << b << "(b) = " << c << "(c)\n";
         auto e = simd::add(a, b);
+        EXPECT_TRUE(simd::all(p == e));
         auto f = simd::add(a, 2.f);
+        EXPECT_TRUE(simd::all(p == f));
         auto g = simd::add(1.f, b);
+        EXPECT_TRUE(simd::all(p == g));
     }
     {
-        simd::Vec<double, 2> a(1.0), b(2.0);
+        simd::Vec<double, 2> a(1.0), b(2.0), p(3.);
         auto c = a + b;
+        EXPECT_TRUE(simd::all(p == c));
         auto d = a + 2.0;
+        EXPECT_TRUE(simd::all(p == d));
         std::cout << a << "(a)" << " + " << b << "(b) = " << c << "(c)\n";
         auto e = simd::add(a, b);
+        EXPECT_TRUE(simd::all(p == e));
         auto f = simd::add(a, 2.0);
+        EXPECT_TRUE(simd::all(p == f));
         auto g = simd::add(1.0, b);
+        EXPECT_TRUE(simd::all(p == g));
     }
     {
         simd::Vec<std::complex<float>, 2> a({1.f, 2.f}), b({1.f, 2.f});
@@ -63,17 +78,19 @@ TEST(vec_op_sse, test_arith_add_inplace)
         simd::Vec<int32_t, 4> a(1), b(2), p(3);
         a += b;
         std::cout << a << "(a)\n";
-        //EXPECT_EQ(p, c);
+        EXPECT_TRUE(simd::all(p == a));
     }
     {
-        simd::Vec<float, 4> a(1.f), b(2.f);
+        simd::Vec<float, 4> a(1.f), b(2.f), p(3.f);
         a += b;
         std::cout << a << "(a)\n";
+        EXPECT_TRUE(simd::all(p == a));
     }
     {
-        simd::Vec<double, 2> a(1.0), b(2.0);
+        simd::Vec<double, 2> a(1.0), b(2.0), p(3.0);
         a += b;
         std::cout << a << "(a)\n";
+        EXPECT_TRUE(simd::all(p == a)) << a << ", " << p;
     }
 }
 

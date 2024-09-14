@@ -1,12 +1,12 @@
 #pragma once
 
-#include "simd/arch/kernel_impl.h"
 #include "simd/types/sse_register.h"
 #include "simd/types/vec.h"
 
 namespace simd {
 namespace kernel {
-namespace impl {
+namespace sse {
+
 using namespace types;
 
 /// abs
@@ -138,6 +138,6 @@ Vec<double, Arch> rsqrt(const Vec<double, Arch>& self, requires_arch<SSE>) noexc
 
 #endif
 
-}  // namespace impl
+}  // namespace sse
 }  // namespace kernel
 }  // namespace simd
