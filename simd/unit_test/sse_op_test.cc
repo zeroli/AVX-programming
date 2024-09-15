@@ -821,3 +821,97 @@ TEST(vec_op_sse, test_cmp_ne)
         EXPECT_TRUE(simd::all(b != a));
     }
 }
+
+TEST(vec_op_sse, test_load_aligned)
+{
+    {
+        alignas(16) int32_t pa[] = { 1, 1, 1, 1 };
+        auto a = simd::Vec<int32_t, 4>::load_aligned(pa);
+        simd::Vec<int32_t, 4> b(1);
+        EXPECT_TRUE(simd::all(a == b));
+    }
+    {
+        alignas(16) float pa[] = { 1.f, 1.f, 1.f, 1.f };
+        auto a = simd::Vec<float, 4>::load_aligned(pa);
+        simd::Vec<float, 4> b(1.f);
+        EXPECT_TRUE(simd::all(b == a));
+    }
+    {
+        alignas(16) double pa[] = { 1.f, 1.f };
+        auto a = simd::Vec<double, 2>::load_aligned(pa);
+        simd::Vec<double, 2> b(1.0);
+        EXPECT_TRUE(simd::all(b == a));
+    }
+}
+
+TEST(vec_op_sse, test_load_unaligned)
+{
+    {
+        int32_t pa[] = { 1, 1, 1, 1 };
+        auto a = simd::Vec<int32_t, 4>::load_unaligned(pa);
+        simd::Vec<int32_t, 4> b(1);
+        EXPECT_TRUE(simd::all(a == b));
+    }
+    {
+        float pa[] = { 1.f, 1.f, 1.f, 1.f };
+        auto a = simd::Vec<float, 4>::load_unaligned(pa);
+        simd::Vec<float, 4> b(1.f);
+        EXPECT_TRUE(simd::all(b == a));
+    }
+    {
+        double pa[] = { 1.f, 1.f };
+        auto a = simd::Vec<double, 2>::load_unaligned(pa);
+        simd::Vec<double, 2> b(1.0);
+        EXPECT_TRUE(simd::all(b == a));
+    }
+}
+
+TEST(vec_op_sse, test_store_aligned)
+{
+    {
+        alignas(16) int32_t pa[] = { 1, 1, 1, 1 };
+        simd::Vec<int32_t, 4> a(2);
+        a.store_aligned(pa);
+        auto b = simd::Vec<int32_t, 4>::load_aligned(pa);
+        EXPECT_TRUE(simd::all(a == b));
+    }
+    {
+        alignas(16) float pa[] = { 1.f, 1.f, 1.f, 1.f };
+        simd::Vec<float, 4> a(2.f);
+        a.store_aligned(pa);
+        auto b = simd::Vec<float, 4>::load_aligned(pa);
+        EXPECT_TRUE(simd::all(b == a));
+    }
+    {
+        alignas(16) double pa[] = { 1.f, 1.f };
+        simd::Vec<double, 2> a(2.0);
+        a.store_aligned(pa);
+        auto b = simd::Vec<double, 2>::load_aligned(pa);
+        EXPECT_TRUE(simd::all(b == a));
+    }
+}
+
+TEST(vec_op_sse, test_store_unaligned)
+{
+    {
+        int32_t pa[] = { 1, 1, 1, 1 };
+        simd::Vec<int32_t, 4> a(2);
+        a.store_unaligned(pa);
+        auto b = simd::Vec<int32_t, 4>::load_aligned(pa);
+        EXPECT_TRUE(simd::all(a == b));
+    }
+    {
+        float pa[] = { 1.f, 1.f, 1.f, 1.f };
+        simd::Vec<float, 4> a(2.f);
+        a.store_aligned(pa);
+        auto b = simd::Vec<float, 4>::load_unaligned(pa);
+        EXPECT_TRUE(simd::all(b == a));
+    }
+    {
+        double pa[] = { 1.f, 1.f };
+        simd::Vec<double, 2> a(2.0);
+        a.store_unaligned(pa);
+        auto b = simd::Vec<double, 2>::load_unaligned(pa);
+        EXPECT_TRUE(simd::all(b == a));
+    }
+}

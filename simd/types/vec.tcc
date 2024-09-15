@@ -33,6 +33,42 @@ Vec<T, W>::Vec(register_t arg, Regs... others) noexcept
 }
 
 template <typename T, size_t W>
+template <typename U>
+void Vec<T, W>::store_aligned(U* mem) const noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    assert(is_aligned(mem, A::alignment())
+        && "store location is not properly aligned");
+    kernel::store_aligned<T, W>((T*)mem, *this, A{});
+}
+
+template <typename T, size_t W>
+template <typename U>
+void Vec<T, W>::store_unaligned(U* mem) const noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    kernel::store_unaligned<T, W>((T*)mem, *this, A{});
+}
+
+template <typename T, size_t W>
+template <typename U>
+Vec<T, W> Vec<T, W>::load_aligned(const U* mem) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    assert(is_aligned(mem, A::alignment())
+        && "loaded location is not properly aligned");
+    return kernel::load_aligned<T, W>((const T*)mem, A{});
+}
+
+template <typename T, size_t W>
+template <typename U>
+Vec<T, W> Vec<T, W>::load_unaligned(const U* mem) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::load_unaligned<T, W>((const T*)mem, A{});
+}
+
+template <typename T, size_t W>
 Vec<T, W> Vec<T, W>::operator ~() const noexcept
 {
     using A = typename Vec<T, W>::arch_t;

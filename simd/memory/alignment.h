@@ -6,9 +6,9 @@ namespace simd {
 struct aligned_mode { };
 struct unaligned_mode { };
 
-inline bool is_aligned(void* ptr, size_t alignment)
+inline bool is_aligned(const void* ptr, size_t alignment)
 {
-    return reinterpret_cast<uintptr_t>(ptr) % alignment == 0;
+    return (reinterpret_cast<uintptr_t>(ptr) & (alignment - 1)) == 0;
 }
 
 template <size_t Alignment>

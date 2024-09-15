@@ -105,5 +105,29 @@ Vec<T, W> broadcast(T val, requires_arch<SSE>) noexcept
     return sse::broadcast<T, W>::apply(val);
 }
 
+template <typename T, size_t W>
+Vec<T, W> load_aligned(const T* mem, requires_arch<SSE>) noexcept
+{
+    return sse::load_aligned<T, W>::apply(mem);
+}
+
+template <typename T, size_t W>
+Vec<T, W> load_unaligned(const T* mem, requires_arch<SSE>) noexcept
+{
+    return sse::load_unaligned<T, W>::apply(mem);
+}
+
+template <typename T, size_t W>
+void store_aligned(T* mem, const Vec<T, W>& x, requires_arch<SSE>) noexcept
+{
+    sse::store_aligned<T, W>::apply(mem, x);
+}
+
+template <typename T, size_t W>
+void store_unaligned(T* mem, const Vec<T, W>& x, requires_arch<SSE>) noexcept
+{
+    sse::store_unaligned<T, W>::apply(mem, x);
+}
+
 }  // namespace kernel
 }  // namespace simd

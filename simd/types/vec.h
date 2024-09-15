@@ -80,22 +80,15 @@ public:
     template <typename... Regs>
     explicit Vec(register_t arg, Regs... others) noexcept;
 
-#if 0
     template <typename U>
     static Vec broadcast(U val) noexcept {
         return Vec(static_cast<T>(val));
     }
 
     template <typename U>
-    void store_aligned(U* mem) const noexcept {
-        assert(is_aligned(mem, A::argument())
-            && "store location is not properly aligned");
-        kernel::store_aligned<W>(mem, *this, A{});
-    }
-    template <tyepname U>
-    void store_unaligned(U* mem) const noexcept {
-        kernel::store_unaligned<W>(mem, *this, A{});
-    }
+    void store_aligned(U* mem) const noexcept;
+    template <typename U>
+    void store_unaligned(U* mem) const noexcept;
 
     template <typename U>
     void store(U* mem, aligned_mode) const noexcept {
@@ -108,16 +101,10 @@ public:
     }
 
     template <typename U>
-    static Vec load_aligned(const U* mem) noexcept {
-        assert(is_aligned(mem, W::argument())
-            && "loaded location is not properly aligned");
-        return kernel::load_aligned<A>(mem, kernel::convert<T>{}, A{});
-    }
+    static Vec load_aligned(const U* mem) noexcept;
 
     template <typename U>
-    static Vec load_unaligned(const U* mem) noexcept {
-        return kernel::load_unaligned<A>(mem, kernel::convert<T>{}, A{});
-    }
+    static Vec load_unaligned(const U* mem) noexcept;
 
     template <typename U>
     static Vec load(const U* mem, aligned_mode) noexcept {
@@ -129,6 +116,7 @@ public:
         return load_unaligned(mem);
     }
 
+#if 0
     template <typename U, typename V>
     static Vec gather(const U* src, const Vec<V, W>& index) noexcept {
         static_assert(std::is_convertible<U, T>::Vec,

@@ -1,43 +1,48 @@
-#define DECLAE_OP_KERNEL(OP) \
+#define DECLARE_OP_KERNEL(OP) \
 template <typename T, size_t W, typename Enable = void> \
 struct OP; \
 ///
 
 /// arithmetic op kernels
-DECLAE_OP_KERNEL(add);
-DECLAE_OP_KERNEL(sub);
-DECLAE_OP_KERNEL(mul);
-DECLAE_OP_KERNEL(div);
-DECLAE_OP_KERNEL(neg);
+DECLARE_OP_KERNEL(add);
+DECLARE_OP_KERNEL(sub);
+DECLARE_OP_KERNEL(mul);
+DECLARE_OP_KERNEL(div);
+DECLARE_OP_KERNEL(neg);
 
-DECLAE_OP_KERNEL(broadcast);
+/// memory IO kernels
+DECLARE_OP_KERNEL(load_aligned);
+DECLARE_OP_KERNEL(load_unaligned);
+DECLARE_OP_KERNEL(store_aligned);
+DECLARE_OP_KERNEL(store_unaligned);
+DECLARE_OP_KERNEL(broadcast);
 
 /// bitwise op kernels
-DECLAE_OP_KERNEL(bitwise_and);
-DECLAE_OP_KERNEL(bitwise_or);
-DECLAE_OP_KERNEL(bitwise_xor);
-DECLAE_OP_KERNEL(bitwise_andnot);
-DECLAE_OP_KERNEL(bitwise_not);
+DECLARE_OP_KERNEL(bitwise_and);
+DECLARE_OP_KERNEL(bitwise_or);
+DECLARE_OP_KERNEL(bitwise_xor);
+DECLARE_OP_KERNEL(bitwise_andnot);
+DECLARE_OP_KERNEL(bitwise_not);
 
-DECLAE_OP_KERNEL(logical_and);
-DECLAE_OP_KERNEL(logical_or);
+DECLARE_OP_KERNEL(logical_and);
+DECLARE_OP_KERNEL(logical_or);
 
 /// comparison op kernels
-DECLAE_OP_KERNEL(eq);
-DECLAE_OP_KERNEL(ne);
-DECLAE_OP_KERNEL(gt);
-DECLAE_OP_KERNEL(ge);
-DECLAE_OP_KERNEL(lt);
-DECLAE_OP_KERNEL(le);
+DECLARE_OP_KERNEL(eq);
+DECLARE_OP_KERNEL(ne);
+DECLARE_OP_KERNEL(gt);
+DECLARE_OP_KERNEL(ge);
+DECLARE_OP_KERNEL(lt);
+DECLARE_OP_KERNEL(le);
 
 /// math function kernels
-DECLAE_OP_KERNEL(abs);
-DECLAE_OP_KERNEL(sqrt);
+DECLARE_OP_KERNEL(abs);
+DECLARE_OP_KERNEL(sqrt);
 
 /// algorithm kernels
-DECLAE_OP_KERNEL(max);
-DECLAE_OP_KERNEL(min);
-DECLAE_OP_KERNEL(all);
-DECLAE_OP_KERNEL(any);
+DECLARE_OP_KERNEL(max);
+DECLARE_OP_KERNEL(min);
+DECLARE_OP_KERNEL(all);
+DECLARE_OP_KERNEL(any);
 
-#undef DECLAE_OP_KERNEL
+#undef DECLARE_OP_KERNEL

@@ -92,6 +92,58 @@ bool any(const VecBool<T, W>& x) noexcept
     return kernel::any<T, W>(x, A{});
 }
 
+template <typename T, size_t W>
+Vec<T, W> load_aligned(const T* mem) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::load_aligned<T, W>(mem, A{});
+}
+
+template <typename T, size_t W>
+Vec<T, W> load_unaligned(const T* mem) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::load_unaligned<T, W>(mem, A{});
+}
+
+template <typename T, size_t W>
+Vec<T, W> load(const T* mem, aligned_mode) noexcept
+{
+    return load_aligned(mem);
+}
+
+template <typename T, size_t W>
+Vec<T, W> load(const T* mem, unaligned_mode) noexcept
+{
+    return load_unaligned(mem);
+}
+
+template <typename T, size_t W>
+void store_aligned(T* mem, const Vec<T, W>& x) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    kernel::store_aligned<T, W>(mem, x, A{});
+}
+
+template <typename T, size_t W>
+void store_unaligned(T* mem, const Vec<T, W>& x) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    kernel::store_unaligned<T, W>(mem, x, A{});
+}
+
+template <typename T, size_t W>
+void store(T* mem, const Vec<T, W>& x, aligned_mode) noexcept
+{
+    store_aligned(mem, x);
+}
+
+template <typename T, size_t W>
+void store(T* mem, const Vec<T, W>& x, unaligned_mode) noexcept
+{
+    store_unaligned(mem, x);
+}
+
 #if 0
 
 template <typename T, typename Arch>
