@@ -275,6 +275,37 @@ struct lt<double, W>
     }
 };
 
+/// gt
+template <size_t W>
+struct gt<float, W>
+{
+    static VecBool<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
+    {
+        VecBool<float, W> ret;
+        constexpr int nregs = VecBool<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_cmpgt_ps(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct gt<double, W>
+{
+    static VecBool<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
+    {
+        VecBool<double, W> ret;
+        constexpr int nregs = VecBool<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_cmpgt_pd(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
+    }
+};
+
 template <typename T, size_t W>
 struct lt<T, W, REQUIRE_INTEGRAL(T)>
 {
@@ -336,7 +367,7 @@ struct le<T, W, REQUIRE_INTEGRAL(T)>
 {
     static VecBool<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
-        return ~(sse::lt<T, W>(rhs, lhs));
+        return ~(sse::lt<T, W>::apply(rhs, lhs));
     }
 };
 
@@ -401,7 +432,7 @@ struct ge<T, W, REQUIRE_INTEGRAL(T)>
 {
     static VecBool<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
-        return ~(sse::gt<T, W>(rhs, lhs));
+        return ~(sse::gt<T, W>::apply(rhs, lhs));
     }
 };
 

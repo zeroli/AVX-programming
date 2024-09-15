@@ -113,7 +113,7 @@ struct bitwise_xor<double, W> : detail::bitwise_op<double, W, detail::xor_functo
 template <typename T, size_t W>
 struct bitwise_not<T, W, REQUIRE_INTEGRAL(T)>
 {
-    static Vec<T, W> apply(const Vec<T, W>& lhs) noexcept
+    static Vec<T, W> apply(const Vec<T, W>& self) noexcept
     {
         static_check_supported_type<T>();
 
@@ -122,7 +122,20 @@ struct bitwise_not<T, W, REQUIRE_INTEGRAL(T)>
         auto mask = _mm_set1_epi32(-1);
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_xor_si128(lhs.reg(idx), mask);
+            ret.reg(idx) = _mm_xor_si128(self.reg(idx), mask);
+        }
+        return ret;
+    }
+    static VecBool<T, W> apply(const VecBool<T, W>& self) noexcept
+    {
+        static_check_supported_type<T>();
+
+        VecBool<T, W> ret;
+        constexpr int nregs = VecBool<T, W>::n_regs();
+        auto mask = _mm_set1_epi32(-1);
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_xor_si128(self.reg(idx), mask);
         }
         return ret;
     }
@@ -131,14 +144,25 @@ struct bitwise_not<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct bitwise_not<float, W>
 {
-    static Vec<float, W> apply(const Vec<float, W>& lhs) noexcept
+    static Vec<float, W> apply(const Vec<float, W>& self) noexcept
     {
         Vec<float, W> ret;
         constexpr int nregs = Vec<float, W>::n_regs();
         auto mask = _mm_castsi128_ps(_mm_set1_epi32(-1));
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_xor_ps(lhs.reg(idx), mask);
+            ret.reg(idx) = _mm_xor_ps(self.reg(idx), mask);
+        }
+        return ret;
+    }
+    static VecBool<float, W> apply(const VecBool<float, W>& self) noexcept
+    {
+        VecBool<float, W> ret;
+        constexpr int nregs = VecBool<float, W>::n_regs();
+        auto mask = _mm_castsi128_ps(_mm_set1_epi32(-1));
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_xor_ps(self.reg(idx), mask);
         }
         return ret;
     }
@@ -147,14 +171,25 @@ struct bitwise_not<float, W>
 template <size_t W>
 struct bitwise_not<double, W>
 {
-    static Vec<double, W> apply(const Vec<double, W>& lhs) noexcept
+    static Vec<double, W> apply(const Vec<double, W>& self) noexcept
     {
         Vec<double, W> ret;
         constexpr int nregs = Vec<double, W>::n_regs();
         auto mask = _mm_castsi128_pd(_mm_set1_epi32(-1));
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_xor_pd(lhs.reg(idx), mask);
+            ret.reg(idx) = _mm_xor_pd(self.reg(idx), mask);
+        }
+        return ret;
+    }
+    static VecBool<double, W> apply(const VecBool<double, W>& self) noexcept
+    {
+        VecBool<double, W> ret;
+        constexpr int nregs = VecBool<double, W>::n_regs();
+        auto mask = _mm_castsi128_pd(_mm_set1_epi32(-1));
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_xor_pd(self.reg(idx), mask);
         }
         return ret;
     }

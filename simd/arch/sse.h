@@ -82,6 +82,12 @@ DEFINE_SSE_UNARY_OP(sqrt);
 #undef DEFINE_SSE_UNARY_OP
 
 template <typename T, size_t W>
+VecBool<T, W> bitwise_not(const VecBool<T, W>& self, requires_arch<SSE>) noexcept
+{
+    return sse::bitwise_not<T, W>::apply(self);
+}
+
+template <typename T, size_t W>
 bool all(const VecBool<T, W>& self, requires_arch<SSE>) noexcept
 {
     return sse::all<T, W>::apply(self);

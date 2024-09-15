@@ -72,6 +72,13 @@ DEFINE_API_UNARY_OP(sqrt);
 #undef DEFINE_API_UNARY_OP
 
 template <typename T, size_t W>
+VecBool<T, W> bitwise_not(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::bitwise_not<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
 bool all(const VecBool<T, W>& x) noexcept
 {
     using A = typename VecBool<T, W>::arch_t;
