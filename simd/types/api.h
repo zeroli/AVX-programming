@@ -93,6 +93,13 @@ bool any(const VecBool<T, W>& x) noexcept
 }
 
 template <typename T, size_t W>
+Vec<T, W> broadcast(T v) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return Vec<T, W>::broadcast(v, A{});
+}
+
+template <typename T, size_t W>
 Vec<T, W> load_aligned(const T* mem) noexcept
 {
     using A = typename Vec<T, W>::arch_t;
@@ -323,13 +330,6 @@ auto bitwise_xor(const VecBool<T, Arch>& x, const VecBool<T, Arch>& lshift) noex
 }
 
 template <typename T, typename Arch>
-Vec<T, Arch> broadcast(T v) noexcept
-{
-    detail::static_check_supported_config<T, Arch>();
-    return Vec<T, Arch>::broadcast(v);
-}
-
-template <typename T, typename Arch>
 Vec<T, Arch> ceil(const Vec<T, Arch>& x) noexcept
 {
     detail::static_check_supported_config<T, Arch>();
@@ -539,34 +539,6 @@ auto le(const Vec<T, Arch>& x, const Vec<T, Arch>& y) noexcept => decltype(x <= 
 {
     detail::static_check_supported_config<T, Arch>();
     return x <= y;
-}
-
-template <typename Arch, typename From>
-Vec<From, Arch> load(const From* ptr, align_mode = {}) noexcept
-{
-    detail::static_check_supported_config<T, Arch>();
-    return load_as<From, Arch>(ptr, aligned_mode{});
-}
-
-template <typename Arch, typename From>
-Vec<From, Arch> load(const From* ptr, unalign_mode) noexcept
-{
-    detail::static_check_supported_config<T, Arch>();
-    return load_as<From, Arch>(ptr, unalign_mode{});
-}
-
-template <typename Arch, typename From>
-Vec<From, Arch> load_aligned(const From* ptr) noexcept
-{
-    detail::static_check_supported_config<T, Arch>();
-    return load_as<From, Arch>(ptr, aligned_mode{});
-}
-
-template <typename Arch, typename From>
-Vec<From, Arch> load_unaligned(const From* ptr) noexcept
-{
-    detail::static_check_supported_config<T, Arch>();
-    return load_as<From, Arch>(ptr, unaligned_mode{});
 }
 
 template <typename T, typename Arch>

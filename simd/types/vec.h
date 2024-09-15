@@ -69,16 +69,17 @@ public:
     using register_t = typename base_t::register_t;
     using vec_mask_t = VecBool<T, W>;
 
-    Vec() = default;
+    Vec() noexcept;
     Vec(T val) noexcept;
 
-    #if 0  // TODO:
     template <typename... Ts>
     Vec(T val0, T val1, Ts... vals) noexcept;
+
+    #if 0  // TODO:
     explicit Vec(vec_mask_t b) noexcept;
     #endif
     template <typename... Regs>
-    explicit Vec(register_t arg, Regs... others) noexcept;
+    Vec(register_t arg, Regs... others) noexcept;
 
     template <typename U>
     static Vec broadcast(U val) noexcept {

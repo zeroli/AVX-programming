@@ -4,20 +4,26 @@
 
 namespace simd {
 template <typename T, size_t W>
+Vec<T, W>::Vec() noexcept
+{
+}
+
+template <typename T, size_t W>
 Vec<T, W>::Vec(T val) noexcept
     : self_t(kernel::broadcast<T, W>(val, A{}))
 {
 }
 
-#if 0  // TODO:
 template <typename T, size_t W>
 template <typename... Ts>
 Vec<T, W>::Vec(T val0, T val1, Ts... vals) noexcept
-    : self_t(kernel::set<A>(Vec{}, A{}, val0, val1, static_cast<T>(vals)...))
+    : self_t(kernel::set<T, W>(val0, val1, static_cast<T>(vals)..., A{}))
 {
     static_assert(sizeof...(Ts) + 2 == size(),
         "the constructor requires as many arguments as vector elements");
 }
+
+#if 0  // TODO:
 template <typename T, size_t W>
 Vec<T, W>::Vec(vec_mask_t b) noexcept
     : self_t(kernel::from_bool(b, A{}))

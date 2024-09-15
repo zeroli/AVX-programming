@@ -61,12 +61,12 @@ TEST(vec_op_sse, test_arith_add)
         EXPECT_TRUE(simd::all(p == g));
     }
     {
-        simd::Vec<std::complex<float>, 2> a({1.f, 2.f}), b({1.f, 2.f});
+        simd::Vec<std::complex<float>, 2> a(std::complex<float>{1.f, 2.f}), b(std::complex<float>{1.f, 2.f});
         auto c = a + b;
         auto d = simd::add(a, b);
     }
     {
-        simd::Vec<std::complex<double>, 1> a({1.0, 2.0}), b({1.0, 2.0});
+        simd::Vec<std::complex<double>, 1> a(std::complex<double>{1.0, 2.0}), b(std::complex<double>{1.0, 2.0});
         auto c = a + b;
         auto d = simd::add(a, b);
     }
@@ -147,12 +147,12 @@ TEST(vec_op_sse, test_arith_sub)
         EXPECT_TRUE(simd::all(p == f));
     }
     {
-        simd::Vec<std::complex<float>, 2> a({1.f, 2.f}), b({1.f, 2.f});
+        simd::Vec<std::complex<float>, 2> a(std::complex<float>{1.f, 2.f}), b(std::complex<float>{1.f, 2.f});
         auto c = a - b;
         auto d = simd::sub(a, b);
     }
     {
-        simd::Vec<std::complex<double>, 1> a({1.0, 2.0}), b({1.0, 2.0});
+        simd::Vec<std::complex<double>, 1> a(std::complex<double>{1.0, 2.0}), b(std::complex<double>{1.0, 2.0});
         auto c = a - b;
         auto d = simd::sub(a, b);
     }
@@ -908,10 +908,94 @@ TEST(vec_op_sse, test_store_unaligned)
         EXPECT_TRUE(simd::all(b == a));
     }
     {
-        double pa[] = { 1.f, 1.f };
+        double pa[] = { 1.0, 1.0 };
         simd::Vec<double, 2> a(2.0);
         a.store_unaligned(pa);
         auto b = simd::Vec<double, 2>::load_unaligned(pa);
         EXPECT_TRUE(simd::all(b == a));
+    }
+}
+
+TEST(vec_op_sse, test_set)
+{
+    {
+        simd::Vec<int64_t, 2> a(0, 1);
+        int64_t pa[] = { 0, 1 };
+        auto b = simd::Vec<int64_t, 2>::load_unaligned(pa);
+        EXPECT_TRUE(simd::all(a == b));
+        for (int i = 0; i < 2; i ++) {
+            EXPECT_EQ(pa[i], a[i]);
+        }
+    }
+    {
+        simd::Vec<int32_t, 4> a(0, 1, 2, 3);
+        int32_t pa[] = { 0, 1, 2, 3 };
+        auto b = simd::Vec<int32_t, 4>::load_unaligned(pa);
+        EXPECT_TRUE(simd::all(a == b));
+        for (int i = 0; i < 4; i ++) {
+            EXPECT_EQ(pa[i], a[i]);
+        }
+    }
+    {
+        simd::Vec<int16_t, 8> a(0, 1, 2, 3, 4, 5, 6, 7);
+        int16_t pa[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+        auto b = simd::Vec<int16_t, 8>::load_unaligned(pa);
+        EXPECT_TRUE(simd::all(a == b));
+        for (int i = 0; i < 8; i ++) {
+            EXPECT_EQ(pa[i], a[i]);
+        }
+    }
+    {
+        simd::Vec<int8_t, 16> a(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        int8_t pa[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+        auto b = simd::Vec<int8_t, 16>::load_unaligned(pa);
+        EXPECT_TRUE(simd::all(a == b));
+        for (int i = 0; i < 16; i ++) {
+            EXPECT_EQ(pa[i], a[i]);
+        }
+    }
+    {
+        simd::Vec<float, 4> a(0, 1, 2, 3);
+        float pa[] = { 0, 1, 2, 3 };
+        auto b = simd::Vec<float, 4>::load_unaligned(pa);
+        EXPECT_TRUE(simd::all(a == b));
+        for (int i = 0; i < 4; i ++) {
+            EXPECT_FLOAT_EQ(pa[i], a[i]);
+        }
+    }
+    {
+        simd::Vec<double, 2> a(0, 1);
+        double pa[] = { 0, 1 };
+        auto b = simd::Vec<double, 2>::load_unaligned(pa);
+        EXPECT_TRUE(simd::all(a == b));
+        for (int i = 0; i < 2; i ++) {
+            EXPECT_FLOAT_EQ(pa[i], a[i]);
+        }
+    }
+}
+
+TEST(vec_op_sse, test_init_regs)
+{
+    {
+        simd::Vec<float, 4> al(0, 1, 2, 3);
+        simd::Vec<float, 4> ah(4, 5, 6, 7);
+        float pa[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+        auto b = simd::Vec<float, 8>::load_unaligned(pa);
+        auto a = simd::Vec<float, 8>(al, ah);
+        EXPECT_TRUE(simd::all(a == b));
+        for (int i = 0; i < 8; i ++) {
+            EXPECT_FLOAT_EQ(pa[i], a[i]);
+        }
+    }
+    {
+        simd::Vec<double, 2> al(0, 1);
+        simd::Vec<double, 2> ah(2, 3);
+        double pa[] = { 0, 1, 2, 3 };
+        auto b = simd::Vec<double, 4>::load_unaligned(pa);
+        auto a = simd::Vec<double, 4>(al, ah);
+        EXPECT_TRUE(simd::all(a == b));
+        for (int i = 0; i < 4; i ++) {
+            EXPECT_FLOAT_EQ(pa[i], a[i]);
+        }
     }
 }

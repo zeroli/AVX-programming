@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <type_traits>
 #include <cstddef>
 #include <cstdint>
@@ -22,46 +21,49 @@ struct simd_register<SCALAR_TYPE, W, ISA> \
     using scalar_t = SCALAR_TYPE; \
     using arch_t = ISA; \
     using register_t = VECTOR_TYPE; \
-    /* how many register for this vector */ \
+    /* how many registers for this vector */ \
     static constexpr size_t n_regs() { \
         return sizeof(scalar_t) * W / sizeof(register_t); \
     } \
+    /* how many lanes per register */ \
+    static constexpr size_t reg_lanes() { \
+        return W / n_regs(); \
+    } \
 \
     /* aligned to the whole vector */ \
-    union alignas(n_regs() * ISA::alignment()) DATA { \
+    union alignas(n_regs() * ISA::alignment()) { \
         register_t regs_[n_regs()]; \
-        std::array<scalar_t, W> array_; \
+        scalar_t array_[W]; \
+    }; \
 \
-        /* explicit default ctor (not =default) to workaround */ \
-        /* element type: complex<T>, but still without initialization for it */ \
-        DATA() { } \
-    } u; \
-\
-    simd_register() = default; \
+    simd_register() noexcept {} \
     template <typename... Regs> \
     simd_register(register_t val, Regs... others) \
+        : regs_{val, others...} \
     { \
-        u.regs_ = {val, others...}; \
     } \
 \
     operator register_t() const noexcept { \
-        return u.regs_[0]; \
+        return regs_[0]; \
     } \
     register_t reg(size_t idx = 0) const noexcept { \
-        return u.regs_[idx]; \
+        return regs_[idx]; \
     } \
     register_t& reg(size_t idx = 0) noexcept { \
-        return u.regs_[idx]; \
+        return regs_[idx]; \
     } \
     scalar_t operator[](size_t idx) const noexcept { \
-        return u.array_[idx]; \
+        return array_[idx]; \
+    } \
+    scalar_t& operator[](size_t idx) noexcept { \
+        return array_[idx]; \
     } \
     /* exception out-of-range may be thrown, same as std::array::at */ \
     scalar_t at(size_t idx) const { \
-        return u.array_.at(idx); \
+        return array_[idx]; \
     } \
     scalar_t get(size_t idx) const noexcept { \
-        return u.array_[idx]; \
+        return array_[idx]; \
     } \
 }; \
 template <size_t W> \
