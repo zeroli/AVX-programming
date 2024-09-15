@@ -705,3 +705,35 @@ TEST(vec_op_sse, test_neg)
         EXPECT_TRUE(simd::all(p == c));
     }
 }
+
+TEST(vec_op_sse, test_any_all)
+{
+    {
+        simd::Vec<int32_t, 4> a(1);
+        EXPECT_TRUE(simd::any(a == 1));
+        EXPECT_TRUE(simd::all(a == 1));
+    }
+    {
+        simd::Vec<int32_t, 4> a(0);
+        EXPECT_TRUE(simd::any(a == 0));
+        EXPECT_FALSE(simd::all(a == 1));
+    }
+    {
+        simd::Vec<float, 4> a(1.f);
+        EXPECT_TRUE(simd::any(a == 1.f));
+        EXPECT_TRUE(simd::all(a == 1.f));
+    }
+    {
+        simd::Vec<float, 4> a(0.f);
+        EXPECT_FALSE(simd::any(a == 1.f));
+    }
+    {
+        simd::Vec<double, 2> a(1.0);
+        EXPECT_TRUE(simd::any(a == 1.0));
+    }
+    {
+        simd::Vec<double, 2> a(0.0);
+        EXPECT_FALSE(simd::any(a == 1.0));
+        EXPECT_TRUE(simd::any(a != 1.0));
+    }
+}
