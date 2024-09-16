@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 
 #include "simd/arch/isa.h"
 #include "simd/types/vec.h"
