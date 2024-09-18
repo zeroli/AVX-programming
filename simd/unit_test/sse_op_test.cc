@@ -999,3 +999,71 @@ TEST(vec_op_sse, test_init_regs)
         }
     }
 }
+
+TEST(vec_op_sse, test_bitwise_lshift)
+{
+    {
+        simd::Vec<int8_t, 16> a(1), p(2);
+        auto b = a << 1;
+        EXPECT_TRUE(simd::all(p == b));
+    }
+    {
+        simd::Vec<int16_t, 8> a(1), p(2);
+        auto b = a << 1;
+        EXPECT_TRUE(simd::all(p == b));
+    }
+    {
+        simd::Vec<int32_t, 4> a(1), p(2);
+        auto b = a << 1;
+        EXPECT_TRUE(simd::all(p == b));
+    }
+    {
+        simd::Vec<int64_t, 2> a(1), p(2);
+        auto b = a << 1;
+        EXPECT_TRUE(simd::all(p == b));
+    }
+}
+
+TEST(vec_op_sse, test_bitwise_rshift)
+{
+    {
+        simd::Vec<uint8_t, 16> a(2), p(+2 >> 1);
+        auto b = a >> 1;
+        EXPECT_TRUE(simd::all(p == b));
+    }
+    {
+        simd::Vec<int8_t, 16> a(-2), p(-2 >> 1);
+        auto b = a >> 1;
+        EXPECT_TRUE(simd::all(p == b));
+    }
+    {
+        simd::Vec<uint16_t, 8> a(2), p(+2 >> 1);
+        auto b = a >> 1;
+        EXPECT_TRUE(simd::all(p == b)) << p << "\n" << b;
+    }
+    {
+        simd::Vec<int16_t, 8> a(-2), p(-2 >> 1);
+        auto b = a >> 1;
+        EXPECT_TRUE(simd::all(p == b)) << p << "\n" << b;
+    }
+    {
+        simd::Vec<uint32_t, 4> a(2), p(+2 >> 1);
+        auto b = a >> 1;
+        EXPECT_TRUE(simd::all(p == b));
+    }
+    {
+        simd::Vec<int32_t, 4> a(-2), p(-2 >> 1);
+        auto b = a >> 1;
+        EXPECT_TRUE(simd::all(p == b));
+    }
+    {
+        simd::Vec<uint64_t, 2> a(2), p(+2 >> 1);
+        auto b = a >> 1;
+        EXPECT_TRUE(simd::all(p == b));
+    }
+    {
+        simd::Vec<int64_t, 2> a(-2), p(-2 >> 1);
+        auto b = a >> 1;
+        EXPECT_TRUE(simd::all(p == b)) << p << "\n" << b;
+    }
+}

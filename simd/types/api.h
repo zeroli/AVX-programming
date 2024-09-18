@@ -34,12 +34,15 @@ DEFINE_API_BINARY_OP(add);
 DEFINE_API_BINARY_OP(sub);
 DEFINE_API_BINARY_OP(mul);
 DEFINE_API_BINARY_OP(div);
+DEFINE_API_BINARY_OP(mod);
 
 /// bitwise operations
 DEFINE_API_BINARY_OP(bitwise_and);
 DEFINE_API_BINARY_OP(bitwise_or);
 DEFINE_API_BINARY_OP(bitwise_xor);
 DEFINE_API_BINARY_OP(bitwise_andnot);
+DEFINE_API_BINARY_OP(bitwise_lshift);
+DEFINE_API_BINARY_OP(bitwise_rshift);
 
 DEFINE_API_BINARY_OP(logical_and);
 DEFINE_API_BINARY_OP(logical_or);

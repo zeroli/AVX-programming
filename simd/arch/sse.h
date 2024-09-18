@@ -34,11 +34,25 @@ DEFINE_SSE_BINARY_OP(add);
 DEFINE_SSE_BINARY_OP(sub);
 DEFINE_SSE_BINARY_OP(mul);
 DEFINE_SSE_BINARY_OP(div);
+DEFINE_SSE_BINARY_OP(mod);
 
 DEFINE_SSE_BINARY_OP(bitwise_and);
 DEFINE_SSE_BINARY_OP(bitwise_or);
 DEFINE_SSE_BINARY_OP(bitwise_xor);
 DEFINE_SSE_BINARY_OP(bitwise_andnot);
+DEFINE_SSE_BINARY_OP(bitwise_lshift);
+DEFINE_SSE_BINARY_OP(bitwise_rshift);
+
+template <typename T, size_t W>
+Vec<T, W> bitwise_lshift(const Vec<T, W>& lhs, int32_t rhs, requires_arch<SSE>) noexcept
+{
+    return sse::bitwise_lshift<T, W>::apply(lhs, rhs);
+}
+template <typename T, size_t W>
+Vec<T, W> bitwise_rshift(const Vec<T, W>& lhs, int32_t rhs, requires_arch<SSE>) noexcept
+{
+    return sse::bitwise_rshift<T, W>::apply(lhs, rhs);
+}
 
 DEFINE_SSE_BINARY_OP(logical_and);
 DEFINE_SSE_BINARY_OP(logical_or);
@@ -58,12 +72,8 @@ DEFINE_SSE_BINARY_COMP_OP(ge);
 DEFINE_SSE_BINARY_COMP_OP(lt);
 DEFINE_SSE_BINARY_COMP_OP(le);
 
-#undef DEFINE_SSE_BINARY_COMP_OP
-
 DEFINE_SSE_BINARY_OP(max);
 DEFINE_SSE_BINARY_OP(min);
-
-#undef DEFINE_SSE_BINARY_OP
 
 #define DEFINE_SSE_UNARY_OP(OP) \
 template <typename T, size_t W> \
@@ -78,8 +88,6 @@ DEFINE_SSE_UNARY_OP(neg);
 
 DEFINE_SSE_UNARY_OP(abs);
 DEFINE_SSE_UNARY_OP(sqrt);
-
-#undef DEFINE_SSE_UNARY_OP
 
 template <typename T, size_t W>
 VecBool<T, W> bitwise_not(const VecBool<T, W>& self, requires_arch<SSE>) noexcept
@@ -154,5 +162,8 @@ void store_unaligned(T* mem, const Vec<T, W>& x, requires_arch<SSE>) noexcept
     sse::store_unaligned<T, W>::apply(mem, x);
 }
 
+#undef DEFINE_SSE_UNARY_OP
+#undef DEFINE_SSE_BINARY_OP
+#undef DEFINE_SSE_BINARY_COMP_OP
 }  // namespace kernel
 }  // namespace simd

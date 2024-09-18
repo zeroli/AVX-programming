@@ -219,6 +219,27 @@ struct div<double, W>
     }
 };
 
+/// mod for integral only (float/double, deleted)
+template <typename T, size_t W>
+struct mod<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept {
+        return {};  // TODO
+    }
+};
+
+template <size_t W>
+struct mod<float, W>
+{
+    static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept = delete;
+};
+
+template <size_t W>
+struct mod<double, W>
+{
+    static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept = delete;
+};
+
 template <typename T, size_t W>
 struct neg<T, W, REQUIRE_INTEGRAL(T)>
 {

@@ -3,6 +3,43 @@
 #include "simd/arch/isa.h"
 
 namespace simd {
+namespace types {
+template <typename T, size_t W>
+Vec<T, W>& integral_only_ops<T, W>::operator %=(const Vec<T, W>& rhs) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return ref_vec() = kernel::mod<T, W>(ref_vec(), rhs, A{});
+}
+
+template <typename T, size_t W>
+Vec<T, W>& integral_only_ops<T, W>::operator >>=(int32_t rhs) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return ref_vec() = kernel::bitwise_rshift<T, W>(ref_vec(), rhs, A{});
+}
+
+template <typename T, size_t W>
+Vec<T, W>& integral_only_ops<T, W>::operator >>=(const Vec<T, W>& rhs) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return ref_vec() = kernel::bitwise_rshift<T, W>(ref_vec(), rhs, A{});
+}
+
+template <typename T, size_t W>
+Vec<T, W>& integral_only_ops<T, W>::operator <<=(int32_t rhs) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return ref_vec() = kernel::bitwise_lshift<T, W>(ref_vec(), rhs, A{});
+}
+
+template <typename T, size_t W>
+Vec<T, W>& integral_only_ops<T, W>::operator <<=(const Vec<T, W>& rhs) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return ref_vec() = kernel::bitwise_lshift<T, W>(ref_vec(), rhs, A{});
+}
+}  // namespace types
+
 template <typename T, size_t W>
 Vec<T, W>::Vec() noexcept
 {
@@ -23,9 +60,9 @@ Vec<T, W>::Vec(T val0, T val1, Ts... vals) noexcept
         "the constructor requires as many arguments as vector elements");
 }
 
-#if 0  // TODO:
+#if 0
 template <typename T, size_t W>
-Vec<T, W>::Vec(vec_mask_t b) noexcept
+Vec<T, W>::Vec(const vec_bool_t& b) noexcept
     : self_t(kernel::from_bool(b, A{}))
 {
 }

@@ -1,15 +1,17 @@
 #pragma once
 
+#include <cstddef>
+
 #include "simd/types/arch_traits.h"
 #include "simd/types/traits.h"
 #include "simd/types/vec_ops_fwd.h"
-
-#include <cstddef>
+#include "simd/types/integral_only_ops.h"
 
 namespace simd {
 template <typename T, size_t W>
 class Vec
     : public types::simd_register<T, W, types::arch_traits_t<T, W>>
+    , public types::integral_only_ops<T, W>
 {
     static_assert(!std::is_same<T, bool>::value,
         "use simd::VecBool<T, W> instead of simd::Vec<bool, W>");
@@ -25,7 +27,7 @@ public:
     using self_t = Vec;
     using scalar_t = T;
     using register_t = typename base_t::register_t;
-    using vec_mask_t = VecBool<T, W>;
+    using vec_bool_t = VecBool<T, W>;
 
     Vec() noexcept;
     Vec(T val) noexcept;
@@ -33,9 +35,10 @@ public:
     template <typename... Ts>
     Vec(T val0, T val1, Ts... vals) noexcept;
 
-    #if 0  // TODO:
-    explicit Vec(vec_mask_t b) noexcept;
+    #if 0
+    explicit Vec(const vec_bool_t& b) noexcept;
     #endif
+
     template <typename... Regs>
     Vec(register_t arg, Regs... others) noexcept;
 
@@ -158,7 +161,7 @@ public:
     }
 
     /// unary operators
-    vec_mask_t operator !() const noexcept {
+    vec_bool_t operator !() const noexcept {
         return ops::eq<T, W>(*this, Vec(0));
     }
     /// bitwise not
@@ -209,28 +212,41 @@ public:
     }
 };
 
-using vf32x16_t = Vec<float, 16>;
-using vf32x8_t = Vec<float, 8>;
-using vf32x4_t = Vec<float, 4>;
+using vi8x64_t  = Vec<int8_t,  64>;    // 512 bits
+using vi8x32_t  = Vec<int8_t,  32>;    // 256 bits
+using vi8x16_t  = Vec<int8_t,  16>;    // 128 bits
+using vu8x64_t  = Vec<uint8_t, 64>;    // 512 bits
+using vu8x32_t  = Vec<uint8_t, 32>;    // 256 bits
+using vu8x16_t  = Vec<uint8_t, 16>;    // 128 bits
 
-using vf64x8_t = Vec<double, 8>;
-using vf64x4_t = Vec<double, 4>;
-using vf64x2_t = Vec<double, 2>;
+using vi16x32_t = Vec<int16_t,  32>;   // 512 bits
+using vi16x16_t = Vec<int16_t,  16>;   // 256 bits
+using vi16x8_t  = Vec<int16_t,   8>;   // 128 bits
+using vu16x32_t = Vec<uint16_t, 32>;   // 512 bits
+using vu16x16_t = Vec<uint16_t, 16>;   // 256 bits
+using vu16x8_t  = Vec<uint16_t,  8>;   // 128 bits
 
-using vi8x64_t = Vec<int8_t, 64>;
-using vi8x32_t = Vec<int8_t, 32>;
-using vi8x16_t = Vec<int8_t, 16>;
-using vi8x8_t = Vec<int8_t, 8>;
-using vi8x4_t = Vec<int8_t, 4>;
+using vi32x16_t = Vec<int32_t,  16>;   // 512 bits
+using vi32x8_t  = Vec<int32_t,   8>;   // 256 bits
+using vi32x4_t  = Vec<int32_t,   4>;   // 128 bits
+using vu32x16_t = Vec<uint32_t, 16>;   // 512 bits
+using vu32x8_t  = Vec<uint32_t,  8>;   // 256 bits
+using vu32x4_t  = Vec<uint32_t,  4>;   // 128 bits
 
-using vi16x32_t = Vec<int16_t, 32>;
-using vi16x16_t = Vec<int16_t, 16>;
-using vi16x8_t = Vec<int16_t, 8>;
-using vi16x4_t = Vec<int16_t, 4>;
+using vi64x8_t  = Vec<int64_t,  8>;    // 512 bits
+using vi64x4_t  = Vec<int64_t,  4>;    // 256 bits
+using vi64x2_t  = Vec<int64_t,  2>;    // 128 bits
+using vu64x8_t  = Vec<uint64_t, 8>;    // 512 bits
+using vu64x4_t  = Vec<uint64_t, 4>;    // 256 bits
+using vu64x2_t  = Vec<uint64_t, 2>;    // 128 bits
 
-using vi32x16_t = Vec<int32_t, 16>;
-using vi32x8_t = Vec<int32_t, 8>;
-using vi32x4_t = Vec<int32_t, 4>;
+using vf32x16_t = Vec<float, 16>;      // 512 bits
+using vf32x8_t  = Vec<float,  8>;      // 256 bits
+using vf32x4_t  = Vec<float,  4>;      // 128 bits
+
+using vf64x8_t  = Vec<double, 8>;      // 512 bits
+using vf64x4_t  = Vec<double, 4>;      // 256 bits
+using vf64x2_t  = Vec<double, 2>;      // 128 bits
 
 template <typename T, size_t W>
 class VecBool

@@ -109,6 +109,121 @@ struct bitwise_xor<double, W> : detail::bitwise_op<double, W, detail::xor_functo
 {
 };
 
+namespace detail {
+inline static __m128i bitwise_sra_int8(const __m128i& x, int32_t y)
+{
+    __m128i sign_mask = _mm_set1_epi16((0xFF00 >> y) & 0x00FF);
+    __m128i cmp_is_negative = _mm_cmpgt_epi8(_mm_setzero_si128(), x);
+    __m128i res = _mm_srai_epi16(x, y);
+    return _mm_or_si128(_mm_and_si128(sign_mask, cmp_is_negative),
+                        _mm_andnot_si128(sign_mask, res));
+}
+inline static __m128i bitwise_srl_int8(const __m128i& x, int32_t y)
+{
+    return _mm_and_si128(_mm_set1_epi8(0xFF >> y), _mm_srli_epi32(x, y));
+}
+inline static __m128i bitwise_sra_int64(const __m128i& x, int32_t y)
+{
+    return _mm_or_si128(
+            _mm_srli_epi64(x, y),
+            _mm_slli_epi64(
+                _mm_srai_epi32(_mm_shuffle_epi32(x, _MM_SHUFFLE(3, 3, 1, 1)), 32),
+                64 - y
+            )
+        );
+}
+inline static __m128i bitwise_srl_int64(const __m128i& x, int32_t y)
+{
+    return _mm_srli_epi64(x, y);
+}
+}  // namespace detail
+
+template <typename T, size_t W>
+struct bitwise_lshift<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static Vec<T, W> apply(const Vec<T, W>& x, int32_t y) noexcept
+    {
+        static_check_supported_type<T>();
+
+        Vec<T, W> ret;
+        constexpr int nregs = Vec<T, W>::n_regs();
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_and_si128(_mm_set1_epi8(0xFF << y),
+                                             _mm_slli_epi32(x.reg(idx), y));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_slli_epi16(x.reg(idx), y);
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_slli_epi32(x.reg(idx), y);
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_slli_epi64(x.reg(idx), y);
+            }
+        }
+        return ret;
+    }
+    static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
+    {
+        // TODO:
+        return x;
+    }
+};
+template <typename T, size_t W>
+struct bitwise_rshift<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static Vec<T, W> apply(const Vec<T, W>& x, int32_t y) noexcept
+    {
+        static_check_supported_type<T>();
+
+        Vec<T, W> ret;
+        constexpr bool is_signed = std::is_signed<T>::value;
+        constexpr int nregs = Vec<T, W>::n_regs();
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = is_signed
+                    ? detail::bitwise_sra_int8(x.reg(idx), y)
+                    : detail::bitwise_srl_int8(x.reg(idx), y);
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = is_signed
+                    ? _mm_srai_epi16(x.reg(idx), y)
+                    : _mm_srli_epi16(x.reg(idx), y);
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = is_signed
+                    ? _mm_srai_epi32(x.reg(idx), y)
+                    : _mm_srli_epi32(x.reg(idx), y);
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = is_signed
+                    ? detail::bitwise_sra_int64(x.reg(idx), y)
+                    : detail::bitwise_srl_int64(x.reg(idx), y);
+            }
+        }
+        return ret;
+    }
+    static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
+    {
+        // TODO
+        return x;
+    }
+};
 
 template <typename T, size_t W>
 struct bitwise_not<T, W, REQUIRE_INTEGRAL(T)>

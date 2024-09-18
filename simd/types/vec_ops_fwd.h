@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstddef>
-
 namespace simd {
 template <typename T, size_t W>
 class Vec;

@@ -8,6 +8,7 @@ DECLARE_OP_KERNEL(add);
 DECLARE_OP_KERNEL(sub);
 DECLARE_OP_KERNEL(mul);
 DECLARE_OP_KERNEL(div);
+DECLARE_OP_KERNEL(mod);
 DECLARE_OP_KERNEL(neg);
 
 /// memory IO kernels
@@ -24,6 +25,8 @@ DECLARE_OP_KERNEL(bitwise_or);
 DECLARE_OP_KERNEL(bitwise_xor);
 DECLARE_OP_KERNEL(bitwise_andnot);
 DECLARE_OP_KERNEL(bitwise_not);
+DECLARE_OP_KERNEL(bitwise_lshift);
+DECLARE_OP_KERNEL(bitwise_rshift);
 
 DECLARE_OP_KERNEL(logical_and);
 DECLARE_OP_KERNEL(logical_or);
