@@ -14,6 +14,7 @@
 
 #include "simd/config/config.h"
 #include "simd/config/inline.h"
+#include "simd/memory/bits.h"
 #include "simd/memory/aligned_allocator.h"
 
 #include "simd/types/vec.h"

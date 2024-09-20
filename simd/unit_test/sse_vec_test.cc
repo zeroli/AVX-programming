@@ -2,6 +2,8 @@
 
 #include "simd/simd.h"
 
+using namespace simd;
+
 TEST(vec_op_sse, test_vec_init_regs)
 {
     {
@@ -75,6 +77,70 @@ TEST(vecbool_sse, test_vecbool_ctor)
 
 TEST(vecbool_sse, test_vec_ctor)
 {
+    #define TEST_INT_SINGLE_VAL(T, W, val) \
+    { \
+        simd::Vec<T, W> a(val); \
+        for (int i = 0; i < a.size(); i++) { \
+            EXPECT_EQ(val, a[i]); \
+        } \
+    } \
+    ///
+    TEST_INT_SINGLE_VAL(int8_t,  16, -100);
+    TEST_INT_SINGLE_VAL(uint8_t, 16, +100);
+    TEST_INT_SINGLE_VAL(int16_t,  8, -100);
+    TEST_INT_SINGLE_VAL(uint16_t, 8, +100);
+    TEST_INT_SINGLE_VAL(int32_t,  4, -100);
+    TEST_INT_SINGLE_VAL(uint32_t, 4, +100);
+    TEST_INT_SINGLE_VAL(int64_t,  2, -100);
+    TEST_INT_SINGLE_VAL(uint64_t, 2, +100);
+
+    TEST_INT_SINGLE_VAL(int8_t,  32, -100);
+    TEST_INT_SINGLE_VAL(uint8_t, 32, +100);
+    TEST_INT_SINGLE_VAL(int16_t, 16, -100);
+    TEST_INT_SINGLE_VAL(uint16_t,16, +100);
+    TEST_INT_SINGLE_VAL(int32_t,  8, -100);
+    TEST_INT_SINGLE_VAL(uint32_t, 8, +100);
+    TEST_INT_SINGLE_VAL(int64_t,  4, -100);
+    TEST_INT_SINGLE_VAL(uint64_t, 4, +100);
+
+    #undef TEST_INT_SINGLE_VAL
+
+    #define TEST_FLOAT_SINGLE_VAL(T, W, val) \
+    { \
+        simd::Vec<T, W> a(val); \
+        for (int i = 0; i < a.size(); i++) { \
+            EXPECT_FLOAT_EQ(val, a[i]); \
+        } \
+    } \
+    ///
+    TEST_FLOAT_SINGLE_VAL(float, 4,  2.3f);
+    TEST_FLOAT_SINGLE_VAL(float, 8,  2.3f);
+    TEST_FLOAT_SINGLE_VAL(float, 16, 2.3f);
+
+    TEST_FLOAT_SINGLE_VAL(double, 2, 2.3);
+    TEST_FLOAT_SINGLE_VAL(double, 4, 2.3);
+    TEST_FLOAT_SINGLE_VAL(double, 8, 2.3);
+
+    #undef TEST_FLOAT_SINGLE_VAL
+
+    {
+        simd::Vec<int32_t, 4> a(1, 2, 3, 4);
+        for (int i = 0; i < a.size(); i++) {
+            EXPECT_EQ(i+1, a[i]);
+        }
+    }
+    {
+        simd::Vec<float, 4> a(1, 2, 3, 4);
+        for (int i = 0; i < a.size(); i++) {
+            EXPECT_FLOAT_EQ(i+1, a[i]);
+        }
+    }
+    {
+        simd::Vec<double, 4> a(1, 2, 3, 4);
+        for (int i = 0; i < a.size(); i++) {
+            EXPECT_FLOAT_EQ(i+1, a[i]);
+        }
+    }
     {
         simd::Vec<int32_t, 4> al(1, 2, 3, 4);
         simd::Vec<int32_t, 4> ah(5, 6, 7, 8);
@@ -84,11 +150,35 @@ TEST(vecbool_sse, test_vec_ctor)
         }
     }
     {
+        simd::Vec<float, 4> al(1, 2, 3, 4);
+        simd::Vec<float, 4> ah(5, 6, 7, 8);
+        simd::Vec<float, 8> a(al, ah);
+        for (int i = 0; i < a.size(); i++) {
+            EXPECT_FLOAT_EQ(i+1, a[i]);
+        }
+    }
+    {
         simd::VecBool<int32_t, 4> b(false, true, false, true);
         simd::Vec<int32_t, 4> a(b);
         EXPECT_EQ( 0, a[0]);
         EXPECT_EQ(-1, a[1]);
         EXPECT_EQ( 0, a[2]);
         EXPECT_EQ(-1, a[3]);
+    }
+    {
+        simd::VecBool<float, 4> b(false, true, false, true);
+        simd::Vec<float, 4> a(b);
+        EXPECT_EQ( 0, bits::cast<int32_t>(a[0]));
+        EXPECT_EQ(-1, bits::cast<int32_t>(a[1]));
+        EXPECT_EQ( 0, bits::cast<int32_t>(a[2]));
+        EXPECT_EQ(-1, bits::cast<int32_t>(a[3]));
+    }
+    {
+        simd::VecBool<double, 4> b(false, true, false, true);
+        simd::Vec<double, 4> a(b);
+        EXPECT_EQ( 0, bits::cast<int64_t>(a[0]));
+        EXPECT_EQ(-1, bits::cast<int64_t>(a[1]));
+        EXPECT_EQ( 0, bits::cast<int64_t>(a[2]));
+        EXPECT_EQ(-1, bits::cast<int64_t>(a[3]));
     }
 }

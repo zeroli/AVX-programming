@@ -150,7 +150,8 @@ template <typename... V>
 typename VecBool<T, W>::register_t
 VecBool<T, W>::make_register(detail::index_sequence<>, V... v) noexcept
 {
-    return kernel::set<T, W>(static_cast<T>(v ? -1ULL : 0LL)..., A{}).reg(0);
+    return kernel::set<T, W>(
+        static_cast<T>(v ? bits::ones<T>() : bits::zeros<T>())..., A{}).reg(0);
 }
 
 template <typename T, size_t W>
@@ -170,8 +171,10 @@ VecBool<T, W>::VecBool(bool val0, bool val1, Ts... vals) noexcept
 {
     static_assert(sizeof...(Ts) + 2 == W,
         "constructor requires as many as arguments as vector elements");
-    auto vec = kernel::set<T, W>(val0 ? -1ULL : 0LL, val1 ? -1ULL : 0LL,
-                  static_cast<T>(vals ? -1ULL : 0LL)..., A{});
+    auto vec = kernel::set<T, W>(
+                    val0 ? bits::ones<T>() : bits::zeros<T>(),
+                    val1 ? bits::ones<T>() : bits::zeros<T>(),
+     static_cast<T>(vals ? bits::ones<T>() : bits::zeros<T>())..., A{});
     constexpr int nregs = this->n_regs();
     #pragma unroll
     for (auto idx = 0; idx < nregs; idx++) {
