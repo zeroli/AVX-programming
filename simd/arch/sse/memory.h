@@ -85,19 +85,40 @@ struct set<T, W, REQUIRE_INTEGRAL(T)>
     static Vec<T, W> apply(T v0, T v1, T v2, T v3) noexcept
     {
         Vec<T, W> ret;
-        ret.reg(0) = _mm_set_epi32(v3, v2, v1, v0);
+        SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            ret.reg(0) = _mm_set_epi32(v3, v2, v1, v0);
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            ret.reg(0) = _mm_set_epi64x(v1, v0);
+            ret.reg(1) = _mm_set_epi64x(v3, v2);
+        } else {
+            assert(0);
+        }
         return ret;
     }
     static Vec<T, W> apply(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7) noexcept
     {
         Vec<T, W> ret;
-        ret.reg(0) = _mm_set_epi16(v7, v6, v5, v4, v3, v2, v1, v0);
+        SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            ret.reg(0) = _mm_set_epi16(v7, v6, v5, v4, v3, v2, v1, v0);
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            ret.reg(0) = _mm_set_epi32(v3, v2, v1, v0);
+            ret.reg(1) = _mm_set_epi32(v7, v6, v5, v4);
+        } else {
+            assert(0);
+        }
         return ret;
     }
     static Vec<T, W> apply(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7, T v8, T v9, T v10, T v11, T v12, T v13, T v14, T v15) noexcept
     {
         Vec<T, W> ret;
-        ret.reg(0) = _mm_set_epi8(v15, v14, v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0);
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            ret.reg(0) = _mm_set_epi8(v15, v14, v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0);
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            ret.reg(0) = _mm_set_epi16(v7, v6, v5, v4, v3, v2, v1, v0);
+            ret.reg(0) = _mm_set_epi16(v15, v14, v13, v12, v11, v10, v9, v8);
+        } else {
+            assert(0);
+        }
         return ret;
     }
 };

@@ -56,23 +56,35 @@ template <typename... Ts>
 Vec<T, W>::Vec(T val0, T val1, Ts... vals) noexcept
     : self_t(kernel::set<T, W>(val0, val1, static_cast<T>(vals)..., A{}))
 {
-    static_assert(sizeof...(Ts) + 2 == size(),
+    static_assert(sizeof...(Ts) + 2 == W,
         "the constructor requires as many arguments as vector elements");
 }
 
-#if 0
 template <typename T, size_t W>
 Vec<T, W>::Vec(const vec_bool_t& b) noexcept
-    : self_t(kernel::from_bool(b, A{}))
 {
+    constexpr int nregs = Vec<T, W>::n_regs();
+    #pragma unroll
+    for (auto idx = 0; idx < nregs; idx++) {
+        this->reg(idx) = b.reg(idx);
+    }
 }
-#endif
 
 template <typename T, size_t W>
 template <typename... Regs>
 Vec<T, W>::Vec(register_t arg, Regs... others) noexcept
     : base_t({arg, others...})
 {
+    static_assert(sizeof...(Regs) + 1 <= this->n_regs(),
+        "the constructor requires not-beyond number of registers");
+}
+
+template <typename T, size_t W>
+template <size_t... Ws>
+Vec<T, W>::Vec(const Vec<T, Ws>&... vecs) noexcept
+    : self_t(vecs.reg()...)
+{
+    // TODO: validation
 }
 
 template <typename T, size_t W>
@@ -126,6 +138,47 @@ Vec<T, W> Vec<T, W>::operator -() const noexcept
 }
 
 /// VecBool
+template <typename T, size_t W>
+template <typename... Regs>
+VecBool<T, W>::VecBool(register_t arg, Regs... others) noexcept
+    : base_t({arg, others...})
+{
+}
+
+template <typename T, size_t W>
+template <typename... V>
+typename VecBool<T, W>::register_t
+VecBool<T, W>::make_register(detail::index_sequence<>, V... v) noexcept
+{
+    return kernel::set<T, W>(static_cast<T>(v ? -1ULL : 0LL)..., A{}).reg(0);
+}
+
+template <typename T, size_t W>
+VecBool<T, W>::VecBool(bool val) noexcept
+{
+    auto regval = make_register(detail::make_index_sequence<size() - 1>(), val);
+    constexpr int nregs = VecBool<T, W>::n_regs();
+    #pragma unroll
+    for (auto idx = 0; idx < nregs; idx++) {
+        this->reg(idx) = regval;
+    }
+}
+
+template <typename T, size_t W>
+template <typename... Ts>
+VecBool<T, W>::VecBool(bool val0, bool val1, Ts... vals) noexcept
+{
+    static_assert(sizeof...(Ts) + 2 == W,
+        "constructor requires as many as arguments as vector elements");
+    auto vec = kernel::set<T, W>(val0 ? -1ULL : 0LL, val1 ? -1ULL : 0LL,
+                  static_cast<T>(vals ? -1ULL : 0LL)..., A{});
+    constexpr int nregs = this->n_regs();
+    #pragma unroll
+    for (auto idx = 0; idx < nregs; idx++) {
+        this->reg(idx) = vec.reg(idx);
+    }
+}
+
 template <typename T, size_t W>
 VecBool<T, W> VecBool<T, W>::operator ==(const VecBool<T, W>& other) const noexcept
 {

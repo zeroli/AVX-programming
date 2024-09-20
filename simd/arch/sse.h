@@ -113,25 +113,29 @@ Vec<T, W> broadcast(T val, requires_arch<SSE>) noexcept
     return sse::broadcast<T, W>::apply(val);
 }
 
-template <typename T, size_t W>
+template <typename T, size_t W,
+    REQUIRES((!std::is_same<T, bool>::value))>
 Vec<T, W> set(T v0, T v1, requires_arch<SSE>) noexcept
 {
     return sse::set<T, W>::apply(v0, v1);
 }
 
-template <typename T, size_t W>
+template <typename T, size_t W,
+    REQUIRES((!std::is_same<T, bool>::value))>
 Vec<T, W> set(T v0, T v1, T v2, T v3, requires_arch<SSE>) noexcept
 {
     return sse::set<T, W>::apply(v0, v1, v2, v3);
 }
 
-template <typename T, size_t W>
+template <typename T, size_t W,
+    REQUIRES((!std::is_same<T, bool>::value))>
 Vec<T, W> set(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7, requires_arch<SSE>) noexcept
 {
     return sse::set<T, W>::apply(v0, v1, v2, v3, v4, v5, v6, v7);
 }
 
-template <typename T, size_t W>
+template <typename T, size_t W,
+    REQUIRES((!std::is_same<T, bool>::value))>
 Vec<T, W> set(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7,
                     T v8, T v9, T v10, T v11, T v12, T v13, T v14, T v15, requires_arch<SSE>) noexcept
 {

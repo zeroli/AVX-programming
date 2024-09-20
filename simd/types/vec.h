@@ -35,12 +35,13 @@ public:
     template <typename... Ts>
     Vec(T val0, T val1, Ts... vals) noexcept;
 
-    #if 0
     explicit Vec(const vec_bool_t& b) noexcept;
-    #endif
 
     template <typename... Regs>
     Vec(register_t arg, Regs... others) noexcept;
+
+    template <size_t... Ws>
+    Vec(const Vec<T, Ws>&... vecs) noexcept;
 
     template <typename U>
     static Vec broadcast(U val) noexcept {
@@ -264,28 +265,19 @@ public:
     using vec_t = Vec<T, W>;
 
     VecBool() = default;
-    VecBool(register_t reg) noexcept
-        : base_t({reg})
-    {
-    }
 
-#if 0
-    VecBool(bool val) noexcept
-        : base_t(make_register(detail::make_index_sequence<size() - 1>(), val))
-    {
-    }
+    VecBool(bool val) noexcept;
+
+    template <typename... Regs>
+    VecBool(register_t arg, Regs... others) noexcept;
 
     template <typename... Ts>
-    VecBool(bool val0, bool val1, Ts... vals) noexcept
-        : self_t(kernel::set<A>(self_t{}, A{}, val0, val1, static_cast<bool>(vals)...))
-    {
-        static_assert(sizeof...(Ts) + 2 == size,
-            "constructor requires as many as arguments as vector elements");
-    }
+    VecBool(bool val0, bool val1, Ts... vals) noexcept;
 
     template <typename Tp>
     VecBool(const Tp* ptr) = delete;
 
+#if 0
     void store_aligned(bool* mem) const noexcept {
         kernel::store(*this, mem, A{});
     }
@@ -304,9 +296,6 @@ public:
         return load_aligned(mem);
     }
 
-    bool get(size_t idx) const noexcept {
-        return kernel::get(*this, idx, A{});
-    }
     /// mask operators
     uint64_t mask() const noexcept {
         return kernel::mask(*this, A{});
@@ -348,19 +337,14 @@ public:
     }
 
 private:
-#if 0
     template <typename U, typename... V, size_t I, size_t... Is>
-    static register_t make_register(detail::index_sequence<I, Is...>, U u, V... V) noexcept
+    static register_t make_register(detail::index_sequence<I, Is...>, U u, V... v) noexcept
     {
-        return make_register(detail::index_sequence<Is...)(), u, u, v...);
+        return make_register(detail::index_sequence<Is...>(), u, u, v...);
     }
 
     template <typename... V>
-    static register_t make_register(detail::index_sequence<>, V... v) noexcept
-    {
-        return kernel::set<W>(self_t{}, A{}, v...).reg();
-    }
-#endif
+    static register_t make_register(detail::index_sequence<>, V... v) noexcept;
 };
 
 }  // namespace simd

@@ -43,9 +43,6 @@ struct simd_register<SCALAR_TYPE, W, ISA> \
     { \
     } \
 \
-    operator register_t() const noexcept { \
-        return regs_[0]; \
-    } \
     register_t reg(size_t idx = 0) const noexcept { \
         return regs_[idx]; \
     } \
