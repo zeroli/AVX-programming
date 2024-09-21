@@ -4,7 +4,7 @@
 
 using namespace simd;
 
-TEST(vec_op_sse, test_vec_init_regs)
+TEST(vec_sse, test_vec_init_regs)
 {
     {
         simd::Vec<float, 4> al(0, 1, 2, 3);
@@ -75,7 +75,7 @@ TEST(vecbool_sse, test_vecbool_ctor)
     }
 }
 
-TEST(vecbool_sse, test_vec_ctor)
+TEST(vec_sse, test_vec_ctor_single_val)
 {
     #define TEST_INT_SINGLE_VAL(T, W, val) \
     { \
@@ -122,7 +122,10 @@ TEST(vecbool_sse, test_vec_ctor)
     TEST_FLOAT_SINGLE_VAL(double, 8, 2.3);
 
     #undef TEST_FLOAT_SINGLE_VAL
+}
 
+TEST(vec_sse, test_vec_ctor_multiple_vals)
+{
     {
         simd::Vec<int32_t, 4> a(1, 2, 3, 4);
         for (int i = 0; i < a.size(); i++) {
@@ -141,6 +144,10 @@ TEST(vecbool_sse, test_vec_ctor)
             EXPECT_FLOAT_EQ(i+1, a[i]);
         }
     }
+}
+
+TEST(vec_sse, test_vec_ctor_multiple_vecs)
+{
     {
         simd::Vec<int32_t, 4> al(1, 2, 3, 4);
         simd::Vec<int32_t, 4> ah(5, 6, 7, 8);
@@ -157,6 +164,10 @@ TEST(vecbool_sse, test_vec_ctor)
             EXPECT_FLOAT_EQ(i+1, a[i]);
         }
     }
+}
+
+TEST(vec_sse, test_vec_ctor_from_vecbool)
+{
     {
         simd::VecBool<int32_t, 4> b(false, true, false, true);
         simd::Vec<int32_t, 4> a(b);
@@ -180,5 +191,45 @@ TEST(vecbool_sse, test_vec_ctor)
         EXPECT_EQ(-1, bits::cast<int64_t>(a[1]));
         EXPECT_EQ( 0, bits::cast<int64_t>(a[2]));
         EXPECT_EQ(-1, bits::cast<int64_t>(a[3]));
+    }
+}
+
+TEST(vecbool_sse, test_vecbool_load)
+{
+    {
+        const bool bp[] = { false, true, true, false };
+        auto b = simd::VecBool<int32_t, 4>::load_aligned(bp);
+        for (int i = 0; i < 4; i++) {
+            EXPECT_EQ(bp[i] ? bits::ones<int32_t>() : bits::zeros<int32_t>(), b[i]);
+        }
+    }
+    {
+        const bool bp[] = { false, true, true, false };
+        auto b = simd::VecBool<float, 4>::load_aligned(bp);
+        for (int i = 0; i < 4; i++) {
+            EXPECT_EQ(bp[i] ? bits::ones<int32_t>() : bits::zeros<int32_t>(), bits::cast<int32_t>(b[i]));
+        }
+    }
+}
+
+TEST(vecbool_sse, test_vecbool_store)
+{
+    {
+        bool bp[] = { true };
+        simd::VecBool<int32_t, 4> b(false, true, true, false);
+        b.store_aligned(bp);
+        EXPECT_EQ(bits::zeros<int32_t>(), bits::cast<int32_t>(b[0]));
+        EXPECT_EQ(bits::ones<int32_t>(),  bits::cast<int32_t>(b[1]));
+        EXPECT_EQ(bits::ones<int32_t>(),  bits::cast<int32_t>(b[2]));
+        EXPECT_EQ(bits::zeros<int32_t>(), bits::cast<int32_t>(b[3]));
+    }
+    {
+        bool bp[] = { true };
+        simd::VecBool<float, 4> b(false, true, true, false);
+        b.store_aligned(bp);
+        EXPECT_EQ(bits::zeros<int32_t>(), bits::cast<int32_t>(b[0]));
+        EXPECT_EQ(bits::ones<int32_t>(),  bits::cast<int32_t>(b[1]));
+        EXPECT_EQ(bits::ones<int32_t>(),  bits::cast<int32_t>(b[2]));
+        EXPECT_EQ(bits::zeros<int32_t>(), bits::cast<int32_t>(b[3]));
     }
 }

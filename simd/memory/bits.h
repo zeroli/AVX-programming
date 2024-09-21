@@ -51,6 +51,18 @@ T one_zeros()
     b[sizeof(T) - 1] |= 0x80;
     return t;
 }
+
+/// return bit state at msb: true for 1, false for 0
+template <typename T>
+bool at_msb(T d)
+{
+    union {
+        char b[sizeof(T)];
+        T t;
+    };
+    t = d;
+    return (b[sizeof(T) - 1] & 0x80) != 0;
+}
 }  // namespace bits
 
 template <typename TO, typename FROM>

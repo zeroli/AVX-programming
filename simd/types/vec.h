@@ -277,25 +277,12 @@ public:
     template <typename Tp>
     VecBool(const Tp* ptr) = delete;
 
-#if 0
-    void store_aligned(bool* mem) const noexcept {
-        kernel::store(*this, mem, A{});
-    }
-    void store_unaligned(bool* mem) const noexcept {
-        store_aligned(mem);
-    }
-    static VecBool load_aligned(const bool* mem) noexcept {
-        vec_t ref(0);
-        alignas(A::argument()) T buffer[size()];
-        for (auto i = 0; i < size(); i++) {
-            buffer[i] = mem[0] ? 1 : 0;
-        }
-        return ref != vec_t::load_aligned(&buffer[0]);
-    }
-    static VecBool load_unaligned(const bool* mem) noexcept {
-        return load_aligned(mem);
-    }
+    void store_aligned(bool* mem) const noexcept;
+    void store_unaligned(bool* mem) const noexcept;
+    static VecBool load_aligned(const bool* mem) noexcept;
+    static VecBool load_unaligned(const bool* mem) noexcept;
 
+#if 0
     /// mask operators
     uint64_t mask() const noexcept {
         return kernel::mask(*this, A{});

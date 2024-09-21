@@ -75,7 +75,7 @@ template <typename... Regs>
 Vec<T, W>::Vec(register_t arg, Regs... others) noexcept
     : base_t({arg, others...})
 {
-    static_assert(sizeof...(Regs) + 1 <= this->n_regs(),
+    static_assert(sizeof...(Regs) + 1 <= self_t::n_regs(),
         "the constructor requires not-beyond number of registers");
 }
 
@@ -91,7 +91,6 @@ template <typename T, size_t W>
 template <typename U>
 void Vec<T, W>::store_aligned(U* mem) const noexcept
 {
-    using A = typename Vec<T, W>::arch_t;
     assert(is_aligned(mem, A::alignment())
         && "store location is not properly aligned");
     kernel::store_aligned<T, W>((T*)mem, *this, A{});
@@ -101,7 +100,6 @@ template <typename T, size_t W>
 template <typename U>
 void Vec<T, W>::store_unaligned(U* mem) const noexcept
 {
-    using A = typename Vec<T, W>::arch_t;
     kernel::store_unaligned<T, W>((T*)mem, *this, A{});
 }
 
@@ -109,7 +107,6 @@ template <typename T, size_t W>
 template <typename U>
 Vec<T, W> Vec<T, W>::load_aligned(const U* mem) noexcept
 {
-    using A = typename Vec<T, W>::arch_t;
     assert(is_aligned(mem, A::alignment())
         && "loaded location is not properly aligned");
     return kernel::load_aligned<T, W>((const T*)mem, A{});
@@ -119,7 +116,6 @@ template <typename T, size_t W>
 template <typename U>
 Vec<T, W> Vec<T, W>::load_unaligned(const U* mem) noexcept
 {
-    using A = typename Vec<T, W>::arch_t;
     return kernel::load_unaligned<T, W>((const T*)mem, A{});
 }
 
@@ -175,7 +171,7 @@ VecBool<T, W>::VecBool(bool val0, bool val1, Ts... vals) noexcept
                     val0 ? bits::ones<T>() : bits::zeros<T>(),
                     val1 ? bits::ones<T>() : bits::zeros<T>(),
      static_cast<T>(vals ? bits::ones<T>() : bits::zeros<T>())..., A{});
-    constexpr int nregs = this->n_regs();
+    constexpr int nregs = self_t::n_regs();
     #pragma unroll
     for (auto idx = 0; idx < nregs; idx++) {
         this->reg(idx) = vec.reg(idx);
@@ -183,40 +179,72 @@ VecBool<T, W>::VecBool(bool val0, bool val1, Ts... vals) noexcept
 }
 
 template <typename T, size_t W>
+void VecBool<T, W>::store_aligned(bool* mem) const noexcept
+{
+    #pragma unroll
+    for (auto i = 0; i < size(); i++) {
+        mem[i] = bits::at_msb(this->get(i));
+    }
+}
+
+template <typename T, size_t W>
+void VecBool<T, W>::store_unaligned(bool* mem) const noexcept
+{
+    store_aligned(mem);
+}
+
+template <typename T, size_t W>
+VecBool<T, W> VecBool<T, W>::load_aligned(const bool* mem) noexcept
+{
+    Vec<T, W> vec;
+    #pragma unroll
+    for (auto i = 0; i < size(); i++) {
+        vec[i] = mem[i] ? bits::ones<T>() : bits::zeros<T>();
+    }
+    VecBool<T, W> ret;
+    constexpr int nregs = self_t::n_regs();
+    #pragma unroll
+    for (auto idx = 0; idx < nregs; idx++) {
+        ret.reg(idx) = vec.reg(idx);
+    }
+    return ret;
+}
+
+template <typename T, size_t W>
+VecBool<T, W> VecBool<T, W>::load_unaligned(const bool* mem) noexcept
+{
+    return load_aligned(mem);
+}
+
+template <typename T, size_t W>
 VecBool<T, W> VecBool<T, W>::operator ==(const VecBool<T, W>& other) const noexcept
 {
-    using A = typename VecBool<T, W>::arch_t;
     return kernel::eq<T, W>(*this, other, A{});
 }
 template <typename T, size_t W>
 VecBool<T, W> VecBool<T, W>::operator !=(const VecBool<T, W>& other) const noexcept
 {
-    using A = typename VecBool<T, W>::arch_t;
     return kernel::ne<T, W>(*this, other, A{});
 }
 template <typename T, size_t W>
 VecBool<T, W> VecBool<T, W>::operator ~() const noexcept
 {
-    using A = typename VecBool<T, W>::arch_t;
     return kernel::bitwise_not<T, W>(*this, A{});
 }
 
 template <typename T, size_t W>
 VecBool<T, W> VecBool<T, W>::operator &(const VecBool& other) const noexcept
 {
-    using A = typename VecBool<T, W>::arch_t;
     return kernel::bitwise_and<A>(*this, other, A{});
 }
 template <typename T, size_t W>
 VecBool<T, W> VecBool<T, W>::operator |(const VecBool<T, W>& other) const noexcept
 {
-    using A = typename VecBool<T, W>::arch_t;
     return kernel::bitwise_or<T, W>(*this, other, A{});
 }
 template <typename T, size_t W>
 VecBool<T, W> VecBool<T, W>::operator ^(const VecBool<T, W>& other) const noexcept
 {
-    using A = typename VecBool<T, W>::arch_t;
     return kernel::bitwise_xor<T, W>(*this, other, A{});
 }
 }  // namespace simd
