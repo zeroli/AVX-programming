@@ -282,11 +282,10 @@ public:
     static VecBool load_aligned(const bool* mem) noexcept;
     static VecBool load_unaligned(const bool* mem) noexcept;
 
-#if 0
     /// mask operators
-    uint64_t mask() const noexcept {
-        return kernel::mask(*this, A{});
-    }
+    /// Extract a scalar mask representation from this vec bool
+    uint64_t mask() const noexcept;
+#if 0
     static VecBool from_mask(uint64_t mask) noexcept {
         return kernel::from_mask(self_t(), mask, A{});
     }

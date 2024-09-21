@@ -233,3 +233,19 @@ TEST(vecbool_sse, test_vecbool_store)
         EXPECT_EQ(bits::zeros<int32_t>(), bits::cast<int32_t>(b[3]));
     }
 }
+
+TEST(vecbool_sse, test_vecbool_mask)
+{
+    {
+        simd::VecBool<int8_t, 16> b(true);
+        EXPECT_EQ(0xFFFFFFFF, b.mask());
+    }
+    {
+        simd::VecBool<int16_t, 8> b(true);
+        EXPECT_EQ(0xFFFF, b.mask());
+    }
+    {
+        simd::VecBool<int32_t, 4> b(false, true, true, false);
+        EXPECT_EQ(0b0110, b.mask());
+    }
+}

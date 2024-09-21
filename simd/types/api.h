@@ -154,6 +154,13 @@ void store(T* mem, const Vec<T, W>& x, unaligned_mode) noexcept
     store_unaligned(mem, x);
 }
 
+template <typename T, size_t W>
+uint64_t mask(const VecBool<T, W>& x) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return mask(x, A{});
+}
+
 #if 0
 
 template <typename T, typename Arch>
