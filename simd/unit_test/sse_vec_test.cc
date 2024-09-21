@@ -257,3 +257,15 @@ TEST(vecbool_sse, test_vecbool_to_mask)
         EXPECT_EQ(0b0110, b.to_mask());
     }
 }
+
+TEST(vecbool_sse, test_vecbool_from_mask)
+{
+    {
+        auto b = simd::VecBool<int8_t, 16>::from_mask(0b0101110110011010);
+        EXPECT_EQ(0b0101110110011010, b.to_mask());
+    }
+    {
+        auto b = simd::VecBool<int16_t, 8>::from_mask(0b10011010);
+        EXPECT_EQ(0b10011010, b.to_mask());
+    }
+}

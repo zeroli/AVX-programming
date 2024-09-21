@@ -223,6 +223,12 @@ uint64_t VecBool<T, W>::to_mask() const noexcept
 }
 
 template <typename T, size_t W>
+VecBool<T, W> VecBool<T, W>::from_mask(uint64_t mask) noexcept
+{
+    return kernel::from_mask<T, W>(mask, A{});
+}
+
+template <typename T, size_t W>
 VecBool<T, W> VecBool<T, W>::operator ==(const VecBool<T, W>& other) const noexcept
 {
     return kernel::eq<T, W>(*this, other, A{});

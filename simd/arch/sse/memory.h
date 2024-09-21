@@ -371,7 +371,7 @@ struct store_unaligned<double, W>
     }
 };
 
-/// mask
+/// to_mask
 namespace detail {
 inline static int mask_lut(int mask)
 {
@@ -480,6 +480,180 @@ struct to_mask<double, W>
             ret |= _mm_movemask_pd(x.reg(idx));
         }
         return ret;
+    }
+};
+
+/// from_mask
+
+template <size_t W>
+struct from_mask<float, W>
+{
+    /// mask, lower 4 bits, each bit indicates one element (4 * sizeof(float) = 128)
+    static const __m128i* mask_lut(uint64_t mask) noexcept
+    {
+        using A = typename VecBool<float, W>::arch_t;
+        alignas(A::alignment()) static const uint32_t lut[][4] = {
+            { 0x00000000, 0x00000000, 0x00000000, 0x00000000 },
+            { 0xFFFFFFFF, 0x00000000, 0x00000000, 0x00000000 },
+            { 0x00000000, 0xFFFFFFFF, 0x00000000, 0x00000000 },
+            { 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000 },
+            { 0x00000000, 0x00000000, 0xFFFFFFFF, 0x00000000 },
+            { 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000 },
+            { 0x00000000, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000 },
+            { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000 },
+            { 0x00000000, 0x00000000, 0x00000000, 0xFFFFFFFF },
+            { 0xFFFFFFFF, 0x00000000, 0x00000000, 0xFFFFFFFF },
+            { 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF },
+            { 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF },
+            { 0x00000000, 0x00000000, 0xFFFFFFFF, 0xFFFFFFFF },
+            { 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0xFFFFFFFF },
+            { 0x00000000, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF },
+            { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF },
+        };
+        assert(!(mask & ~0xFul) && "inbound mask: [0, 0xF]");  // cannot beyond 16 (2^4)
+        return (const __m128i*)lut[mask];
+    }
+    static VecBool<float, W> apply(uint64_t x) noexcept
+    {
+        VecBool<float, W> ret;
+        constexpr auto nregs = VecBool<float, W>::n_regs();
+        constexpr auto reg_lanes = VecBool<float, W>::reg_lanes();
+        constexpr auto lanes_mask = (1ull << reg_lanes) - 1;
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_castsi128_ps(_mm_load_si128(mask_lut(x & lanes_mask)));
+            x >>= reg_lanes;
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct from_mask<double, W>
+{
+    /// mask, lower 2 bits, each bit indicates one element (2 * sizeof(double) = 128)
+    static const __m128i* mask_lut(uint64_t mask) noexcept
+    {
+        using A = typename VecBool<double, W>::arch_t;
+        alignas(A::alignment()) static const uint64_t lut[][4] = {
+            { 0x0000000000000000ul, 0x0000000000000000ul },
+            { 0xFFFFFFFFFFFFFFFFul, 0x0000000000000000ul },
+            { 0x0000000000000000ul, 0xFFFFFFFFFFFFFFFFul },
+            { 0xFFFFFFFFFFFFFFFFul, 0xFFFFFFFFFFFFFFFFul },
+        };
+        assert(!(mask & ~0x3ul) && "inbound mask: [0, 3]");
+        return (const __m128i*)lut[mask];
+    }
+    static VecBool<double, W> apply(uint64_t x) noexcept
+    {
+        VecBool<double, W> ret;
+        constexpr auto nregs = VecBool<double, W>::n_regs();
+        constexpr auto reg_lanes = VecBool<double, W>::reg_lanes();
+        constexpr auto lanes_mask = (1ull << reg_lanes) - 1;
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_castsi128_pd(_mm_load_si128(mask_lut(x & lanes_mask)));
+            x >>= reg_lanes;
+        }
+        return ret;
+    }
+};
+
+template <typename T, size_t W>
+struct from_mask<T, W, REQUIRE_INTEGRAL(T)>
+{
+    using A = typename VecBool<T, W>::arch_t;
+
+    static uint32_t mask_lut32(uint64_t mask) noexcept
+    {
+        alignas(A::alignment()) static const uint32_t lut[] = {
+            0x00000000,
+            0x000000FF,
+            0x0000FF00,
+            0x0000FFFF,
+            0x00FF0000,
+            0x00FF00FF,
+            0x00FFFF00,
+            0x00FFFFFF,
+            0xFF000000,
+            0xFF0000FF,
+            0xFF00FF00,
+            0xFF00FFFF,
+            0xFFFF0000,
+            0xFFFF00FF,
+            0xFFFFFF00,
+            0xFFFFFFFF,
+        };
+        assert(!(mask & ~0xFFFF) && "inbound mask: [0, 0xFFFF]");
+        return lut[mask];
+    }
+    static uint64_t mask_lut64(uint64_t mask) noexcept
+    {
+        alignas(A::alignment()) static const uint64_t lut[] = {
+            0x0000000000000000,
+            0x000000000000FFFF,
+            0x00000000FFFF0000,
+            0x00000000FFFFFFFF,
+            0x0000FFFF00000000,
+            0x0000FFFF0000FFFF,
+            0x0000FFFFFFFF0000,
+            0x0000FFFFFFFFFFFF,
+            0xFFFF000000000000,
+            0xFFFF00000000FFFF,
+            0xFFFF0000FFFF0000,
+            0xFFFF0000FFFFFFFF,
+            0xFFFFFFFF00000000,
+            0xFFFFFFFF0000FFFF,
+            0xFFFFFFFFFFFF0000,
+            0xFFFFFFFFFFFFFFFF,
+        };
+        assert(!(mask & ~0xFF) && "inbound mask: [0, 0xFF]");
+        return lut[mask];
+    }
+
+    static VecBool<T, W> apply(uint64_t x) noexcept
+    {
+        static_check_supported_type<T, 8>();
+
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            VecBool<T, W> ret;
+            constexpr auto nregs = VecBool<T, W>::n_regs();
+            constexpr auto reg_lanes = VecBool<T, W>::reg_lanes();
+            constexpr auto lanes_mask = (1ull << reg_lanes) - 1;
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                auto mask = x & lanes_mask;
+                ret.reg(idx) = _mm_setr_epi32(
+                                    mask_lut32(mask & 0xF),
+                                    mask_lut32((mask >> 4) & 0xF),
+                                    mask_lut32((mask >> 8) & 0xF),
+                                    mask_lut32(mask >> 12)
+                                );
+                x >>= reg_lanes;
+            }
+            return ret;
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            VecBool<T, W> ret;
+            constexpr auto nregs = VecBool<T, W>::n_regs();
+            constexpr auto reg_lanes = VecBool<T, W>::reg_lanes();
+            constexpr auto lanes_mask = (1ull << reg_lanes) - 1;
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                auto mask = x & lanes_mask;
+                ret.reg(idx) = _mm_set_epi64x(
+                                    mask_lut64(mask >> 4),
+                                    mask_lut64(mask & 0xF)
+                                );
+                x >>= reg_lanes;
+            }
+            return ret;
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            return {};
+            //return sse::cast<uint64_t>(sse::from_mask<float, W>::apply(x));
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            return {};
+            //return sse::cast<uint64_t>(sse::from_mask<double, W>::apply(x));
+        }
     }
 };
 

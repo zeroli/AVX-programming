@@ -285,11 +285,7 @@ public:
     /// mask operators
     /// Extract a scalar mask representation from this vec bool
     uint64_t to_mask() const noexcept;
-#if 0
-    static VecBool from_mask(uint64_t mask) noexcept {
-        return kernel::from_mask(self_t(), mask, A{});
-    }
-#endif
+    static VecBool from_mask(uint64_t mask) noexcept;
 
     /// comparison operators
     VecBool operator ==(const VecBool& other) const noexcept;
