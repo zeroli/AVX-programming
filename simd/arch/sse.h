@@ -167,9 +167,9 @@ void store_unaligned(T* mem, const Vec<T, W>& x, requires_arch<SSE>) noexcept
 }
 
 template <typename T, size_t W>
-uint64_t mask(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
+uint64_t to_mask(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
 {
-    return sse::mask<T, W>::apply(x);
+    return sse::to_mask<T, W>::apply(x);
 }
 
 #undef DEFINE_SSE_UNARY_OP

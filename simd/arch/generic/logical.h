@@ -103,7 +103,7 @@ VecBool<T, Arch> logical_or(const Vec<T, Arch>& self, const Vec<T, Arch>& other,
 }
 
 template <typename Arch, typename T>
-VecBool<T, Arch> mask(const VecBool<T, Arch>&,  requires<Generic>) noexcept
+VecBool<T, Arch> to_mask(const VecBool<T, Arch>&,  requires<Generic>) noexcept
 {
     alignas(Arch::alignment()) bool buffer[VecBool<T, Arch>::size()];
     self.store_aligned(buffer);

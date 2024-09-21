@@ -234,18 +234,26 @@ TEST(vecbool_sse, test_vecbool_store)
     }
 }
 
-TEST(vecbool_sse, test_vecbool_mask)
+TEST(vecbool_sse, test_vecbool_to_mask)
 {
     {
         simd::VecBool<int8_t, 16> b(true);
-        EXPECT_EQ(0xFFFFFFFF, b.mask());
+        EXPECT_EQ(0xFFFFFFFF, b.to_mask());
     }
     {
         simd::VecBool<int16_t, 8> b(true);
-        EXPECT_EQ(0xFFFF, b.mask());
+        EXPECT_EQ(0xFFFF, b.to_mask());
     }
     {
         simd::VecBool<int32_t, 4> b(false, true, true, false);
-        EXPECT_EQ(0b0110, b.mask());
+        EXPECT_EQ(0b0110, b.to_mask());
+    }
+    {
+        simd::VecBool<float, 4> b(false, true, true, false);
+        EXPECT_EQ(0b0110, b.to_mask());
+    }
+    {
+        simd::VecBool<double, 4> b(false, true, true, false);
+        EXPECT_EQ(0b0110, b.to_mask());
     }
 }

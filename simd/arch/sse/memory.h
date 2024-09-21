@@ -414,7 +414,7 @@ static uint64_t movemask_epi64(const __m128i& x)
 }  // namespace detail
 
 template <typename T, size_t W>
-struct mask<T, W, REQUIRE_INTEGRAL(T)>
+struct to_mask<T, W, REQUIRE_INTEGRAL(T)>
 {
     static uint64_t apply(const VecBool<T, W>& x) noexcept
     {
@@ -452,7 +452,7 @@ struct mask<T, W, REQUIRE_INTEGRAL(T)>
 };
 
 template <size_t W>
-struct mask<float, W>
+struct to_mask<float, W>
 {
     static uint64_t apply(const VecBool<float, W>& x) noexcept
     {
@@ -468,7 +468,7 @@ struct mask<float, W>
 };
 
 template <size_t W>
-struct mask<double, W>
+struct to_mask<double, W>
 {
     static uint64_t apply(const VecBool<double, W>& x) noexcept
     {

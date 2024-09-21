@@ -217,9 +217,9 @@ VecBool<T, W> VecBool<T, W>::load_unaligned(const bool* mem) noexcept
 }
 
 template <typename T, size_t W>
-uint64_t VecBool<T, W>::mask() const noexcept
+uint64_t VecBool<T, W>::to_mask() const noexcept
 {
-    return kernel::mask(*this, A{});
+    return kernel::to_mask(*this, A{});
 }
 
 template <typename T, size_t W>
