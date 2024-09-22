@@ -81,6 +81,14 @@ VecBool<T, W> bitwise_not(const VecBool<T, W>& x) noexcept
     return kernel::bitwise_not<T, W>(x, A{});
 }
 
+/// static_cast each element of T to U, with same width
+template <typename U, typename T, size_t W>
+Vec<U, W> cast(const Vec<T, W>& x) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::cast<U>(x, A{});
+}
+
 template <typename T, size_t W>
 bool all(const VecBool<T, W>& x) noexcept
 {

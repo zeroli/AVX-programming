@@ -648,11 +648,23 @@ struct from_mask<T, W, REQUIRE_INTEGRAL(T)>
             }
             return ret;
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
-            return {};
-            //return sse::cast<uint64_t>(sse::from_mask<float, W>::apply(x));
+            VecBool<T, W> ret;
+            constexpr auto nregs = VecBool<T, W>::n_regs();
+            auto float_mask = sse::from_mask<float, W>::apply(x);
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_castps_si128(float_mask.reg(idx));
+            }
+            return ret;
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
-            return {};
-            //return sse::cast<uint64_t>(sse::from_mask<double, W>::apply(x));
+            VecBool<T, W> ret;
+            constexpr auto nregs = VecBool<T, W>::n_regs();
+            auto float_mask = sse::from_mask<double, W>::apply(x);
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm_castpd_si128(float_mask.reg(idx));
+            }
+            return ret;
         }
     }
 };

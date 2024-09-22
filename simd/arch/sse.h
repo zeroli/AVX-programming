@@ -178,6 +178,12 @@ VecBool<T, W> from_mask(uint64_t x, requires_arch<SSE>) noexcept
     return sse::from_mask<T, W>::apply(x);
 }
 
+template <typename U, typename T, size_t W>
+Vec<U, W> cast(const Vec<T, W>& x, requires_arch<SSE>) noexcept
+{
+    return sse::cast<U, T, W>::apply(x);
+}
+
 #undef DEFINE_SSE_UNARY_OP
 #undef DEFINE_SSE_BINARY_OP
 #undef DEFINE_SSE_BINARY_COMP_OP

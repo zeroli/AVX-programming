@@ -51,4 +51,7 @@ DECLARE_OP_KERNEL(min);
 DECLARE_OP_KERNEL(all);
 DECLARE_OP_KERNEL(any);
 
+template <typename U, typename T, size_t W, typename Enable = void>
+struct cast;
+
 #undef DECLARE_OP_KERNEL
