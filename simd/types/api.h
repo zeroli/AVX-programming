@@ -247,19 +247,17 @@ std::ostream& operator <<(std::ostream& os, const Vec<T, W>& x) noexcept
     return os << x[size - 1] << "]";
 }
 
-#if 0
-template <typename T, typename Arch>
-std::ostream& operator <<(std::ostream& os, const VecBool<T, Arch>& x) noexcept
+template <typename T, size_t W>
+std::ostream& operator <<(std::ostream& os, const VecBool<T, W>& x) noexcept
 {
-    detail::static_check_supported_config<T, Arch>();
-    constexpr auto size = VecBool<T, Arch>::size();
-    alignas(Arch::alignment()) bool buffer[size];
+    using A = typename VecBool<T, W>::arch_t;
+    constexpr auto size = VecBool<T, W>::size();
+    alignas(A::alignment()) bool buffer[size];
     x.store_aligned(&buffer[0]);
-    os << "(";
+    os << VecBool<T, W>::type() << "[";
     for (auto i = 0; i < size - 1; i++) {
-        os << buffer[i] << ", ";
+        os << (buffer[i] ? 'T' : 'F') << ", ";
     }
-    return os << buffer[size - 1] << ")";
+    return os << (buffer[size - 1] ? 'T' : 'F') << "]";
 }
-#endif
 }  // namespace simd

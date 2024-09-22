@@ -257,6 +257,9 @@ class VecBool
 {
 public:
     static constexpr size_t size() { return W; }
+    static constexpr const char* type() {
+        return traits::vec_type_traits<T, W>::bool_type();
+    }
 
     using A = types::arch_traits_t<T, W>;
     using arch_t = A;

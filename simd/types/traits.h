@@ -81,49 +81,53 @@ struct vec_type_traits<T, W> { \
         /* vi32x4 */ \
         return "v" STR_T "x" stringify(W); \
     } \
+    static constexpr const char* bool_type() { \
+        /* vi32bx4 */ \
+        return "v" STR_T "bx" stringify(W); \
+    } \
 } \
 ///
 
 /// 128bits
-DEFINE_VEC_TYPE_TRAITS(int8_t, 16, "i8");
-DEFINE_VEC_TYPE_TRAITS(uint8_t, 16, "u8");
-DEFINE_VEC_TYPE_TRAITS(int16_t, 8, "i16");
-DEFINE_VEC_TYPE_TRAITS(uint16_t, 8, "u16");
-DEFINE_VEC_TYPE_TRAITS(int32_t, 4, "i32");
-DEFINE_VEC_TYPE_TRAITS(uint32_t, 4, "u32");
-DEFINE_VEC_TYPE_TRAITS(int64_t, 2, "i64");
-DEFINE_VEC_TYPE_TRAITS(uint64_t, 2, "u64");
-DEFINE_VEC_TYPE_TRAITS(float, 4, "f32");
-DEFINE_VEC_TYPE_TRAITS(double, 2, "f64");
-DEFINE_VEC_TYPE_TRAITS(std::complex<float>, 2, "cf32");
+DEFINE_VEC_TYPE_TRAITS(int8_t,   16, "i8" );
+DEFINE_VEC_TYPE_TRAITS(uint8_t,  16, "u8" );
+DEFINE_VEC_TYPE_TRAITS(int16_t,   8, "i16");
+DEFINE_VEC_TYPE_TRAITS(uint16_t,  8, "u16");
+DEFINE_VEC_TYPE_TRAITS(int32_t,   4, "i32");
+DEFINE_VEC_TYPE_TRAITS(uint32_t,  4, "u32");
+DEFINE_VEC_TYPE_TRAITS(int64_t,   2, "i64");
+DEFINE_VEC_TYPE_TRAITS(uint64_t,  2, "u64");
+DEFINE_VEC_TYPE_TRAITS(float,     4, "f32");
+DEFINE_VEC_TYPE_TRAITS(double,    2, "f64");
+DEFINE_VEC_TYPE_TRAITS(std::complex<float>,  2, "cf32");
 DEFINE_VEC_TYPE_TRAITS(std::complex<double>, 1, "cf64");
 
 /// 256bits
-DEFINE_VEC_TYPE_TRAITS(int8_t, 32, "i8");
-DEFINE_VEC_TYPE_TRAITS(uint8_t, 32, "u8");
-DEFINE_VEC_TYPE_TRAITS(int16_t, 16, "i16");
+DEFINE_VEC_TYPE_TRAITS(int8_t,   32, "i8" );
+DEFINE_VEC_TYPE_TRAITS(uint8_t,  32, "u8" );
+DEFINE_VEC_TYPE_TRAITS(int16_t,  16, "i16");
 DEFINE_VEC_TYPE_TRAITS(uint16_t, 16, "u16");
-DEFINE_VEC_TYPE_TRAITS(int32_t, 8, "i32");
-DEFINE_VEC_TYPE_TRAITS(uint32_t, 8, "u32");
-DEFINE_VEC_TYPE_TRAITS(int64_t, 4, "i64");
-DEFINE_VEC_TYPE_TRAITS(uint64_t, 4, "u64");
-DEFINE_VEC_TYPE_TRAITS(float, 8, "f32");
-DEFINE_VEC_TYPE_TRAITS(double, 4, "f64");
-DEFINE_VEC_TYPE_TRAITS(std::complex<float>, 4, "cf32");
+DEFINE_VEC_TYPE_TRAITS(int32_t,   8, "i32");
+DEFINE_VEC_TYPE_TRAITS(uint32_t,  8, "u32");
+DEFINE_VEC_TYPE_TRAITS(int64_t,   4, "i64");
+DEFINE_VEC_TYPE_TRAITS(uint64_t,  4, "u64");
+DEFINE_VEC_TYPE_TRAITS(float,     8, "f32");
+DEFINE_VEC_TYPE_TRAITS(double,    4, "f64");
+DEFINE_VEC_TYPE_TRAITS(std::complex<float>,  4, "cf32");
 DEFINE_VEC_TYPE_TRAITS(std::complex<double>, 2, "cf64");
 
 /// 512bits
-DEFINE_VEC_TYPE_TRAITS(int8_t, 64, "i8");
-DEFINE_VEC_TYPE_TRAITS(uint8_t, 64, "u8");
-DEFINE_VEC_TYPE_TRAITS(int16_t, 32, "i16");
+DEFINE_VEC_TYPE_TRAITS(int8_t,   64, "i8" );
+DEFINE_VEC_TYPE_TRAITS(uint8_t,  64, "u8" );
+DEFINE_VEC_TYPE_TRAITS(int16_t,  32, "i16");
 DEFINE_VEC_TYPE_TRAITS(uint16_t, 32, "u16");
-DEFINE_VEC_TYPE_TRAITS(int32_t, 16, "i32");
+DEFINE_VEC_TYPE_TRAITS(int32_t,  16, "i32");
 DEFINE_VEC_TYPE_TRAITS(uint32_t, 16, "u32");
-DEFINE_VEC_TYPE_TRAITS(int64_t, 8, "i64");
-DEFINE_VEC_TYPE_TRAITS(uint64_t, 8, "u64");
-DEFINE_VEC_TYPE_TRAITS(float, 16, "f32");
-DEFINE_VEC_TYPE_TRAITS(double, 8, "f64");
-DEFINE_VEC_TYPE_TRAITS(std::complex<float>, 8, "cf32");
+DEFINE_VEC_TYPE_TRAITS(int64_t,   8, "i64");
+DEFINE_VEC_TYPE_TRAITS(uint64_t,  8, "u64");
+DEFINE_VEC_TYPE_TRAITS(float,    16, "f32");
+DEFINE_VEC_TYPE_TRAITS(double,    8, "f64");
+DEFINE_VEC_TYPE_TRAITS(std::complex<float>,  8, "cf32");
 DEFINE_VEC_TYPE_TRAITS(std::complex<double>, 4, "cf64");
 
 }  // namespace traits

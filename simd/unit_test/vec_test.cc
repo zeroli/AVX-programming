@@ -20,15 +20,6 @@ TEST(vec, test_integral)
             EXPECT_EQ(2, b.at(i));
         }
     }
-    {
-        simd::Vec<int32_t, 4> a(1), b(2);
-        std::ostringstream os;
-        os << a;
-        EXPECT_EQ("vi32x4[1, 1, 1, 1]", os.str());
-        os.str("");
-        os << b;
-        EXPECT_EQ("vi32x4[2, 2, 2, 2]", os.str());
-    }
 }
 
 TEST(vec, test_complex)
@@ -108,4 +99,27 @@ TEST(vec, test_alignment)
     // check_vec_aligned<double, 8>();
     // check_vec_aligned<std::complex<float>, 8>();
     // check_vec_aligned<std::complex<double>, 4>();
+}
+
+TEST(vec, test_pretty_print)
+{
+    {
+        simd::Vec<int32_t, 4> a(1), b(2);
+        std::ostringstream os;
+        os << a;
+        EXPECT_EQ("vi32x4[1, 1, 1, 1]", os.str());
+        os.str("");
+        os << b;
+        EXPECT_EQ("vi32x4[2, 2, 2, 2]", os.str());
+    }
+}
+
+TEST(vecbool, test_pretty_print)
+{
+    {
+        simd::VecBool<int32_t, 4> a(true, false, false, true);
+        std::ostringstream os;
+        os << a;
+        EXPECT_EQ("vi32bx4[T, F, F, T]", os.str());
+    }
 }
