@@ -13,7 +13,7 @@
 
 namespace simd {
 /// all SSE instructions
-struct SSE : generic
+struct SSE : Generic
 {
     static constexpr bool supported() noexcept { return SIMD_WITH_SSE; }
     static constexpr bool available() noexcept { return true; }

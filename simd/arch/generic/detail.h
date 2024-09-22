@@ -7,6 +7,9 @@
 
 namespace simd {
 namespace kernel {
+namespace generic {
+
+#if 0
 namespace detail {
 template <typename F, typename Arch, typename T>
 Vec<T, Arch> apply(F&& func, const Vec<T, Arch>& self, const Vec<T, Arch>& other) noexcept
@@ -37,5 +40,7 @@ Vec<T, Arch> apply_transform(F&& func, const Vec<T, Arch>& self) noexcept
     return Vec<T, Arch>::load_aligned(other_buffer);
 }
 }  // namespace detail
+#endif
+}  // namespace generic
 }  // namespace kernel
 }  // namespace simd

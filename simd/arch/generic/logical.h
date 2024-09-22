@@ -4,6 +4,8 @@
 
 namespace simd {
 namespace kernel {
+namespace generic {
+#if 0
 using namespace types;
 
 template <typename Arch, typename T>
@@ -115,6 +117,7 @@ VecBool<T, Arch> to_mask(const VecBool<T, Arch>&,  requires<Generic>) noexcept
     }
     return res;
 }
-
+#endif
+}  // namespace generic
 }  // namespace kernel
 }  // namespace simd

@@ -8,8 +8,11 @@
 
 namespace simd {
 namespace kernel {
+namespace generic {
+
 using namespace types;
 
+#if 0
 template <typename Arch, typename T>
 Vec<T, Arch> bitwise_lshift(const Vec<T, Arch>& self,
     const Vec<T, Arch>& other, requires_arch<Generic>) noexcept
@@ -207,5 +210,7 @@ Vec<T, Arch> ssub(const Vec<T, Arch>& self, const Vec<float, A>& other)
         return self - diff;
     }
 }
+#endif
+}  // namespace generic
 }  // namespace kernel
 }  // namespace simd

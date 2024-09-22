@@ -4,7 +4,7 @@
 
 namespace simd {
 /// AVX512F instructions
-struct AVX512F : generic
+struct AVX512F : Generic
 {
     static constexpr bool supported() noexcept { return SIMD_WITH_AVX512F; }
     static constexpr bool available() noexcept { return true; }
