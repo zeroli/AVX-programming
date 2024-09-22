@@ -54,6 +54,8 @@ DEFINE_API_BINARY_OP(ge);
 DEFINE_API_BINARY_OP(lt);
 DEFINE_API_BINARY_OP(le);
 
+DEFINE_API_BINARY_OP(copysign);
+
 #undef DEFINE_API_BINARY_OP
 
 /// math operations

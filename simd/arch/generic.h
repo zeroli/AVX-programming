@@ -25,9 +25,20 @@ Vec<T, W> OP(const Vec<T, W>& x, requires_arch<Generic>) noexcept \
 } \
 ///
 
+#define DEFINE_GENERIC_BINARY_OP(OP) \
+template <typename T, size_t W> \
+Vec<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<Generic>) noexcept \
+{ \
+    return generic::OP<T, W>::apply(lhs, rhs); \
+} \
+///
+
 DEFINE_GENERIC_UNARY_OP(sign);
 DEFINE_GENERIC_UNARY_OP(bitofsign);
 
+DEFINE_GENERIC_BINARY_OP(copysign);
+
 #undef DEFINE_GENERIC_UNARY_OP
+#undef DEFINE_GENERIC_BINARY_OP
 }  // namespace kernel
 }  // namespace simd

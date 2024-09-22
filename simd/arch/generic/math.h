@@ -67,6 +67,26 @@ struct bitofsign<T, W, REQUIRE_FLOATING(T)>
         return ret;
     }
 };
+
+/// copysign
+template <typename T, size_t W>
+struct copysign<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept = delete;
+};
+
+template <typename T, size_t W>
+struct copysign<T, W, REQUIRE_FLOATING(T)>
+{
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        using A = typename Vec<T, W>::arch_t;
+
+        using vec_t = Vec<T, W>;
+        vec_t ret = kernel::abs(lhs, A{}) | generic::bitofsign<T, W>::apply(rhs);
+        return ret;
+    }
+};
 }  // namespace generic
 }  // namespace kernel
 }  // namespace simd

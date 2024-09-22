@@ -50,3 +50,17 @@ TEST(vec_op_generic, test_math_bitofsign)
         EXPECT_TRUE(bits::at_msb(c[3]) == false);
     }
 }
+
+TEST(vec_op_generic, test_math_copysign)
+{
+    {
+        simd::Vec<float, 4> a(2), b(+1, -1, +1, -1), p(+2, -2, +2, -2);
+        auto c = simd::copysign(a, b);
+        EXPECT_TRUE(simd::all(c == p));
+    }
+    {
+        simd::Vec<double, 4> a(2), b(+1, -1, +1, -1), p(+2, -2, +2, -2);
+        auto c = simd::copysign(a, b);
+        EXPECT_TRUE(simd::all(c == p));
+    }
+}
