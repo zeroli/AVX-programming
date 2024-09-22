@@ -50,6 +50,7 @@ DECLARE_OP_KERNEL(max);
 DECLARE_OP_KERNEL(min);
 DECLARE_OP_KERNEL(all);
 DECLARE_OP_KERNEL(any);
+DECLARE_OP_KERNEL(select);
 
 template <typename U, typename T, size_t W, typename Enable = void>
 struct cast;

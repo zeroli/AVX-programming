@@ -104,6 +104,13 @@ bool any(const VecBool<T, W>& x) noexcept
 }
 
 template <typename T, size_t W>
+Vec<T, W> select(const VecBool<T, W>& cond, const Vec<T, W>& x, const Vec<T, W>& y) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::select<T, W>(cond, x, y, A{});
+}
+
+template <typename T, size_t W>
 Vec<T, W> broadcast(T v) noexcept
 {
     using A = typename VecBool<T, W>::arch_t;

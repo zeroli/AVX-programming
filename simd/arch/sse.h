@@ -184,6 +184,12 @@ Vec<U, W> cast(const Vec<T, W>& x, requires_arch<SSE>) noexcept
     return sse::cast<U, T, W>::apply(x);
 }
 
+template <typename T, size_t W>
+Vec<T, W> select(const VecBool<T, W>& cond, const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
+{
+    return sse::select<T, W>::apply(cond, lhs, rhs);
+}
+
 #undef DEFINE_SSE_UNARY_OP
 #undef DEFINE_SSE_BINARY_OP
 #undef DEFINE_SSE_BINARY_COMP_OP

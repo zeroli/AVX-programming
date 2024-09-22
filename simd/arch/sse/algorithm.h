@@ -28,23 +28,25 @@ struct min<T, W, REQUIRE_INTEGRAL(T)>
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
                 ret.reg(idx) = is_signed
-                                    ? _mm_min_epi8(lhs.reg(idx), rhs.reg(idx))
-                                    : _mm_min_epu8(lhs.reg(idx), rhs.reg(idx));
+                                ? _mm_min_epi8(lhs.reg(idx), rhs.reg(idx))
+                                : _mm_min_epu8(lhs.reg(idx), rhs.reg(idx));
             }
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
                 ret.reg(idx) = is_signed
-                                    ? _mm_min_epi16(lhs.reg(idx), rhs.reg(idx))
-                                    : _mm_min_epu16(lhs.reg(idx), rhs.reg(idx));
+                                ? _mm_min_epi16(lhs.reg(idx), rhs.reg(idx))
+                                : _mm_min_epu16(lhs.reg(idx), rhs.reg(idx));
             }
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
                 ret.reg(idx) = is_signed
-                                    ? _mm_min_epi32(lhs.reg(idx), rhs.reg(idx))
-                                    : _mm_min_epu32(lhs.reg(idx), rhs.reg(idx));
+                                ? _mm_min_epi32(lhs.reg(idx), rhs.reg(idx))
+                                : _mm_min_epu32(lhs.reg(idx), rhs.reg(idx));
             }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            assert(0 && "not implemented yet");
         }
         return ret;
     }
@@ -112,6 +114,8 @@ struct max<T, W, REQUIRE_INTEGRAL(T)>
                                     ? _mm_max_epi32(lhs.reg(idx), rhs.reg(idx))
                                     : _mm_max_epu32(lhs.reg(idx), rhs.reg(idx));
             }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            assert(0 && "not implemented yet");
         }
         return ret;
     }
@@ -238,6 +242,63 @@ struct any<T, W, REQUIRE_INTEGRAL(T)>
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret |= !_mm_testz_si128(self.reg(idx),self.reg(idx));
+        }
+        return ret;
+    }
+};
+
+/// select
+template <typename T, size_t W>
+struct select<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static Vec<T, W> apply(const VecBool<T, W>& cond, const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        static_check_supported_type<T, 8>();
+
+        Vec<T, W> ret;
+        constexpr auto nregs = VecBool<T, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_or_si128(
+                            _mm_and_si128(cond.reg(idx), lhs.reg(idx)),
+                            _mm_andnot_si128(cond.reg(idx), rhs.reg(idx))
+                        );
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct select<float, W>
+{
+    static Vec<float, W> apply(const VecBool<float, W>& cond, const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
+    {
+        Vec<float, W> ret;
+        constexpr auto nregs = VecBool<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_or_ps(
+                            _mm_and_ps(cond.reg(idx), lhs.reg(idx)),
+                            _mm_andnot_ps(cond.reg(idx), rhs.reg(idx))
+                        );
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct select<double, W>
+{
+    static Vec<double, W> apply(const VecBool<double, W>& cond, const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
+    {
+        Vec<double, W> ret;
+        constexpr auto nregs = VecBool<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_or_pd(
+                            _mm_and_pd(cond.reg(idx), lhs.reg(idx)),
+                            _mm_andnot_pd(cond.reg(idx), rhs.reg(idx))
+                        );
         }
         return ret;
     }
