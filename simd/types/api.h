@@ -616,6 +616,20 @@ Vec<T, W> min(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
     return kernel::min<T, W>(x, y, A{});
 }
 
+template <typename T, size_t W>
+Vec<T, W> ceil(const Vec<T, W>& x) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::ceil<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+Vec<T, W> floor(const Vec<T, W>& x) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::floor<T, W>(x, A{});
+}
+
 #if 0
 template <typename B>
 B minus_infinity()

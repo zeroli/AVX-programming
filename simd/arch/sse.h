@@ -88,6 +88,8 @@ DEFINE_SSE_UNARY_OP(neg);
 
 DEFINE_SSE_UNARY_OP(abs);
 DEFINE_SSE_UNARY_OP(sqrt);
+DEFINE_SSE_UNARY_OP(ceil);
+DEFINE_SSE_UNARY_OP(floor);
 
 template <typename T, size_t W>
 VecBool<T, W> bitwise_not(const VecBool<T, W>& self, requires_arch<SSE>) noexcept
