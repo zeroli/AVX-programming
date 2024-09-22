@@ -277,10 +277,13 @@ struct select<float, W>
         constexpr auto nregs = VecBool<float, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_blendv_ps(rhs.reg(idx), lhs.reg(idx), cond.reg(idx));
+            #if 0  // naive implementation before sse4.2
             ret.reg(idx) = _mm_or_ps(
                             _mm_and_ps(cond.reg(idx), lhs.reg(idx)),
                             _mm_andnot_ps(cond.reg(idx), rhs.reg(idx))
                         );
+            #endif
         }
         return ret;
     }
@@ -295,10 +298,13 @@ struct select<double, W>
         constexpr auto nregs = VecBool<double, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_blendv_pd(rhs.reg(idx), lhs.reg(idx), cond.reg(idx));
+            #if 0  // naive implementation before sse4.2
             ret.reg(idx) = _mm_or_pd(
                             _mm_and_pd(cond.reg(idx), lhs.reg(idx)),
                             _mm_andnot_pd(cond.reg(idx), rhs.reg(idx))
                         );
+            #endif
         }
         return ret;
     }
