@@ -13,6 +13,7 @@ DECLARE_OP_KERNEL(neg);
 
 /// memory IO kernels
 DECLARE_OP_KERNEL(set);
+DECLARE_OP_KERNEL(setzero);
 DECLARE_OP_KERNEL(to_mask);
 DECLARE_OP_KERNEL(from_mask);
 DECLARE_OP_KERNEL(load_aligned);

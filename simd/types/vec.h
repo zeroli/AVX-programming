@@ -43,6 +43,8 @@ public:
     template <size_t... Ws>
     Vec(const Vec<T, Ws>&... vecs) noexcept;
 
+    void clear() noexcept;
+
     template <typename U>
     static Vec broadcast(U val) noexcept {
         return Vec(static_cast<T>(val));

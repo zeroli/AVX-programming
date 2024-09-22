@@ -115,6 +115,12 @@ Vec<T, W> broadcast(T val, requires_arch<SSE>) noexcept
     return sse::broadcast<T, W>::apply(val);
 }
 
+template <typename T, size_t W>
+Vec<T, W> setzero(requires_arch<SSE>) noexcept
+{
+    return sse::setzero<T, W>::apply();
+}
+
 template <typename T, size_t W,
     REQUIRES((!std::is_same<T, bool>::value))>
 Vec<T, W> set(T v0, T v1, requires_arch<SSE>) noexcept

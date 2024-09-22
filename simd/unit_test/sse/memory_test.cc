@@ -2,6 +2,31 @@
 
 #include "simd/simd.h"
 
+TEST(vec_op_sse, test_memory_clear)
+{
+    {
+        simd::Vec<int32_t, 4> a(1);
+        a.clear();
+        for (int i = 0; i < 4; i++) {
+            EXPECT_EQ(0, a[i]);
+        }
+    }
+    {
+        simd::Vec<float, 4> a(1);
+        a.clear();
+        for (int i = 0; i < 4; i++) {
+            EXPECT_FLOAT_EQ(0, a[i]);
+        }
+    }
+    {
+        simd::Vec<double, 4> a(1);
+        a.clear();
+        for (int i = 0; i < 4; i++) {
+            EXPECT_FLOAT_EQ(0, a[i]);
+        }
+    }
+}
+
 TEST(vec_op_sse, test_memory_load_aligned)
 {
     {

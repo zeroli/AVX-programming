@@ -88,6 +88,12 @@ Vec<T, W>::Vec(const Vec<T, Ws>&... vecs) noexcept
 }
 
 template <typename T, size_t W>
+void Vec<T, W>::clear() noexcept
+{
+    *this = kernel::setzero<T, W>(A{});
+}
+
+template <typename T, size_t W>
 template <typename U>
 void Vec<T, W>::store_aligned(U* mem) const noexcept
 {
@@ -122,14 +128,12 @@ Vec<T, W> Vec<T, W>::load_unaligned(const U* mem) noexcept
 template <typename T, size_t W>
 Vec<T, W> Vec<T, W>::operator ~() const noexcept
 {
-    using A = typename Vec<T, W>::arch_t;
     return kernel::bitwise_not<T, W>(*this, A{});
 }
 
 template <typename T, size_t W>
 Vec<T, W> Vec<T, W>::operator -() const noexcept
 {
-    using A = typename Vec<T, W>::arch_t;
     return kernel::neg<T, W>(*this, A{});
 }
 

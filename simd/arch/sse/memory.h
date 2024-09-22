@@ -9,6 +9,8 @@ namespace sse {
 
 using namespace types;
 
+/// broadcast
+/// sse doesn't provide `broadcast` instr, use `set1` instead
 template <typename T, size_t W>
 struct broadcast<T, W, REQUIRE_INTEGRAL(T)>
 {
@@ -17,7 +19,7 @@ struct broadcast<T, W, REQUIRE_INTEGRAL(T)>
         static_check_supported_type<T, 8>();
 
         Vec<T, W> ret;
-        constexpr int nregs = Vec<T, W>::n_regs();
+        constexpr auto nregs = Vec<T, W>::n_regs();
         SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
@@ -49,7 +51,7 @@ struct broadcast<float, W>
     static Vec<float, W> apply(float val) noexcept
     {
         Vec<float, W> ret;
-        constexpr int nregs = Vec<float, W>::n_regs();
+        constexpr auto nregs = Vec<float, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm_set1_ps(val);
@@ -64,7 +66,7 @@ struct broadcast<double, W>
     static Vec<double, W> apply(double val) noexcept
     {
         Vec<double, W> ret;
-        constexpr int nregs = Vec<double, W>::n_regs();
+        constexpr auto nregs = Vec<double, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm_set1_pd(val);
@@ -73,6 +75,55 @@ struct broadcast<double, W>
     }
 };
 
+/// setzero
+template <typename T, size_t W>
+struct setzero<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static Vec<T, W> apply() noexcept
+    {
+        static_check_supported_type<T, 8>();
+
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_setzero_si128();
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct setzero<float, W>
+{
+    static Vec<float, W> apply() noexcept
+    {
+        Vec<float, W> ret;
+        constexpr auto nregs = Vec<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_setzero_ps();
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct setzero<double, W>
+{
+    static Vec<double, W> apply() noexcept
+    {
+        Vec<double, W> ret;
+        constexpr auto nregs = Vec<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm_setzero_pd();
+        }
+        return ret;
+    }
+};
+
+/// set individual elements
 template <typename T, size_t W>
 struct set<T, W, REQUIRE_INTEGRAL(T)>
 {
@@ -133,7 +184,7 @@ struct set<float, W>
     static Vec<float, W> apply(float v0, float v1, float v2, float v3, float v4, float v5, float v6, float v7) noexcept
     {
         Vec<float, W> ret;
-        constexpr int nregs = Vec<float, W>::n_regs();
+        constexpr auto nregs = Vec<float, W>::n_regs();
         ret.reg(0) = _mm_set_ps(v3, v2, v1, v0);
         ret.reg(1) = _mm_set_ps(v7, v6, v5, v4);
         return ret;
@@ -142,7 +193,7 @@ struct set<float, W>
                                             float v8, float v9, float v10, float v11, float v12, float v13, float v14, float v15) noexcept
     {
         Vec<float, W> ret;
-        constexpr int nregs = Vec<float, W>::n_regs();
+        constexpr auto nregs = Vec<float, W>::n_regs();
         ret.reg(0) = _mm_set_ps(v3, v2, v1, v0);
         ret.reg(1) = _mm_set_ps(v7, v6, v5, v4);
         ret.reg(2) = _mm_set_ps(v11, v10, v9, v8);
@@ -161,7 +212,7 @@ struct set<double, W>
     static Vec<double, W> apply(double v0, double v1, double v2, double v3) noexcept
     {
         Vec<double, W> ret;
-        constexpr int nregs = Vec<double, W>::n_regs();
+        constexpr auto nregs = Vec<double, W>::n_regs();
         ret.reg(0) = _mm_set_pd(v1, v0);
         ret.reg(1) = _mm_set_pd(v3, v2);
         return ret;
@@ -169,7 +220,7 @@ struct set<double, W>
     static Vec<double, W> apply(double v0, double v1, double v2, double v3, float v4, float v5, float v6, float v7) noexcept
     {
         Vec<double, W> ret;
-        constexpr int nregs = Vec<double, W>::n_regs();
+        constexpr auto nregs = Vec<double, W>::n_regs();
         ret.reg(0) = _mm_set_pd(v1, v0);
         ret.reg(1) = _mm_set_pd(v3, v2);
         ret.reg(2) = _mm_set_pd(v5, v4);
