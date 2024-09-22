@@ -43,6 +43,7 @@ public:
     template <size_t... Ws>
     Vec(const Vec<T, Ws>&... vecs) noexcept;
 
+    /// set all elements to 0
     void clear() noexcept;
 
     template <typename U>
@@ -50,6 +51,7 @@ public:
         return Vec(static_cast<T>(val));
     }
 
+    /// store/load
     template <typename U>
     void store_aligned(U* mem) const noexcept;
     template <typename U>
@@ -59,7 +61,6 @@ public:
     void store(U* mem, aligned_mode) const noexcept {
         store_aligned(mem);
     }
-
     template <typename U>
     void store(U* mem, unaligned_mode) const noexcept {
         store_unaligned(mem);
@@ -67,7 +68,6 @@ public:
 
     template <typename U>
     static Vec load_aligned(const U* mem) noexcept;
-
     template <typename U>
     static Vec load_unaligned(const U* mem) noexcept;
 
@@ -75,10 +75,27 @@ public:
     static Vec load(const U* mem, aligned_mode) noexcept {
         return load_aligned(mem);
     }
-
     template <typename U>
     static Vec load(const U* mem, unaligned_mode) noexcept {
         return load_unaligned(mem);
+    }
+
+    /// short/convenience functions for load/store
+    template <typename U>
+    void load(U* mem) noexcept {
+        *this = load_aligned(mem);
+    }
+    template <typename U>
+    void loadu(U* mem) noexcept {
+        *this = load_unaligned(mem);
+    }
+    template <typename U>
+    void store(U* mem) const noexcept {
+        store_aligned(mem);
+    }
+    template <typename U>
+    void storeu(U* mem) const noexcept {
+        store_unaligned(mem);
     }
 
 #if 0
@@ -96,7 +113,7 @@ public:
     }
 
 #endif
-    // comparison operators
+    /// comparison operators
     friend VecBool<T, W> operator ==(const Vec<T, W>& lhs, const Vec<T, W>& rhs)
     {
         return ops::eq<T, W>(lhs, rhs);
@@ -282,10 +299,25 @@ public:
     template <typename Tp>
     VecBool(const Tp* ptr) = delete;
 
+    /// load/store
     void store_aligned(bool* mem) const noexcept;
     void store_unaligned(bool* mem) const noexcept;
     static VecBool load_aligned(const bool* mem) noexcept;
     static VecBool load_unaligned(const bool* mem) noexcept;
+
+    /// short/convenience functions for load/store
+    void store(bool* mem) const noexcept {
+        store_aligned(mem);
+    }
+    void storeu(bool* mem) const noexcept {
+        store_unaligned(mem);
+    }
+    void load(const bool* mem) noexcept {
+        *this = load_aligned(mem);
+    }
+    void loadu(const bool* mem) noexcept {
+        *this = load_unaligned(mem);
+    }
 
     /// mask operators
     /// Extract a scalar mask representation from this vec bool
