@@ -26,6 +26,7 @@ Vec<T, W> OP(const Vec<T, W>& x, requires_arch<Generic>) noexcept \
 ///
 
 DEFINE_GENERIC_UNARY_OP(sign);
+DEFINE_GENERIC_UNARY_OP(bitofsign);
 
 #undef DEFINE_GENERIC_UNARY_OP
 }  // namespace kernel

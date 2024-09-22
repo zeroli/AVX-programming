@@ -1,5 +1,7 @@
 #pragma once
 
+#include "simd/arch/constants.h"
+
 #if SIMD_WITH_SSE
 #include "simd/arch/sse.h"
 #endif

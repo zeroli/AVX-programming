@@ -47,6 +47,7 @@ DECLARE_OP_KERNEL(sqrt);
 DECLARE_OP_KERNEL(ceil);
 DECLARE_OP_KERNEL(floor);
 DECLARE_OP_KERNEL(sign);
+DECLARE_OP_KERNEL(bitofsign);
 
 /// algorithm kernels
 DECLARE_OP_KERNEL(max);

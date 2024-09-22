@@ -40,6 +40,33 @@ struct sign<T, W, REQUIRE_FLOATING(T)>
     }
 };
 
+/// bitofsign
+template <typename T, size_t W>
+struct bitofsign<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static Vec<T, W> apply(const Vec<T, W>& x) noexcept
+    {
+        static_check_supported_type<T, 8>();
+
+        using vec_t = Vec<T, W>;
+        if (std::is_unsigned<T>::value) {
+            return vec_t(0);
+        } else {
+            return x & vec_t(bits::signmask<T>());
+        }
+    }
+};
+
+template <typename T, size_t W>
+struct bitofsign<T, W, REQUIRE_FLOATING(T)>
+{
+    static Vec<T, W> apply(const Vec<T, W>& x) noexcept
+    {
+        using vec_t = Vec<T, W>;
+        vec_t ret = x & constants::signmask<vec_t>();
+        return ret;
+    }
+};
 }  // namespace generic
 }  // namespace kernel
 }  // namespace simd

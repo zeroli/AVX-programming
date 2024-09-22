@@ -52,6 +52,12 @@ T one_zeros()
     return t;
 }
 
+template <typename T>
+T signmask()
+{
+    return one_zeros<T>();
+}
+
 /// return bit state at msb: true for 1, false for 0
 template <typename T>
 bool at_msb(T d)
