@@ -24,10 +24,6 @@ template <typename T, size_t W>
 Vec<T, W> bitwise_or(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 template <typename T, size_t W>
 Vec<T, W> bitwise_xor(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
-template <typename T, size_t W>
-Vec<T, W> logical_and(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
-template <typename T, size_t W>
-Vec<T, W> logical_or(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;
 
 template <typename T, size_t W>
 VecBool<T, W> eq(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept;

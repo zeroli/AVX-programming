@@ -31,9 +31,6 @@ DECLARE_OP_KERNEL(bitwise_not);
 DECLARE_OP_KERNEL(bitwise_lshift);
 DECLARE_OP_KERNEL(bitwise_rshift);
 
-DECLARE_OP_KERNEL(logical_and);
-DECLARE_OP_KERNEL(logical_or);
-
 /// comparison op kernels
 DECLARE_OP_KERNEL(eq);
 DECLARE_OP_KERNEL(ne);

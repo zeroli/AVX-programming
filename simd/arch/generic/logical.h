@@ -89,22 +89,6 @@ VecBool<T, Arch> ne(const Vec<T, Arch>& self, const Vec<T, Arch>& other, require
 }
 
 template <typename Arch, typename T>
-VecBool<T, Arch> logical_and(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires<Generic>) noexcept
-{
-    return detail::apply([](T x, T y) noexcept {
-        return x && y;
-    }, self, other);
-}
-
-template <typename Arch, typename T>
-VecBool<T, Arch> logical_or(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires<Generic>) noexcept
-{
-    return detail::apply([](T x, T y) noexcept {
-        return x || y;
-    }, self, other);
-}
-
-template <typename Arch, typename T>
 VecBool<T, Arch> to_mask(const VecBool<T, Arch>&,  requires<Generic>) noexcept
 {
     alignas(Arch::alignment()) bool buffer[VecBool<T, Arch>::size()];

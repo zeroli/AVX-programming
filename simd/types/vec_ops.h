@@ -53,19 +53,6 @@ Vec<T, W> bitwise_xor(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
 }
 
 template <typename T, size_t W>
-Vec<T, W> logical_and(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
-{
-    using A = typename Vec<T, W>::arch_t;
-    return kernel::logical_and<W>(lhs, rhs, A{});
-}
-template <typename T, size_t W>
-Vec<T, W> logical_or(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
-{
-    using A = typename Vec<T, W>::arch_t;
-    return kernel::logical_or<W>(lhs, rhs, A{});
-}
-
-template <typename T, size_t W>
 VecBool<T, W> eq(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
 {
     using A = typename Vec<T, W>::arch_t;

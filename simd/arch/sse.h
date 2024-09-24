@@ -54,9 +54,6 @@ Vec<T, W> bitwise_rshift(const Vec<T, W>& lhs, int32_t rhs, requires_arch<SSE>) 
     return sse::bitwise_rshift<T, W>::apply(lhs, rhs);
 }
 
-DEFINE_SSE_BINARY_OP(logical_and);
-DEFINE_SSE_BINARY_OP(logical_or);
-
 #define DEFINE_SSE_BINARY_COMP_OP(OP) \
 template <typename T, size_t W> \
 VecBool<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept \

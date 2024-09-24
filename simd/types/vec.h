@@ -222,14 +222,6 @@ public:
     {
         return ops::bitwise_xor<T, W>(lhs, rhs);
     }
-    friend Vec operator &&(const Vec& lhs, const Vec& rhs) noexcept
-    {
-        return ops::logical_and<T, W>(lhs, rhs);
-    }
-    friend Vec operator ||(const Vec& lhs, const Vec& rhs) noexcept
-    {
-        return ops::logical_or<T, W>(lhs, rhs);
-    }
 };
 
 using vi8x64_t  = Vec<int8_t,  64>;    // 512 bits

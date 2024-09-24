@@ -194,6 +194,21 @@ TEST(vec_sse, test_vec_ctor_from_vecbool)
     }
 }
 
+TEST(vec_sse, test_vec_copy_ctor)
+{
+    {
+        simd::Vec<int32_t, 4> a = 10;
+        simd::Vec<int32_t, 4> b(10);
+        for (int i = 0; i < 4; i++) {
+            EXPECT_EQ(a[i], b[i]);
+        }
+        b = 300;
+        for (int i = 0; i < 4; i++) {
+            EXPECT_EQ(b[i], 300);
+        }
+    }
+}
+
 TEST(vecbool_sse, test_vecbool_load)
 {
     {

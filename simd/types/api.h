@@ -44,9 +44,6 @@ DEFINE_API_BINARY_OP(bitwise_andnot);
 DEFINE_API_BINARY_OP(bitwise_lshift);
 DEFINE_API_BINARY_OP(bitwise_rshift);
 
-DEFINE_API_BINARY_OP(logical_and);
-DEFINE_API_BINARY_OP(logical_or);
-
 DEFINE_API_BINARY_OP(eq);
 DEFINE_API_BINARY_OP(ne);
 DEFINE_API_BINARY_OP(gt);
