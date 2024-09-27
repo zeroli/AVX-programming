@@ -1,5 +1,9 @@
 #pragma once
 
+#include "simd/arch/isa.h"
+#include "simd/types/vec.h"
+#include "simd/types/traits.h"
+
 #define DEFINE_API_BINARY_OP(OP) \
 template <typename T, size_t W> \
 Vec<T, W> OP(const Vec<T, W>& x, const Vec<T, W>& y) noexcept \

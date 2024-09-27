@@ -1,5 +1,7 @@
 #pragma once
 
+#include "simd/api/detail.h"
+
 namespace simd {
 
 template <typename T, size_t W>

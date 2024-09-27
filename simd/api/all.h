@@ -5,10 +5,6 @@
 #include <limits>
 #include <ostream>
 
-#include "simd/arch/isa.h"
-#include "simd/types/vec.h"
-#include "simd/types/traits.h"
-
 #include "simd/api/detail.h"
 #include "simd/api/algorithm.h"
 #include "simd/api/arithmetic.h"
