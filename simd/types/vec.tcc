@@ -5,6 +5,7 @@
 namespace simd {
 namespace types {
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W>& integral_only_ops<T, W>::operator %=(const Vec<T, W>& rhs) noexcept
 {
     using A = typename Vec<T, W>::arch_t;
@@ -12,6 +13,7 @@ Vec<T, W>& integral_only_ops<T, W>::operator %=(const Vec<T, W>& rhs) noexcept
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W>& integral_only_ops<T, W>::operator >>=(int32_t rhs) noexcept
 {
     using A = typename Vec<T, W>::arch_t;
@@ -19,6 +21,7 @@ Vec<T, W>& integral_only_ops<T, W>::operator >>=(int32_t rhs) noexcept
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W>& integral_only_ops<T, W>::operator >>=(const Vec<T, W>& rhs) noexcept
 {
     using A = typename Vec<T, W>::arch_t;
@@ -26,6 +29,7 @@ Vec<T, W>& integral_only_ops<T, W>::operator >>=(const Vec<T, W>& rhs) noexcept
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W>& integral_only_ops<T, W>::operator <<=(int32_t rhs) noexcept
 {
     using A = typename Vec<T, W>::arch_t;
@@ -33,6 +37,7 @@ Vec<T, W>& integral_only_ops<T, W>::operator <<=(int32_t rhs) noexcept
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W>& integral_only_ops<T, W>::operator <<=(const Vec<T, W>& rhs) noexcept
 {
     using A = typename Vec<T, W>::arch_t;
@@ -41,13 +46,15 @@ Vec<T, W>& integral_only_ops<T, W>::operator <<=(const Vec<T, W>& rhs) noexcept
 }  // namespace types
 
 template <typename T, size_t W>
-SIMD_INLINE Vec<T, W>::Vec(T val) noexcept
+SIMD_INLINE
+Vec<T, W>::Vec(T val) noexcept
     : self_t(kernel::broadcast<T, W>(val, A{}))
 {
 }
 
 template <typename T, size_t W>
 template <typename... Ts>
+SIMD_INLINE
 Vec<T, W>::Vec(T val0, T val1, Ts... vals) noexcept
     : self_t(kernel::set<T, W>(val0, val1, static_cast<T>(vals)..., A{}))
 {
@@ -56,6 +63,7 @@ Vec<T, W>::Vec(T val0, T val1, Ts... vals) noexcept
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W>::Vec(const vec_bool_t& b) noexcept
 {
     constexpr int nregs = Vec<T, W>::n_regs();
@@ -67,6 +75,7 @@ Vec<T, W>::Vec(const vec_bool_t& b) noexcept
 
 template <typename T, size_t W>
 template <typename... Regs>
+SIMD_INLINE
 Vec<T, W>::Vec(register_t arg, Regs... others) noexcept
     : base_t({arg, others...})
 {
@@ -76,6 +85,7 @@ Vec<T, W>::Vec(register_t arg, Regs... others) noexcept
 
 template <typename T, size_t W>
 template <size_t... Ws>
+SIMD_INLINE
 Vec<T, W>::Vec(const Vec<T, Ws>&... vecs) noexcept
     : self_t(vecs.reg()...)
 {
@@ -83,6 +93,7 @@ Vec<T, W>::Vec(const Vec<T, Ws>&... vecs) noexcept
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 void Vec<T, W>::clear() noexcept
 {
     *this = kernel::setzero<T, W>(A{});
@@ -90,6 +101,7 @@ void Vec<T, W>::clear() noexcept
 
 template <typename T, size_t W>
 template <typename U>
+SIMD_INLINE
 void Vec<T, W>::store_aligned(U* mem) const noexcept
 {
     assert(is_aligned(mem, A::alignment())
@@ -99,6 +111,7 @@ void Vec<T, W>::store_aligned(U* mem) const noexcept
 
 template <typename T, size_t W>
 template <typename U>
+SIMD_INLINE
 void Vec<T, W>::store_unaligned(U* mem) const noexcept
 {
     kernel::store_unaligned<T, W>((T*)mem, *this, A{});
@@ -106,6 +119,7 @@ void Vec<T, W>::store_unaligned(U* mem) const noexcept
 
 template <typename T, size_t W>
 template <typename U>
+SIMD_INLINE
 Vec<T, W> Vec<T, W>::load_aligned(const U* mem) noexcept
 {
     assert(is_aligned(mem, A::alignment())
@@ -115,18 +129,21 @@ Vec<T, W> Vec<T, W>::load_aligned(const U* mem) noexcept
 
 template <typename T, size_t W>
 template <typename U>
+SIMD_INLINE
 Vec<T, W> Vec<T, W>::load_unaligned(const U* mem) noexcept
 {
     return kernel::load_unaligned<T, W>((const T*)mem, A{});
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W> Vec<T, W>::operator ~() const noexcept
 {
     return kernel::bitwise_not<T, W>(*this, A{});
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W> Vec<T, W>::operator -() const noexcept
 {
     return kernel::neg<T, W>(*this, A{});
@@ -135,6 +152,7 @@ Vec<T, W> Vec<T, W>::operator -() const noexcept
 /// VecBool
 template <typename T, size_t W>
 template <typename... Regs>
+SIMD_INLINE
 VecBool<T, W>::VecBool(register_t arg, Regs... others) noexcept
     : base_t({arg, others...})
 {
@@ -143,6 +161,7 @@ VecBool<T, W>::VecBool(register_t arg, Regs... others) noexcept
 template <typename T, size_t W>
 template <typename... V>
 typename VecBool<T, W>::register_t
+SIMD_INLINE
 VecBool<T, W>::make_register(detail::index_sequence<>, V... v) noexcept
 {
     return kernel::set<T, W>(
@@ -150,6 +169,7 @@ VecBool<T, W>::make_register(detail::index_sequence<>, V... v) noexcept
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 VecBool<T, W>::VecBool(bool val) noexcept
 {
     auto regval = make_register(detail::make_index_sequence<size() - 1>(), val);
@@ -162,6 +182,7 @@ VecBool<T, W>::VecBool(bool val) noexcept
 
 template <typename T, size_t W>
 template <typename... Ts>
+SIMD_INLINE
 VecBool<T, W>::VecBool(bool val0, bool val1, Ts... vals) noexcept
 {
     static_assert(sizeof...(Ts) + 2 == W,
@@ -178,6 +199,7 @@ VecBool<T, W>::VecBool(bool val0, bool val1, Ts... vals) noexcept
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 void VecBool<T, W>::store_aligned(bool* mem) const noexcept
 {
     #pragma unroll
@@ -187,12 +209,14 @@ void VecBool<T, W>::store_aligned(bool* mem) const noexcept
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 void VecBool<T, W>::store_unaligned(bool* mem) const noexcept
 {
     store_aligned(mem);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 VecBool<T, W> VecBool<T, W>::load_aligned(const bool* mem) noexcept
 {
     Vec<T, W> vec;
@@ -210,50 +234,59 @@ VecBool<T, W> VecBool<T, W>::load_aligned(const bool* mem) noexcept
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 VecBool<T, W> VecBool<T, W>::load_unaligned(const bool* mem) noexcept
 {
     return load_aligned(mem);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 uint64_t VecBool<T, W>::to_mask() const noexcept
 {
     return kernel::to_mask(*this, A{});
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 VecBool<T, W> VecBool<T, W>::from_mask(uint64_t mask) noexcept
 {
     return kernel::from_mask<T, W>(mask, A{});
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 VecBool<T, W> VecBool<T, W>::operator ==(const VecBool<T, W>& other) const noexcept
 {
     return kernel::eq<T, W>(*this, other, A{});
 }
 template <typename T, size_t W>
+SIMD_INLINE
 VecBool<T, W> VecBool<T, W>::operator !=(const VecBool<T, W>& other) const noexcept
 {
     return kernel::ne<T, W>(*this, other, A{});
 }
 template <typename T, size_t W>
+SIMD_INLINE
 VecBool<T, W> VecBool<T, W>::operator ~() const noexcept
 {
     return kernel::bitwise_not<T, W>(*this, A{});
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 VecBool<T, W> VecBool<T, W>::operator &(const VecBool& other) const noexcept
 {
     return kernel::bitwise_and<A>(*this, other, A{});
 }
 template <typename T, size_t W>
+SIMD_INLINE
 VecBool<T, W> VecBool<T, W>::operator |(const VecBool<T, W>& other) const noexcept
 {
     return kernel::bitwise_or<T, W>(*this, other, A{});
 }
 template <typename T, size_t W>
+SIMD_INLINE
 VecBool<T, W> VecBool<T, W>::operator ^(const VecBool<T, W>& other) const noexcept
 {
     return kernel::bitwise_xor<T, W>(*this, other, A{});

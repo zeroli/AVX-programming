@@ -13,6 +13,7 @@ using namespace types;
 template <typename T, size_t W>
 struct abs<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& x) noexcept
     {
         static_check_supported_type<T, 4>();
@@ -48,6 +49,7 @@ struct abs<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct abs<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const Vec<float, W>& x) noexcept
     {
         Vec<float, W> ret;
@@ -64,6 +66,7 @@ struct abs<float, W>
 template <size_t W>
 struct abs<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const Vec<double, W>& x) noexcept
     {
         Vec<double, W> ret;
@@ -82,12 +85,14 @@ template <typename T, size_t W>
 struct sqrt<T, W, REQUIRE_INTEGRAL(T)>
 {
     /// non-supported sqrt for integral types
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& x) noexcept = delete;
 };
 
 template <size_t W>
 struct sqrt<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const Vec<float, W>& x) noexcept
     {
         Vec<float, W> ret;
@@ -103,6 +108,7 @@ struct sqrt<float, W>
 template <size_t W>
 struct sqrt<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const Vec<double, W>& x) noexcept
     {
         Vec<double, W> ret;
@@ -119,6 +125,7 @@ struct sqrt<double, W>
 template <typename T, size_t W>
 struct ceil<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& x) noexcept
     {
         return x;
@@ -128,6 +135,7 @@ struct ceil<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct ceil<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const Vec<float, W>& x) noexcept
     {
         Vec<float, W> ret;
@@ -143,6 +151,7 @@ struct ceil<float, W>
 template <size_t W>
 struct ceil<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const Vec<double, W>& x) noexcept
     {
         Vec<double, W> ret;
@@ -159,6 +168,7 @@ struct ceil<double, W>
 template <typename T, size_t W>
 struct floor<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& x) noexcept
     {
         return x;
@@ -168,6 +178,7 @@ struct floor<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct floor<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const Vec<float, W>& x) noexcept
     {
         Vec<float, W> ret;
@@ -183,6 +194,7 @@ struct floor<float, W>
 template <size_t W>
 struct floor<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const Vec<double, W>& x) noexcept
     {
         Vec<double, W> ret;

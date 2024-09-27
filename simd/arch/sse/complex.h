@@ -11,6 +11,7 @@ namespace sse {
 template <size_t W>
 struct add<std::complex<float>, W>
 {
+    SIMD_INLINE
     static Vec<std::complex<float>, W> apply(const Vec<std::complex<float>, W>& lhs, const Vec<std::complex<float>, W>& rhs) noexcept
     {
         return {};
@@ -20,6 +21,7 @@ struct add<std::complex<float>, W>
 template <size_t W>
 struct add<std::complex<double>, W>
 {
+    SIMD_INLINE
     static Vec<std::complex<double>, W> apply(const Vec<std::complex<double>, W>& lhs, const Vec<std::complex<double>, W>& rhs) noexcept
     {
         return {};
@@ -29,6 +31,7 @@ struct add<std::complex<double>, W>
 template <size_t W>
 struct sub<std::complex<float>, W>
 {
+    SIMD_INLINE
     static Vec<std::complex<float>, W> apply(const Vec<std::complex<float>, W>& lhs, const Vec<std::complex<float>, W>& rhs) noexcept
     {
         return {};
@@ -38,6 +41,7 @@ struct sub<std::complex<float>, W>
 template <size_t W>
 struct sub<std::complex<double>, W>
 {
+    SIMD_INLINE
     static Vec<std::complex<double>, W> apply(const Vec<std::complex<double>, W>& lhs, const Vec<std::complex<double>, W>& rhs) noexcept
     {
         return {};
@@ -47,6 +51,7 @@ struct sub<std::complex<double>, W>
 template <size_t W>
 struct broadcast<std::complex<float>, W>
 {
+    SIMD_INLINE
     static Vec<std::complex<float>, W> apply(const std::complex<float>& val) noexcept
     {
         Vec<std::complex<float>, W> ret;
@@ -62,6 +67,7 @@ struct broadcast<std::complex<float>, W>
 template <size_t W>
 struct broadcast<std::complex<double>, W>
 {
+    SIMD_INLINE
     static Vec<std::complex<double>, W> apply(const std::complex<double>& val) noexcept
     {
         Vec<std::complex<double>, W> ret;

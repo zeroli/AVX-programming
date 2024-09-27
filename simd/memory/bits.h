@@ -1,12 +1,15 @@
 #pragma once
 
+#include "simd/config/inline.h"
+
 #include <cstring>
 #include <cstdint>
 
 namespace simd {
 namespace bits {
 template <typename TO, typename FROM>
-inline TO cast(FROM from)
+SIMD_INLINE
+TO cast(FROM from)
 {
     static_assert(sizeof(FROM) == sizeof(TO),
         "bit cast from `FROM` to `TO` must be same size");
@@ -18,7 +21,8 @@ inline TO cast(FROM from)
 /// make one T value with bits pattern:
 /// 111....111
 template <typename T>
-inline T ones()
+SIMD_INLINE
+T ones()
 {
     union {
         char b[sizeof(T)];
@@ -34,7 +38,8 @@ inline T ones()
 /// make one T value with bits pattern:
 /// 0000....000
 template <typename T>
-inline T zeros()
+SIMD_INLINE
+T zeros()
 {
     return T{};
 }
@@ -42,7 +47,8 @@ inline T zeros()
 /// make one T value with bits pattern:
 /// 1000....000
 template <typename T>
-inline T one_zeros()
+SIMD_INLINE
+T one_zeros()
 {
     union {
         char b[sizeof(T)];
@@ -54,14 +60,16 @@ inline T one_zeros()
 }
 
 template <typename T>
-inline T signmask()
+SIMD_INLINE
+T signmask()
 {
     return one_zeros<T>();
 }
 
 /// return bit state at msb: true for 1, false for 0
 template <typename T>
-inline bool at_msb(T d)
+SIMD_INLINE
+bool at_msb(T d)
 {
     union {
         char b[sizeof(T)];
@@ -71,7 +79,8 @@ inline bool at_msb(T d)
     return (b[sizeof(T) - 1] & 0x80) != 0;
 }
 
-inline int count1(uint64_t x)
+SIMD_INLINE
+int count1(uint64_t x)
 {
     int cnt = 0;
     while (x) {
@@ -83,7 +92,8 @@ inline int count1(uint64_t x)
 }  // namespace bits
 
 template <typename TO, typename FROM>
-inline TO bits_cast(FROM from)
+SIMD_INLINE
+TO bits_cast(FROM from)
 {
     return bits::cast<TO>(from);
 }

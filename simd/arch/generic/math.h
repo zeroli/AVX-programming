@@ -13,6 +13,7 @@ using namespace types;
 template <typename T, size_t W>
 struct sign<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& x) noexcept
     {
         static_check_supported_type<T, 8>();
@@ -29,6 +30,7 @@ struct sign<T, W, REQUIRE_INTEGRAL(T)>
 template <typename T, size_t W>
 struct sign<T, W, REQUIRE_FLOATING(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& x) noexcept
     {
         using A = typename Vec<T, W>::arch_t;
@@ -44,6 +46,7 @@ struct sign<T, W, REQUIRE_FLOATING(T)>
 template <typename T, size_t W>
 struct bitofsign<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& x) noexcept
     {
         static_check_supported_type<T, 8>();
@@ -60,6 +63,7 @@ struct bitofsign<T, W, REQUIRE_INTEGRAL(T)>
 template <typename T, size_t W>
 struct bitofsign<T, W, REQUIRE_FLOATING(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& x) noexcept
     {
         using vec_t = Vec<T, W>;
@@ -72,12 +76,14 @@ struct bitofsign<T, W, REQUIRE_FLOATING(T)>
 template <typename T, size_t W>
 struct copysign<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept = delete;
 };
 
 template <typename T, size_t W>
 struct copysign<T, W, REQUIRE_FLOATING(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         using A = typename Vec<T, W>::arch_t;

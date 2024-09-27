@@ -16,6 +16,7 @@ using namespace types;
 template <typename T, size_t W>
 struct none_of<T, W>
 {
+    SIMD_INLINE
     static bool apply(const VecBool<T, W>& x) noexcept
     {
         using A = typename VecBool<T, W>::arch_t;
@@ -28,6 +29,7 @@ struct none_of<T, W>
 template <typename T, size_t W>
 struct some_of<T, W>
 {
+    SIMD_INLINE
     static bool apply(const VecBool<T, W>& x) noexcept
     {
         using A = typename VecBool<T, W>::arch_t;
@@ -40,6 +42,7 @@ struct some_of<T, W>
 template <typename T, size_t W>
 struct hadd<T, W>
 {
+    SIMD_INLINE
     static T apply(const Vec<T, W>& x) noexcept
     {
         T ret{};

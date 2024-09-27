@@ -49,6 +49,7 @@ struct xor_functor {
 template <typename T, size_t W, typename F>
 struct bitwise_op
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         static_check_supported_type<T>();
@@ -141,6 +142,7 @@ inline static __m128i bitwise_srl_int64(const __m128i& x, int32_t y)
 template <typename T, size_t W>
 struct bitwise_lshift<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& x, int32_t y) noexcept
     {
         static_check_supported_type<T>();
@@ -171,6 +173,7 @@ struct bitwise_lshift<T, W, REQUIRE_INTEGRAL(T)>
         }
         return ret;
     }
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
     {
         // TODO:
@@ -180,6 +183,7 @@ struct bitwise_lshift<T, W, REQUIRE_INTEGRAL(T)>
 template <typename T, size_t W>
 struct bitwise_rshift<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& x, int32_t y) noexcept
     {
         static_check_supported_type<T>();
@@ -218,6 +222,7 @@ struct bitwise_rshift<T, W, REQUIRE_INTEGRAL(T)>
         }
         return ret;
     }
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y) noexcept
     {
         // TODO
@@ -228,6 +233,7 @@ struct bitwise_rshift<T, W, REQUIRE_INTEGRAL(T)>
 template <typename T, size_t W>
 struct bitwise_not<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& self) noexcept
     {
         static_check_supported_type<T>();
@@ -241,6 +247,7 @@ struct bitwise_not<T, W, REQUIRE_INTEGRAL(T)>
         }
         return ret;
     }
+    SIMD_INLINE
     static VecBool<T, W> apply(const VecBool<T, W>& self) noexcept
     {
         static_check_supported_type<T>();
@@ -259,6 +266,7 @@ struct bitwise_not<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct bitwise_not<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const Vec<float, W>& self) noexcept
     {
         Vec<float, W> ret;
@@ -270,6 +278,7 @@ struct bitwise_not<float, W>
         }
         return ret;
     }
+    SIMD_INLINE
     static VecBool<float, W> apply(const VecBool<float, W>& self) noexcept
     {
         VecBool<float, W> ret;
@@ -286,6 +295,7 @@ struct bitwise_not<float, W>
 template <size_t W>
 struct bitwise_not<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const Vec<double, W>& self) noexcept
     {
         Vec<double, W> ret;
@@ -297,6 +307,7 @@ struct bitwise_not<double, W>
         }
         return ret;
     }
+    SIMD_INLINE
     static VecBool<double, W> apply(const VecBool<double, W>& self) noexcept
     {
         VecBool<double, W> ret;

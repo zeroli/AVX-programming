@@ -17,6 +17,7 @@ using namespace types;
 template <typename T, size_t W>
 struct add<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         static_check_supported_type<T>();
@@ -51,6 +52,7 @@ struct add<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct add<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         Vec<float, W> ret;
@@ -66,6 +68,7 @@ struct add<float, W>
 template <size_t W>
 struct add<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         Vec<double, W> ret;
@@ -82,6 +85,7 @@ struct add<double, W>
 template <typename T, size_t W>
 struct sub<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         static_check_supported_type<T>();
@@ -116,6 +120,7 @@ struct sub<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct sub<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         Vec<float, W> ret;
@@ -131,6 +136,7 @@ struct sub<float, W>
 template <size_t W>
 struct sub<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         Vec<double, W> ret;
@@ -148,12 +154,14 @@ template <typename T, size_t W>
 struct mul<T, W, REQUIRE_INTEGRAL(T)>
 {
     // TODO
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept = delete;
 };
 
 template <size_t W>
 struct mul<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         Vec<float, W> ret;
@@ -169,6 +177,7 @@ struct mul<float, W>
 template <size_t W>
 struct mul<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         Vec<double, W> ret;
@@ -186,12 +195,14 @@ template <typename T, size_t W>
 struct div<T, W, REQUIRE_INTEGRAL(T)>
 {
     // TODO
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept = delete;
 };
 
 template <size_t W>
 struct div<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         Vec<float, W> ret;
@@ -207,6 +218,7 @@ struct div<float, W>
 template <size_t W>
 struct div<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         Vec<double, W> ret;
@@ -223,6 +235,7 @@ struct div<double, W>
 template <typename T, size_t W>
 struct mod<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept {
         return {};  // TODO
     }
@@ -231,18 +244,21 @@ struct mod<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct mod<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept = delete;
 };
 
 template <size_t W>
 struct mod<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept = delete;
 };
 
 template <typename T, size_t W>
 struct neg<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& self) noexcept
     {
         return sse::sub<T, W>::apply(Vec<T, W>(0), self);
@@ -252,6 +268,7 @@ struct neg<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct neg<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const Vec<float, W>& self) noexcept
     {
         Vec<float, W> ret;
@@ -268,6 +285,7 @@ struct neg<float, W>
 template <size_t W>
 struct neg<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const Vec<double, W>& self) noexcept
     {
         Vec<double, W> ret;

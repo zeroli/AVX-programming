@@ -24,6 +24,7 @@ namespace kernel {
 
 #define DEFINE_SSE_BINARY_OP(OP) \
 template <typename T, size_t W> \
+SIMD_INLINE \
 Vec<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept \
 { \
     return sse::OP<T, W>::apply(lhs, rhs); \
@@ -44,11 +45,13 @@ DEFINE_SSE_BINARY_OP(bitwise_lshift);
 DEFINE_SSE_BINARY_OP(bitwise_rshift);
 
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W> bitwise_lshift(const Vec<T, W>& lhs, int32_t rhs, requires_arch<SSE>) noexcept
 {
     return sse::bitwise_lshift<T, W>::apply(lhs, rhs);
 }
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W> bitwise_rshift(const Vec<T, W>& lhs, int32_t rhs, requires_arch<SSE>) noexcept
 {
     return sse::bitwise_rshift<T, W>::apply(lhs, rhs);
@@ -56,6 +59,7 @@ Vec<T, W> bitwise_rshift(const Vec<T, W>& lhs, int32_t rhs, requires_arch<SSE>) 
 
 #define DEFINE_SSE_BINARY_COMP_OP(OP) \
 template <typename T, size_t W> \
+SIMD_INLINE \
 VecBool<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept \
 { \
     return sse::OP<T, W>::apply(lhs, rhs); \
@@ -74,6 +78,7 @@ DEFINE_SSE_BINARY_OP(min);
 
 #define DEFINE_SSE_UNARY_OP(OP) \
 template <typename T, size_t W> \
+SIMD_INLINE \
 Vec<T, W> OP(const Vec<T, W>& x, requires_arch<SSE>) noexcept \
 { \
     return sse::OP<T, W>::apply(x); \
@@ -89,48 +94,56 @@ DEFINE_SSE_UNARY_OP(ceil);
 DEFINE_SSE_UNARY_OP(floor);
 
 template <typename T, size_t W>
+SIMD_INLINE
 VecBool<T, W> bitwise_not(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
 {
     return sse::bitwise_not<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 bool all_of(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
 {
     return sse::all_of<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 bool any_of(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
 {
     return sse::any_of<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 int popcount(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
 {
     return sse::popcount<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 int find_first_set(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
 {
     return sse::find_first_set<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 int find_last_set(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
 {
     return sse::find_last_set<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W> broadcast(T val, requires_arch<SSE>) noexcept
 {
     return sse::broadcast<T, W>::apply(val);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W> setzero(requires_arch<SSE>) noexcept
 {
     return sse::setzero<T, W>::apply();
@@ -138,6 +151,7 @@ Vec<T, W> setzero(requires_arch<SSE>) noexcept
 
 template <typename T, size_t W,
     REQUIRES((!std::is_same<T, bool>::value))>
+SIMD_INLINE
 Vec<T, W> set(T v0, T v1, requires_arch<SSE>) noexcept
 {
     return sse::set<T, W>::apply(v0, v1);
@@ -145,6 +159,7 @@ Vec<T, W> set(T v0, T v1, requires_arch<SSE>) noexcept
 
 template <typename T, size_t W,
     REQUIRES((!std::is_same<T, bool>::value))>
+SIMD_INLINE
 Vec<T, W> set(T v0, T v1, T v2, T v3, requires_arch<SSE>) noexcept
 {
     return sse::set<T, W>::apply(v0, v1, v2, v3);
@@ -152,6 +167,7 @@ Vec<T, W> set(T v0, T v1, T v2, T v3, requires_arch<SSE>) noexcept
 
 template <typename T, size_t W,
     REQUIRES((!std::is_same<T, bool>::value))>
+SIMD_INLINE
 Vec<T, W> set(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7, requires_arch<SSE>) noexcept
 {
     return sse::set<T, W>::apply(v0, v1, v2, v3, v4, v5, v6, v7);
@@ -159,6 +175,7 @@ Vec<T, W> set(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7, requires_arch<SSE>
 
 template <typename T, size_t W,
     REQUIRES((!std::is_same<T, bool>::value))>
+SIMD_INLINE
 Vec<T, W> set(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7,
                     T v8, T v9, T v10, T v11, T v12, T v13, T v14, T v15, requires_arch<SSE>) noexcept
 {
@@ -166,48 +183,56 @@ Vec<T, W> set(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7,
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W> load_aligned(const T* mem, requires_arch<SSE>) noexcept
 {
     return sse::load_aligned<T, W>::apply(mem);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W> load_unaligned(const T* mem, requires_arch<SSE>) noexcept
 {
     return sse::load_unaligned<T, W>::apply(mem);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 void store_aligned(T* mem, const Vec<T, W>& x, requires_arch<SSE>) noexcept
 {
     sse::store_aligned<T, W>::apply(mem, x);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 void store_unaligned(T* mem, const Vec<T, W>& x, requires_arch<SSE>) noexcept
 {
     sse::store_unaligned<T, W>::apply(mem, x);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 uint64_t to_mask(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
 {
     return sse::to_mask<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 VecBool<T, W> from_mask(uint64_t x, requires_arch<SSE>) noexcept
 {
     return sse::from_mask<T, W>::apply(x);
 }
 
 template <typename U, typename T, size_t W>
+SIMD_INLINE
 Vec<U, W> cast(const Vec<T, W>& x, requires_arch<SSE>) noexcept
 {
     return sse::cast<U, T, W>::apply(x);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W> select(const VecBool<T, W>& cond, const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
 {
     return sse::select<T, W>::apply(cond, lhs, rhs);
@@ -215,24 +240,28 @@ Vec<T, W> select(const VecBool<T, W>& cond, const Vec<T, W>& lhs, const Vec<T, W
 
 /// reduction
 template <typename T, size_t W, typename F>
+SIMD_INLINE
 T reduce(F&& f, const Vec<T, W>& x, requires_arch<SSE>) noexcept
 {
     return sse::reduce<T, W, F>::apply(std::forward<F>(f), x);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 T reduce_sum(const Vec<T, W>& x, requires_arch<SSE>) noexcept
 {
     return sse::reduce_sum<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 T reduce_max(const Vec<T, W>& x, requires_arch<SSE>) noexcept
 {
     return sse::reduce_max<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
+SIMD_INLINE
 T reduce_min(const Vec<T, W>& x, requires_arch<SSE>) noexcept
 {
     return sse::reduce_min<T, W>::apply(x);

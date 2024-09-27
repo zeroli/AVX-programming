@@ -10,17 +10,20 @@ namespace simd {
 namespace constants {
 #define SIMD_DEFINE_CONSTANT(NAME, SINGLE, DOUBLE) \
     template <class T>                              \
-    SIMD_INLINE T NAME() noexcept                  \
+    SIMD_INLINE \
+    T NAME() noexcept                  \
     {                                               \
         return T(NAME<typename T::scalar_t>());   \
     }                                               \
     template <>                                     \
-    SIMD_INLINE float NAME<float>() noexcept       \
+    SIMD_INLINE \
+    float NAME<float>() noexcept       \
     {                                               \
         return SINGLE;                              \
     }                                               \
     template <>                                     \
-    SIMD_INLINE double NAME<double>() noexcept     \
+    SIMD_INLINE \
+    double NAME<double>() noexcept     \
     {                                               \
         return DOUBLE;                              \
     }
@@ -28,17 +31,20 @@ namespace constants {
 
 #define SIMD_DEFINE_CONSTANT_HEX(NAME, SINGLE, DOUBLE) \
     template <class T>                                  \
-    SIMD_INLINE T NAME() noexcept                      \
+    SIMD_INLINE \
+    T NAME() noexcept                      \
     {                                                   \
         return T(NAME<typename T::scalar_t>());       \
     }                                                   \
     template <>                                         \
-    SIMD_INLINE float NAME<float>() noexcept           \
+    SIMD_INLINE \
+    float NAME<float>() noexcept           \
     {                                                   \
         return bits::cast<float>((uint32_t)SINGLE);       \
     }                                                   \
     template <>                                         \
-    SIMD_INLINE double NAME<double>() noexcept         \
+    SIMD_INLINE \
+    double NAME<double>() noexcept         \
     {                                                   \
         return bits::cast<double>((uint64_t)DOUBLE);     \
     }

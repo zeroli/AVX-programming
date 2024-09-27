@@ -17,6 +17,7 @@ using namespace types;
 template <typename T, size_t W>
 struct min<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         static_check_supported_type<T, 4>();
@@ -55,6 +56,7 @@ struct min<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct min<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         Vec<float, W> ret;
@@ -70,6 +72,7 @@ struct min<float, W>
 template <size_t W>
 struct min<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         Vec<double, W> ret;
@@ -86,6 +89,7 @@ struct min<double, W>
 template <typename T, size_t W>
 struct max<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         static_check_supported_type<T, 4>();
@@ -124,6 +128,7 @@ struct max<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct max<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         Vec<float, W> ret;
@@ -139,6 +144,7 @@ struct max<float, W>
 template <size_t W>
 struct max<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         Vec<double, W> ret;
@@ -155,6 +161,7 @@ struct max<double, W>
 template <size_t W>
 struct all_of<float, W>
 {
+    SIMD_INLINE
     static bool apply(const VecBool<float, W>& x) noexcept
     {
         bool ret = true;
@@ -170,6 +177,7 @@ struct all_of<float, W>
 template <size_t W>
 struct all_of<double, W>
 {
+    SIMD_INLINE
     static bool apply(const VecBool<double, W>& x) noexcept
     {
         bool ret = true;
@@ -185,6 +193,7 @@ struct all_of<double, W>
 template <typename T, size_t W>
 struct all_of<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static bool apply(const VecBool<T, W>& x) noexcept
     {
         static_check_supported_type<T>();
@@ -203,6 +212,7 @@ struct all_of<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct any_of<float, W>
 {
+    SIMD_INLINE
     static bool apply(const VecBool<float, W>& x) noexcept
     {
         bool ret = false;
@@ -218,6 +228,7 @@ struct any_of<float, W>
 template <size_t W>
 struct any_of<double, W>
 {
+    SIMD_INLINE
     static bool apply(const VecBool<double, W>& x) noexcept
     {
         bool ret = false;
@@ -233,6 +244,7 @@ struct any_of<double, W>
 template <typename T, size_t W>
 struct any_of<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static bool apply(const VecBool<T, W>& x) noexcept
     {
         static_check_supported_type<T>();
@@ -251,6 +263,7 @@ struct any_of<T, W, REQUIRE_INTEGRAL(T)>
 template <typename T, size_t W>
 struct select<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const VecBool<T, W>& cond, const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         static_check_supported_type<T, 8>();
@@ -271,6 +284,7 @@ struct select<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct select<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const VecBool<float, W>& cond, const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         Vec<float, W> ret;
@@ -292,6 +306,7 @@ struct select<float, W>
 template <size_t W>
 struct select<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const VecBool<double, W>& cond, const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         Vec<double, W> ret;
@@ -314,6 +329,7 @@ struct select<double, W>
 template <size_t W>
 struct popcount<float, W>
 {
+    SIMD_INLINE
     static int apply(const VecBool<float, W>& x) noexcept
     {
         int ret = 0;
@@ -329,6 +345,7 @@ struct popcount<float, W>
 template <size_t W>
 struct popcount<double, W>
 {
+    SIMD_INLINE
     static int apply(const VecBool<double, W>& x) noexcept
     {
         int ret = 0;
@@ -344,6 +361,7 @@ struct popcount<double, W>
 template <typename T, size_t W>
 struct popcount<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static int apply(const VecBool<T, W>& x) noexcept
     {
         static_check_supported_type<T>();
@@ -380,6 +398,7 @@ struct popcount<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct find_first_set<float, W>
 {
+    SIMD_INLINE
     static int apply(const VecBool<float, W>& x) noexcept
     {
         int ret = 0;
@@ -395,6 +414,7 @@ struct find_first_set<float, W>
 template <size_t W>
 struct find_first_set<double, W>
 {
+    SIMD_INLINE
     static int apply(const VecBool<double, W>& x) noexcept
     {
         int ret = 0;
@@ -410,6 +430,7 @@ struct find_first_set<double, W>
 template <typename T, size_t W>
 struct find_first_set<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static int apply(const VecBool<T, W>& x) noexcept
     {
         static_check_supported_type<T>();
@@ -446,6 +467,7 @@ struct find_first_set<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct find_last_set<float, W>
 {
+    SIMD_INLINE
     static int apply(const VecBool<float, W>& x) noexcept
     {
         int ret = 0;
@@ -461,6 +483,7 @@ struct find_last_set<float, W>
 template <size_t W>
 struct find_last_set<double, W>
 {
+    SIMD_INLINE
     static int apply(const VecBool<double, W>& x) noexcept
     {
         int ret = 0;
@@ -476,6 +499,7 @@ struct find_last_set<double, W>
 template <typename T, size_t W>
 struct find_last_set<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static int apply(const VecBool<T, W>& x) noexcept
     {
         static_check_supported_type<T>();
@@ -511,7 +535,8 @@ struct find_last_set<T, W, REQUIRE_INTEGRAL(T)>
 /// reduce_sum
 namespace detail {
 template <typename T>
-SIMD_INLINE T reduce_sum_i32(const __m128i& x) noexcept
+SIMD_INLINE
+T reduce_sum_i32(const __m128i& x) noexcept
 {
     auto tmp1 = _mm_shuffle_epi32(x, 0x0E);
     auto tmp2 = _mm_add_epi32(x, tmp1);
@@ -521,14 +546,16 @@ SIMD_INLINE T reduce_sum_i32(const __m128i& x) noexcept
 }
 
 template <typename T>
-SIMD_INLINE T reduce_sum_i64(const __m128i& x) noexcept
+SIMD_INLINE
+T reduce_sum_i64(const __m128i& x) noexcept
 {
     auto tmp1 = _mm_shuffle_epi32(x, 0x0E);
     auto tmp2 = _mm_add_epi64(x, tmp1);
     return _mm_cvtsi128_si64(tmp2);
 }
 
-SIMD_INLINE float reduce_sum_f32(const __m128& x) noexcept
+SIMD_INLINE
+float reduce_sum_f32(const __m128& x) noexcept
 {
     /// _mm_movehl_ps: CPI=1
     /// _mm_add_ps: CPI=0.5
@@ -545,7 +572,8 @@ SIMD_INLINE float reduce_sum_f32(const __m128& x) noexcept
 #endif
 }
 
-SIMD_INLINE double reduce_sum_f64(const __m128d& x) noexcept
+SIMD_INLINE
+double reduce_sum_f64(const __m128d& x) noexcept
 {
     /// _mm_unpackhi_pd: CPI=1
     /// _mm_add_pd: CPI=0.5
@@ -562,6 +590,7 @@ SIMD_INLINE double reduce_sum_f64(const __m128d& x) noexcept
 template <typename T, size_t W>
 struct reduce_sum<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static T apply(const Vec<T, W>& x) noexcept
     {
         static_check_supported_type<T, 8>();
@@ -590,6 +619,7 @@ struct reduce_sum<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct reduce_sum<float, W>
 {
+    SIMD_INLINE
     static float apply(const Vec<float, W>& x) noexcept
     {
         float ret{};
@@ -605,6 +635,7 @@ struct reduce_sum<float, W>
 template <size_t W>
 struct reduce_sum<double, W>
 {
+    SIMD_INLINE
     static double apply(const Vec<double, W>& x) noexcept
     {
         double ret{};
@@ -621,6 +652,7 @@ struct reduce_sum<double, W>
 template <typename T, size_t W>
 struct reduce_max<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static T apply(const Vec<T, W>& x) noexcept
     {
         static_check_supported_type<T, 8>();
@@ -649,6 +681,7 @@ struct reduce_max<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct reduce_max<float, W>
 {
+    SIMD_INLINE
     static float apply(const Vec<float, W>& x) noexcept
     {
         float ret{};
@@ -664,6 +697,7 @@ struct reduce_max<float, W>
 template <size_t W>
 struct reduce_max<double, W>
 {
+    SIMD_INLINE
     static double apply(const Vec<double, W>& x) noexcept
     {
         double ret{};
@@ -680,6 +714,7 @@ struct reduce_max<double, W>
 template <typename T, size_t W>
 struct reduce_min<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static T apply(const Vec<T, W>& x) noexcept
     {
         static_check_supported_type<T, 8>();
@@ -708,6 +743,7 @@ struct reduce_min<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct reduce_min<float, W>
 {
+    SIMD_INLINE
     static float apply(const Vec<float, W>& x) noexcept
     {
         float ret{};
@@ -723,6 +759,7 @@ struct reduce_min<float, W>
 template <size_t W>
 struct reduce_min<double, W>
 {
+    SIMD_INLINE
     static double apply(const Vec<double, W>& x) noexcept
     {
         double ret{};
@@ -739,6 +776,7 @@ struct reduce_min<double, W>
 template <typename T, size_t W, typename F>
 struct reduce<T, W, F, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static T apply(F&& f, const Vec<T, W>& x) noexcept
     {
         static_check_supported_type<T, 8>();
@@ -767,6 +805,7 @@ struct reduce<T, W, F, REQUIRE_INTEGRAL(T)>
 template <size_t W, typename F>
 struct reduce<float, W, F>
 {
+    SIMD_INLINE
     static float apply(F&& f, const Vec<float, W>& x) noexcept
     {
         float ret{};
@@ -782,6 +821,7 @@ struct reduce<float, W, F>
 template <size_t W, typename F>
 struct reduce<double, W, F>
 {
+    SIMD_INLINE
     static double apply(F&& f, const Vec<double, W>& x) noexcept
     {
         double ret{};

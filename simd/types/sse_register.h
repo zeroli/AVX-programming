@@ -15,10 +15,15 @@ namespace simd {
 /// all SSE instructions
 struct SSE : Generic
 {
+    SIMD_INLINE
     static constexpr bool supported() noexcept { return SIMD_WITH_SSE; }
+    SIMD_INLINE
     static constexpr bool available() noexcept { return true; }
+    SIMD_INLINE
     static constexpr size_t alignment() noexcept { return 16; }
+    SIMD_INLINE
     static constexpr bool requires_alignment() noexcept { return true; }
+    SIMD_INLINE
     static constexpr const char* name() noexcept { return "SSE"; }
 };
 }  // namespace simd

@@ -15,6 +15,7 @@ using namespace types;
 template <typename T, size_t W>
 struct eq<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static VecBool<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         static_check_supported_type<T>();
@@ -44,6 +45,7 @@ struct eq<T, W, REQUIRE_INTEGRAL(T)>
         }
         return ret;
     }
+    SIMD_INLINE
     static VecBool<T, W> apply(const VecBool<T, W>& lhs, const VecBool<T, W>& rhs) noexcept
     {
         static_check_supported_type<T>();
@@ -59,6 +61,7 @@ struct eq<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct eq<float, W>
 {
+    SIMD_INLINE
     static VecBool<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         VecBool<float, W> ret;
@@ -69,6 +72,7 @@ struct eq<float, W>
         }
         return ret;
     }
+    SIMD_INLINE
     static VecBool<float, W> apply(const VecBool<float, W>& lhs, const VecBool<float, W>& rhs) noexcept
     {
         VecBool<float, W> ret;
@@ -88,6 +92,7 @@ struct eq<float, W>
 template <size_t W>
 struct eq<double, W>
 {
+    SIMD_INLINE
     static VecBool<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         VecBool<double, W> ret;
@@ -98,6 +103,7 @@ struct eq<double, W>
         }
         return ret;
     }
+    SIMD_INLINE
     static VecBool<double, W> apply(const VecBool<double, W>& lhs, const VecBool<double, W>& rhs) noexcept
     {
         VecBool<double, W> ret;
@@ -118,10 +124,12 @@ struct eq<double, W>
 template <typename T, size_t W>
 struct ne<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static VecBool<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         return ~(lhs == rhs);
     }
+    SIMD_INLINE
     static VecBool<T, W> apply(const VecBool<T, W>& lhs, const VecBool<T, W>& rhs) noexcept
     {
         static_check_supported_type<T>();
@@ -137,6 +145,7 @@ struct ne<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct ne<float, W>
 {
+    SIMD_INLINE
     static VecBool<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         VecBool<float, W> ret;
@@ -147,6 +156,7 @@ struct ne<float, W>
         }
         return ret;
     }
+    SIMD_INLINE
     static VecBool<float, W> apply(const VecBool<float, W>& lhs, const VecBool<float, W>& rhs) noexcept
     {
         VecBool<float, W> ret;
@@ -161,6 +171,7 @@ struct ne<float, W>
 template <size_t W>
 struct ne<double, W>
 {
+    SIMD_INLINE
     static VecBool<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         VecBool<double, W> ret;
@@ -171,6 +182,7 @@ struct ne<double, W>
         }
         return ret;
     }
+    SIMD_INLINE
     static VecBool<double, W> apply(const VecBool<double, W>& lhs, const VecBool<double, W>& rhs) noexcept
     {
         VecBool<double, W> ret;
@@ -186,6 +198,7 @@ struct ne<double, W>
 template <size_t W>
 struct ge<float, W>
 {
+    SIMD_INLINE
     static VecBool<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         VecBool<float, W> ret;
@@ -201,6 +214,7 @@ struct ge<float, W>
 template <size_t W>
 struct ge<double, W>
 {
+    SIMD_INLINE
     static VecBool<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         VecBool<double, W> ret;
@@ -217,6 +231,7 @@ struct ge<double, W>
 template <size_t W>
 struct le<float, W>
 {
+    SIMD_INLINE
     static VecBool<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         VecBool<float, W> ret;
@@ -232,6 +247,7 @@ struct le<float, W>
 template <size_t W>
 struct le<double, W>
 {
+    SIMD_INLINE
     static VecBool<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         VecBool<double, W> ret;
@@ -248,6 +264,7 @@ struct le<double, W>
 template <size_t W>
 struct lt<float, W>
 {
+    SIMD_INLINE
     static VecBool<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         VecBool<float, W> ret;
@@ -263,6 +280,7 @@ struct lt<float, W>
 template <size_t W>
 struct lt<double, W>
 {
+    SIMD_INLINE
     static VecBool<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         VecBool<double, W> ret;
@@ -279,6 +297,7 @@ struct lt<double, W>
 template <size_t W>
 struct gt<float, W>
 {
+    SIMD_INLINE
     static VecBool<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         VecBool<float, W> ret;
@@ -294,6 +313,7 @@ struct gt<float, W>
 template <size_t W>
 struct gt<double, W>
 {
+    SIMD_INLINE
     static VecBool<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         VecBool<double, W> ret;
@@ -309,6 +329,7 @@ struct gt<double, W>
 template <typename T, size_t W>
 struct lt<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static VecBool<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         static_check_supported_type<T>();
@@ -365,6 +386,7 @@ struct lt<T, W, REQUIRE_INTEGRAL(T)>
 template <typename T, size_t W>
 struct le<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static VecBool<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         return ~(sse::lt<T, W>::apply(rhs, lhs));
@@ -374,6 +396,7 @@ struct le<T, W, REQUIRE_INTEGRAL(T)>
 template <typename T, size_t W>
 struct gt<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static VecBool<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         static_check_supported_type<T>();
@@ -430,6 +453,7 @@ struct gt<T, W, REQUIRE_INTEGRAL(T)>
 template <typename T, size_t W>
 struct ge<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static VecBool<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         return ~(sse::gt<T, W>::apply(rhs, lhs));

@@ -6,10 +6,15 @@ namespace simd {
 /// AVX512F instructions
 struct AVX512F : Generic
 {
+    SIMD_INLINE
     static constexpr bool supported() noexcept { return SIMD_WITH_AVX512F; }
+    SIMD_INLINE
     static constexpr bool available() noexcept { return true; }
+    SIMD_INLINE
     static constexpr size_t alignment() noexcept { return 64; }
+    SIMD_INLINE
     static constexpr bool requires_alignment() noexcept { return true; }
+    SIMD_INLINE
     static constexpr const char* name() noexcept { return "AVX512F"; }
 };
 }  // namespace simd

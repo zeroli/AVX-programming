@@ -14,6 +14,7 @@ using namespace types;
 template <typename T, size_t W>
 struct broadcast<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(T val) noexcept
     {
         static_check_supported_type<T, 8>();
@@ -48,6 +49,7 @@ struct broadcast<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct broadcast<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(float val) noexcept
     {
         Vec<float, W> ret;
@@ -63,6 +65,7 @@ struct broadcast<float, W>
 template <size_t W>
 struct broadcast<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(double val) noexcept
     {
         Vec<double, W> ret;
@@ -79,6 +82,7 @@ struct broadcast<double, W>
 template <typename T, size_t W>
 struct setzero<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply() noexcept
     {
         static_check_supported_type<T, 8>();
@@ -96,6 +100,7 @@ struct setzero<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct setzero<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply() noexcept
     {
         Vec<float, W> ret;
@@ -111,6 +116,7 @@ struct setzero<float, W>
 template <size_t W>
 struct setzero<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply() noexcept
     {
         Vec<double, W> ret;
@@ -127,12 +133,14 @@ struct setzero<double, W>
 template <typename T, size_t W>
 struct set<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(T v0, T v1) noexcept
     {
         Vec<T, W> ret;
         ret.reg(0) = _mm_set_epi64x(v1, v0);
         return ret;
     }
+    SIMD_INLINE
     static Vec<T, W> apply(T v0, T v1, T v2, T v3) noexcept
     {
         Vec<T, W> ret;
@@ -146,6 +154,7 @@ struct set<T, W, REQUIRE_INTEGRAL(T)>
         }
         return ret;
     }
+    SIMD_INLINE
     static Vec<T, W> apply(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7) noexcept
     {
         Vec<T, W> ret;
@@ -159,6 +168,7 @@ struct set<T, W, REQUIRE_INTEGRAL(T)>
         }
         return ret;
     }
+    SIMD_INLINE
     static Vec<T, W> apply(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7, T v8, T v9, T v10, T v11, T v12, T v13, T v14, T v15) noexcept
     {
         Vec<T, W> ret;
@@ -177,10 +187,12 @@ struct set<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct set<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(float v0, float v1, float v2, float v3) noexcept
     {
         return _mm_set_ps(v3, v2, v1, v0);
     }
+    SIMD_INLINE
     static Vec<float, W> apply(float v0, float v1, float v2, float v3, float v4, float v5, float v6, float v7) noexcept
     {
         Vec<float, W> ret;
@@ -189,6 +201,7 @@ struct set<float, W>
         ret.reg(1) = _mm_set_ps(v7, v6, v5, v4);
         return ret;
     }
+    SIMD_INLINE
     static Vec<float, W> apply(float v0, float v1, float v2,  float v3,  float v4,   float v5,   float v6,   float v7,
                                             float v8, float v9, float v10, float v11, float v12, float v13, float v14, float v15) noexcept
     {
@@ -205,10 +218,12 @@ struct set<float, W>
 template <size_t W>
 struct set<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(double v0, double v1) noexcept
     {
         return _mm_set_pd(v1, v0);
     }
+    SIMD_INLINE
     static Vec<double, W> apply(double v0, double v1, double v2, double v3) noexcept
     {
         Vec<double, W> ret;
@@ -217,6 +232,7 @@ struct set<double, W>
         ret.reg(1) = _mm_set_pd(v3, v2);
         return ret;
     }
+    SIMD_INLINE
     static Vec<double, W> apply(double v0, double v1, double v2, double v3, float v4, float v5, float v6, float v7) noexcept
     {
         Vec<double, W> ret;
@@ -233,6 +249,7 @@ struct set<double, W>
 template <typename T, size_t W>
 struct load_aligned<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const T* mem) noexcept
     {
         static_check_supported_type<T, 8>();
@@ -251,6 +268,7 @@ struct load_aligned<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct load_aligned<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const float* mem) noexcept
     {
         Vec<float, W> ret;
@@ -267,6 +285,7 @@ struct load_aligned<float, W>
 template <size_t W>
 struct load_aligned<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const double* mem) noexcept
     {
         Vec<double, W> ret;
@@ -284,6 +303,7 @@ struct load_aligned<double, W>
 template <typename T, size_t W>
 struct load_unaligned<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static Vec<T, W> apply(const T* mem) noexcept
     {
         static_check_supported_type<T, 8>();
@@ -302,6 +322,7 @@ struct load_unaligned<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct load_unaligned<float, W>
 {
+    SIMD_INLINE
     static Vec<float, W> apply(const float* mem) noexcept
     {
         Vec<float, W> ret;
@@ -318,6 +339,7 @@ struct load_unaligned<float, W>
 template <size_t W>
 struct load_unaligned<double, W>
 {
+    SIMD_INLINE
     static Vec<double, W> apply(const double* mem) noexcept
     {
         Vec<double, W> ret;
@@ -335,6 +357,7 @@ struct load_unaligned<double, W>
 template <typename T, size_t W>
 struct store_aligned<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static void apply(T* mem, const Vec<T, W>& x) noexcept
     {
         static_check_supported_type<T, 8>();
@@ -351,6 +374,7 @@ struct store_aligned<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct store_aligned<float, W>
 {
+    SIMD_INLINE
     static void apply(float* mem, const Vec<float, W>& x) noexcept
     {
         constexpr auto nregs = Vec<float, W>::n_regs();
@@ -365,6 +389,7 @@ struct store_aligned<float, W>
 template <size_t W>
 struct store_aligned<double, W>
 {
+    SIMD_INLINE
     static void apply(double* mem, const Vec<double, W>& x) noexcept
     {
         constexpr auto nregs = Vec<double, W>::n_regs();
@@ -381,6 +406,7 @@ struct store_aligned<double, W>
 template <typename T, size_t W>
 struct store_unaligned<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static void apply(T* mem, const Vec<T, W>& x) noexcept
     {
         static_check_supported_type<T, 8>();
@@ -397,6 +423,7 @@ struct store_unaligned<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct store_unaligned<float, W>
 {
+    SIMD_INLINE
     static void apply(float* mem, const Vec<float, W>& x) noexcept
     {
         constexpr auto nregs = Vec<float, W>::n_regs();
@@ -411,6 +438,7 @@ struct store_unaligned<float, W>
 template <size_t W>
 struct store_unaligned<double, W>
 {
+    SIMD_INLINE
     static void apply(double* mem, const Vec<double, W>& x) noexcept
     {
         constexpr auto nregs = Vec<double, W>::n_regs();
@@ -424,7 +452,8 @@ struct store_unaligned<double, W>
 
 /// to_mask
 namespace detail {
-inline static int mask_lut(int mask)
+SIMD_INLINE
+static int mask_lut(int mask)
 {
     // clang-format off
     static const int mask_lut[256] = {
@@ -449,15 +478,18 @@ inline static int mask_lut(int mask)
     return mask_lut[mask & 0xAA];
 }
 
+SIMD_INLINE
 static uint64_t movemask_epi16(const __m128i& x)
 {
     uint64_t mask8 = _mm_movemask_epi8(x);
     return mask_lut(mask8) | (mask_lut(mask8 >> 8) << 4);
 }
+SIMD_INLINE
 static uint64_t movemask_epi32(const __m128i& x)
 {
     return _mm_movemask_ps(_mm_castsi128_ps(x));
 }
+SIMD_INLINE
 static uint64_t movemask_epi64(const __m128i& x)
 {
     return _mm_movemask_pd(_mm_castsi128_pd(x));
@@ -467,6 +499,7 @@ static uint64_t movemask_epi64(const __m128i& x)
 template <typename T, size_t W>
 struct to_mask<T, W, REQUIRE_INTEGRAL(T)>
 {
+    SIMD_INLINE
     static uint64_t apply(const VecBool<T, W>& x) noexcept
     {
         static_check_supported_type<T, 8>();
@@ -505,6 +538,7 @@ struct to_mask<T, W, REQUIRE_INTEGRAL(T)>
 template <size_t W>
 struct to_mask<float, W>
 {
+    SIMD_INLINE
     static uint64_t apply(const VecBool<float, W>& x) noexcept
     {
         uint64_t ret = 0;
@@ -521,6 +555,7 @@ struct to_mask<float, W>
 template <size_t W>
 struct to_mask<double, W>
 {
+    SIMD_INLINE
     static uint64_t apply(const VecBool<double, W>& x) noexcept
     {
         uint64_t ret = 0;
@@ -540,6 +575,7 @@ template <size_t W>
 struct from_mask<float, W>
 {
     /// mask, lower 4 bits, each bit indicates one element (4 * sizeof(float) = 128)
+    SIMD_INLINE
     static const __m128i* mask_lut(uint64_t mask) noexcept
     {
         using A = typename VecBool<float, W>::arch_t;
@@ -564,6 +600,7 @@ struct from_mask<float, W>
         assert(!(mask & ~0xFul) && "inbound mask: [0, 0xF]");  // cannot beyond 16 (2^4)
         return (const __m128i*)lut[mask];
     }
+    SIMD_INLINE
     static VecBool<float, W> apply(uint64_t x) noexcept
     {
         VecBool<float, W> ret;
@@ -583,6 +620,7 @@ template <size_t W>
 struct from_mask<double, W>
 {
     /// mask, lower 2 bits, each bit indicates one element (2 * sizeof(double) = 128)
+    SIMD_INLINE
     static const __m128i* mask_lut(uint64_t mask) noexcept
     {
         using A = typename VecBool<double, W>::arch_t;
@@ -595,6 +633,7 @@ struct from_mask<double, W>
         assert(!(mask & ~0x3ul) && "inbound mask: [0, 3]");
         return (const __m128i*)lut[mask];
     }
+    SIMD_INLINE
     static VecBool<double, W> apply(uint64_t x) noexcept
     {
         VecBool<double, W> ret;
@@ -615,6 +654,7 @@ struct from_mask<T, W, REQUIRE_INTEGRAL(T)>
 {
     using A = typename VecBool<T, W>::arch_t;
 
+    SIMD_INLINE
     static uint32_t mask_lut32(uint64_t mask) noexcept
     {
         alignas(A::alignment()) static const uint32_t lut[] = {
@@ -638,6 +678,7 @@ struct from_mask<T, W, REQUIRE_INTEGRAL(T)>
         assert(!(mask & ~0xFFFF) && "inbound mask: [0, 0xFFFF]");
         return lut[mask];
     }
+    SIMD_INLINE
     static uint64_t mask_lut64(uint64_t mask) noexcept
     {
         alignas(A::alignment()) static const uint64_t lut[] = {
@@ -662,6 +703,7 @@ struct from_mask<T, W, REQUIRE_INTEGRAL(T)>
         return lut[mask];
     }
 
+    SIMD_INLINE
     static VecBool<T, W> apply(uint64_t x) noexcept
     {
         static_check_supported_type<T, 8>();

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "simd/config/inline.h"
+
 #include <type_traits>
 #include <cstddef>
 #include <cstdint>
@@ -36,29 +38,36 @@ struct simd_register<SCALAR_TYPE, W, ISA> \
         scalar_t array_[W]; \
     }; \
 \
+    SIMD_INLINE \
     simd_register() noexcept {} \
     template <typename... Regs> \
-    simd_register(register_t val, Regs... others) \
+    SIMD_INLINE \
+    simd_register(register_t val, Regs... others) noexcept \
         : regs_{val, others...} \
     { \
     } \
 \
+    SIMD_INLINE \
     register_t reg(size_t idx = 0) const noexcept { \
         return regs_[idx]; \
     } \
+    SIMD_INLINE \
     register_t& reg(size_t idx = 0) noexcept { \
         return regs_[idx]; \
     } \
+    SIMD_INLINE \
     scalar_t operator[](size_t idx) const noexcept { \
         return array_[idx]; \
     } \
+    SIMD_INLINE \
     scalar_t& operator[](size_t idx) noexcept { \
         return array_[idx]; \
     } \
-    /* exception out-of-range may be thrown, same as std::array::at */ \
+    SIMD_INLINE \
     scalar_t at(size_t idx) const { \
         return array_[idx]; \
     } \
+    SIMD_INLINE \
     scalar_t get(size_t idx) const noexcept { \
         return array_[idx]; \
     } \
