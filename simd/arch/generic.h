@@ -40,15 +40,21 @@ DEFINE_GENERIC_UNARY_OP(bitofsign);
 DEFINE_GENERIC_BINARY_OP(copysign);
 
 template <typename T, size_t W>
-bool none_of(const VecBool<T, W>& self, requires_arch<Generic>) noexcept
+bool none_of(const VecBool<T, W>& x, requires_arch<Generic>) noexcept
 {
-    return generic::none_of<T, W>::apply(self);
+    return generic::none_of<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
-bool some_of(const VecBool<T, W>& self, requires_arch<Generic>) noexcept
+bool some_of(const VecBool<T, W>& x, requires_arch<Generic>) noexcept
 {
-    return generic::some_of<T, W>::apply(self);
+    return generic::some_of<T, W>::apply(x);
+}
+
+template <typename T, size_t W>
+T hadd(const Vec<T, W>& x, requires_arch<Generic>) noexcept
+{
+    return generic::hadd<T, W>::apply(x);
 }
 
 #undef DEFINE_GENERIC_UNARY_OP

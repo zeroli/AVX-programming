@@ -36,6 +36,21 @@ struct some_of<T, W>
         return ret;
     }
 };
+
+template <typename T, size_t W>
+struct hadd<T, W>
+{
+    static T apply(const Vec<T, W>& x) noexcept
+    {
+        T ret{};
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        #pragma unroll
+        for (auto i = 0u; i < W; i++) {
+            ret += x[i];
+        }
+        return ret;
+    }
+};
 }  // namespace generic
 }  // namespace kernel
 }  // namespace simd

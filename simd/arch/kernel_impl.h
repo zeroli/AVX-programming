@@ -88,6 +88,7 @@ DECLARE_OP_KERNEL(find_first_set);
 DECLARE_OP_KERNEL(find_last_set);
 DECLARE_OP_KERNEL(select);
 
+DECLARE_OP_KERNEL(hadd);
 DECLARE_OP_KERNEL(reduce_sum);
 DECLARE_OP_KERNEL(reduce_max);
 DECLARE_OP_KERNEL(reduce_min);

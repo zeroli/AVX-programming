@@ -507,6 +507,292 @@ struct find_last_set<T, W, REQUIRE_INTEGRAL(T)>
         return ret;
     }
 };
+
+/// reduce_sum
+namespace detail {
+template <typename T>
+SIMD_INLINE T reduce_sum_i32(const __m128i& x) noexcept
+{
+    auto tmp1 = _mm_shuffle_epi32(x, 0x0E);
+    auto tmp2 = _mm_add_epi32(x, tmp1);
+    auto tmp3 = _mm_shuffle_epi32(tmp2, 0x01);
+    auto tmp4 = _mm_add_epi32(tmp2, tmp3);
+    return _mm_cvtsi128_si32(tmp4);
+}
+
+template <typename T>
+SIMD_INLINE T reduce_sum_i64(const __m128i& x) noexcept
+{
+    auto tmp1 = _mm_shuffle_epi32(x, 0x0E);
+    auto tmp2 = _mm_add_epi64(x, tmp1);
+    return _mm_cvtsi128_si64(tmp2);
+}
+
+SIMD_INLINE float reduce_sum_f32(const __m128& x) noexcept
+{
+    /// _mm_movehl_ps: CPI=1
+    /// _mm_add_ps: CPI=0.5
+    /// _mm_shuffle_ps: CPI=0.5
+    /// _mm_cvtss_f32: CPI=0.5
+    /// total CPI: 3
+    auto tmp1 = _mm_add_ps(x, _mm_movehl_ps(x, x));
+    auto tmp2 = _mm_add_ps(tmp1, _mm_shuffle_ps(tmp1, tmp1, 1));
+    return _mm_cvtss_f32(tmp2);
+#if 0  // alternative (CPI=4.5)
+    auto tmp = _mm_hadd_ps(x, x); /// CPI=2
+    tmp = _mm_hadd_ps(tmp, tmp);  /// CPI=2
+    return _mm_cvtss_f32(tmp);    /// CPI=0.5
+#endif
+}
+
+SIMD_INLINE double reduce_sum_f64(const __m128d& x) noexcept
+{
+    /// _mm_unpackhi_pd: CPI=1
+    /// _mm_add_pd: CPI=0.5
+    /// _mm_cvtsd_f64: CPI=0.5
+    /// total CPI: 2
+    auto tmp = _mm_add_pd(x, _mm_unpackhi_pd(x, x));
+    return _mm_cvtsd_f64(tmp);
+#if 0  // alternative (CPI=2.5)
+    auto tmp = _mm_hadd_pd(x, x); /// CPI=2
+    return _mm_cvtsd_f64(tmp);    /// CPI=0.5
+#endif
+}
+}  // namespace detail
+template <typename T, size_t W>
+struct reduce_sum<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static T apply(const Vec<T, W>& x) noexcept
+    {
+        static_check_supported_type<T, 8>();
+
+        T ret{};
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            ret = kernel::hadd<T, W>(x, Generic{});
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            ret = kernel::hadd<T, W>(x, Generic{});
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret += detail::reduce_sum_i32<T>(x.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret += detail::reduce_sum_i64<T>(x.reg(idx));
+            }
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct reduce_sum<float, W>
+{
+    static float apply(const Vec<float, W>& x) noexcept
+    {
+        float ret{};
+        constexpr auto nregs = Vec<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret += detail::reduce_sum_f32(x.reg(idx));
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct reduce_sum<double, W>
+{
+    static double apply(const Vec<double, W>& x) noexcept
+    {
+        double ret{};
+        constexpr auto nregs = Vec<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret += detail::reduce_sum_f64(x.reg(idx));
+        }
+        return ret;
+    }
+};
+
+/// reduce_max
+template <typename T, size_t W>
+struct reduce_max<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static T apply(const Vec<T, W>& x) noexcept
+    {
+        static_check_supported_type<T, 8>();
+
+        T ret{};
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            ret = kernel::hadd<T, W>(x, Generic{});
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            ret = kernel::hadd<T, W>(x, Generic{});
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret += detail::reduce_sum_i32<T>(x.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret += detail::reduce_sum_i64<T>(x.reg(idx));
+            }
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct reduce_max<float, W>
+{
+    static float apply(const Vec<float, W>& x) noexcept
+    {
+        float ret{};
+        constexpr int nregs = Vec<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret += detail::reduce_sum_f32(x.reg(idx));
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct reduce_max<double, W>
+{
+    static double apply(const Vec<double, W>& x) noexcept
+    {
+        double ret{};
+        constexpr int nregs = Vec<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret += detail::reduce_sum_f64(x.reg(idx));
+        }
+        return ret;
+    }
+};
+
+/// reduce_min
+template <typename T, size_t W>
+struct reduce_min<T, W, REQUIRE_INTEGRAL(T)>
+{
+    static T apply(const Vec<T, W>& x) noexcept
+    {
+        static_check_supported_type<T, 8>();
+
+        T ret{};
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            ret = kernel::hadd<T, W>(x, Generic{});
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            ret = kernel::hadd<T, W>(x, Generic{});
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret += detail::reduce_sum_i32<T>(x.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret += detail::reduce_sum_i64<T>(x.reg(idx));
+            }
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct reduce_min<float, W>
+{
+    static float apply(const Vec<float, W>& x) noexcept
+    {
+        float ret{};
+        constexpr int nregs = Vec<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret += detail::reduce_sum_f32(x.reg(idx));
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct reduce_min<double, W>
+{
+    static double apply(const Vec<double, W>& x) noexcept
+    {
+        double ret{};
+        constexpr int nregs = Vec<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret += detail::reduce_sum_f64(x.reg(idx));
+        }
+        return ret;
+    }
+};
+
+/// reduce
+template <typename T, size_t W, typename F>
+struct reduce<T, W, F, REQUIRE_INTEGRAL(T)>
+{
+    static T apply(F&& f, const Vec<T, W>& x) noexcept
+    {
+        static_check_supported_type<T, 8>();
+
+        T ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            ret = kernel::hadd<T, W>(x, Generic{});
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            ret = kernel::hadd<T, W>(x, Generic{});
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret += detail::reduce_sum_i32<T>(x.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret += detail::reduce_sum_i64<T>(x.reg(idx));
+            }
+        }
+        return ret;
+    }
+};
+
+template <size_t W, typename F>
+struct reduce<float, W, F>
+{
+    static float apply(F&& f, const Vec<float, W>& x) noexcept
+    {
+        float ret{};
+        constexpr int nregs = Vec<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret += detail::reduce_sum_f32(x.reg(idx));
+        }
+        return ret;
+    }
+};
+
+template <size_t W, typename F>
+struct reduce<double, W, F>
+{
+    static double apply(F&& f, const Vec<double, W>& x) noexcept
+    {
+        double ret{};
+        constexpr int nregs = Vec<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret += detail::reduce_sum_f64(x.reg(idx));
+        }
+        return ret;
+    }
+};
 }  // namespace sse
 }  // namespace kernel
 }  // namespace simd

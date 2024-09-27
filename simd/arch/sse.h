@@ -217,25 +217,25 @@ Vec<T, W> select(const VecBool<T, W>& cond, const Vec<T, W>& lhs, const Vec<T, W
 template <typename T, size_t W, typename F>
 T reduce(F&& f, const Vec<T, W>& x, requires_arch<SSE>) noexcept
 {
-    return sse::reduce<T, W, F>(std::forward<F>(f), x);
+    return sse::reduce<T, W, F>::apply(std::forward<F>(f), x);
 }
 
 template <typename T, size_t W>
 T reduce_sum(const Vec<T, W>& x, requires_arch<SSE>) noexcept
 {
-    return sse::reduce_sum<T, W>(x);
+    return sse::reduce_sum<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
 T reduce_max(const Vec<T, W>& x, requires_arch<SSE>) noexcept
 {
-    return sse::reduce_max<T, W>(x);
+    return sse::reduce_max<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
 T reduce_min(const Vec<T, W>& x, requires_arch<SSE>) noexcept
 {
-    return sse::reduce_min<T, W>(x);
+    return sse::reduce_min<T, W>::apply(x);
 }
 
 #undef DEFINE_SSE_UNARY_OP

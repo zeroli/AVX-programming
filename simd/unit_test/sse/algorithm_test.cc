@@ -200,3 +200,32 @@ TEST(vec_op_sse, test_algo_popcount)
         EXPECT_EQ(2, r);
     }
 }
+
+TEST(vec_op_sse, test_algo_reduce_sum)
+{
+    {
+        simd::Vec<uint8_t, 16> a(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+        auto c = simd::reduce_sum(a);
+        EXPECT_EQ(17 * 8, c);
+    }
+    {
+        simd::Vec<int16_t, 8> a(1, 2, 3, 4, 5, 6, 7, 8);
+        auto c = simd::reduce_sum(a);
+        EXPECT_EQ(9 * 4, c);
+    }
+    {
+        simd::Vec<int32_t, 4> a(1, 2, 3, 4);
+        auto c = simd::reduce_sum(a);
+        EXPECT_EQ(10, c);
+    }
+    {
+        simd::Vec<float, 4> a(1, 2, 3, 4);
+        auto c = simd::reduce_sum(a);
+        EXPECT_EQ(10, c);
+    }
+    {
+        simd::Vec<double, 4> a(1, 2, 3, 4);
+        auto c = simd::reduce_sum(a);
+        EXPECT_EQ(10, c);
+    }
+}
