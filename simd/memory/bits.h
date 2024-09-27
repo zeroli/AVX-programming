@@ -1,11 +1,12 @@
 #pragma once
 
 #include <cstring>
+#include <cstdint>
 
 namespace simd {
 namespace bits {
 template <typename TO, typename FROM>
-TO cast(FROM from)
+inline TO cast(FROM from)
 {
     static_assert(sizeof(FROM) == sizeof(TO),
         "bit cast from `FROM` to `TO` must be same size");
@@ -17,7 +18,7 @@ TO cast(FROM from)
 /// make one T value with bits pattern:
 /// 111....111
 template <typename T>
-T ones()
+inline T ones()
 {
     union {
         char b[sizeof(T)];
@@ -33,7 +34,7 @@ T ones()
 /// make one T value with bits pattern:
 /// 0000....000
 template <typename T>
-T zeros()
+inline T zeros()
 {
     return T{};
 }
@@ -41,7 +42,7 @@ T zeros()
 /// make one T value with bits pattern:
 /// 1000....000
 template <typename T>
-T one_zeros()
+inline T one_zeros()
 {
     union {
         char b[sizeof(T)];
@@ -53,14 +54,14 @@ T one_zeros()
 }
 
 template <typename T>
-T signmask()
+inline T signmask()
 {
     return one_zeros<T>();
 }
 
 /// return bit state at msb: true for 1, false for 0
 template <typename T>
-bool at_msb(T d)
+inline bool at_msb(T d)
 {
     union {
         char b[sizeof(T)];
@@ -69,10 +70,20 @@ bool at_msb(T d)
     t = d;
     return (b[sizeof(T) - 1] & 0x80) != 0;
 }
+
+inline int count1(uint64_t x)
+{
+    int cnt = 0;
+    while (x) {
+        cnt++;
+        x &= (x - 1);
+    }
+    return cnt;
+}
 }  // namespace bits
 
 template <typename TO, typename FROM>
-TO bits_cast(FROM from)
+inline TO bits_cast(FROM from)
 {
     return bits::cast<TO>(from);
 }

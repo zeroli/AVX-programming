@@ -55,6 +55,9 @@ DECLARE_OP_KERNEL(all_of);
 DECLARE_OP_KERNEL(any_of);
 DECLARE_OP_KERNEL(none_of);
 DECLARE_OP_KERNEL(some_of);
+DECLARE_OP_KERNEL(popcount);
+DECLARE_OP_KERNEL(find_first_set);
+DECLARE_OP_KERNEL(find_last_set);
 DECLARE_OP_KERNEL(select);
 
 template <typename U, typename T, size_t W, typename Enable = void>

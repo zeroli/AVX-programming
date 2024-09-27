@@ -76,11 +76,11 @@ struct eq<float, W>
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm_castsi128_ps(
-                                    _mm_cmpeq_epi64(
-                                        _mm_castps_si128(lhs.reg(idx)),
-                                        _mm_castps_si128(rhs.reg(idx))
-                                    )
-                                 );
+                                _mm_cmpeq_epi64(
+                                    _mm_castps_si128(lhs.reg(idx)),
+                                    _mm_castps_si128(rhs.reg(idx))
+                                )
+                            );
         }
     }
 };
@@ -105,11 +105,11 @@ struct eq<double, W>
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm_castsi128_pd(
-                                    _mm_cmpeq_epi64(
-                                        _mm_castpd_si128(lhs.reg(idx)),
-                                        _mm_castpd_si128(rhs.reg(idx))
-                                    )
-                                 );
+                                _mm_cmpeq_epi64(
+                                    _mm_castpd_si128(lhs.reg(idx)),
+                                    _mm_castpd_si128(rhs.reg(idx))
+                                )
+                            );
         }
     }
 };

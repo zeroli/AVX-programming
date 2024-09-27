@@ -74,9 +74,9 @@ DEFINE_SSE_BINARY_OP(min);
 
 #define DEFINE_SSE_UNARY_OP(OP) \
 template <typename T, size_t W> \
-Vec<T, W> OP(const Vec<T, W>& self, requires_arch<SSE>) noexcept \
+Vec<T, W> OP(const Vec<T, W>& x, requires_arch<SSE>) noexcept \
 { \
-    return sse::OP<T, W>::apply(self); \
+    return sse::OP<T, W>::apply(x); \
 } \
 ///
 
@@ -89,21 +89,39 @@ DEFINE_SSE_UNARY_OP(ceil);
 DEFINE_SSE_UNARY_OP(floor);
 
 template <typename T, size_t W>
-VecBool<T, W> bitwise_not(const VecBool<T, W>& self, requires_arch<SSE>) noexcept
+VecBool<T, W> bitwise_not(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
 {
-    return sse::bitwise_not<T, W>::apply(self);
+    return sse::bitwise_not<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
-bool all_of(const VecBool<T, W>& self, requires_arch<SSE>) noexcept
+bool all_of(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
 {
-    return sse::all_of<T, W>::apply(self);
+    return sse::all_of<T, W>::apply(x);
 }
 
 template <typename T, size_t W>
-bool any_of(const VecBool<T, W>& self, requires_arch<SSE>) noexcept
+bool any_of(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
 {
-    return sse::any_of<T, W>::apply(self);
+    return sse::any_of<T, W>::apply(x);
+}
+
+template <typename T, size_t W>
+int popcount(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
+{
+    return sse::popcount<T, W>::apply(x);
+}
+
+template <typename T, size_t W>
+int find_first_set(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
+{
+    return sse::find_first_set<T, W>::apply(x);
+}
+
+template <typename T, size_t W>
+int find_last_set(const VecBool<T, W>& x, requires_arch<SSE>) noexcept
+{
+    return sse::find_last_set<T, W>::apply(x);
 }
 
 template <typename T, size_t W>

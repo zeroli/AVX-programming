@@ -119,6 +119,27 @@ bool some_of(const VecBool<T, W>& x) noexcept
 }
 
 template <typename T, size_t W>
+int popcount(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::popcount<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+int find_first_set(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::find_first_set<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+int find_last_set(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::find_last_set<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
 Vec<T, W> select(const VecBool<T, W>& cond, const Vec<T, W>& x, const Vec<T, W>& y) noexcept
 {
     using A = typename VecBool<T, W>::arch_t;

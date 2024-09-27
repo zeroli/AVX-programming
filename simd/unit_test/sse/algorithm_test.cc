@@ -167,3 +167,22 @@ TEST(vec_op_sse, test_algo_select)
         EXPECT_TRUE(simd::all_of(r == p));
     }
 }
+
+TEST(vec_op_sse, test_algo_popcount)
+{
+    {
+        simd::VecBool<int32_t, 4> c(true, false, true, false);
+        auto r = simd::popcount(c);
+        EXPECT_EQ(2, r) << c;
+    }
+    {
+        simd::VecBool<float, 4> c(true, false, true, false);
+        auto r = simd::popcount(c);
+        EXPECT_EQ(2, r);
+    }
+    {
+        simd::VecBool<double, 4> c(true, false, true, false);
+        auto r = simd::popcount(c);
+        EXPECT_EQ(2, r);
+    }
+}
