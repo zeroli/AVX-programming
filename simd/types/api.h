@@ -94,14 +94,14 @@ template <typename T, size_t W>
 bool all_of(const VecBool<T, W>& x) noexcept
 {
     using A = typename VecBool<T, W>::arch_t;
-    return kernel::all<T, W>(x, A{});
+    return kernel::all_of<T, W>(x, A{});
 }
 
 template <typename T, size_t W>
 bool any_of(const VecBool<T, W>& x) noexcept
 {
     using A = typename VecBool<T, W>::arch_t;
-    return kernel::any<T, W>(x, A{});
+    return kernel::any_of<T, W>(x, A{});
 }
 
 template <typename T, size_t W>

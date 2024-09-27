@@ -153,7 +153,7 @@ struct max<double, W>
 
 /// all
 template <size_t W>
-struct all<float, W>
+struct all_of<float, W>
 {
     static bool apply(const VecBool<float, W>& self) noexcept
     {
@@ -168,7 +168,7 @@ struct all<float, W>
 };
 
 template <size_t W>
-struct all<double, W>
+struct all_of<double, W>
 {
     static bool apply(const VecBool<double, W>& self) noexcept
     {
@@ -183,7 +183,7 @@ struct all<double, W>
 };
 
 template <typename T, size_t W>
-struct all<T, W, REQUIRE_INTEGRAL(T)>
+struct all_of<T, W, REQUIRE_INTEGRAL(T)>
 {
     static bool apply(const VecBool<T, W>& self) noexcept
     {
@@ -201,7 +201,7 @@ struct all<T, W, REQUIRE_INTEGRAL(T)>
 
 /// any
 template <size_t W>
-struct any<float, W>
+struct any_of<float, W>
 {
     static bool apply(const VecBool<float, W>& self) noexcept
     {
@@ -216,7 +216,7 @@ struct any<float, W>
 };
 
 template <size_t W>
-struct any<double, W>
+struct any_of<double, W>
 {
     static bool apply(const VecBool<double, W>& self) noexcept
     {
@@ -231,7 +231,7 @@ struct any<double, W>
 };
 
 template <typename T, size_t W>
-struct any<T, W, REQUIRE_INTEGRAL(T)>
+struct any_of<T, W, REQUIRE_INTEGRAL(T)>
 {
     static bool apply(const VecBool<T, W>& self) noexcept
     {
