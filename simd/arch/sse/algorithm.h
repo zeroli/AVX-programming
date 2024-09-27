@@ -151,17 +151,17 @@ struct max<double, W>
     }
 };
 
-/// all
+/// all_of
 template <size_t W>
 struct all_of<float, W>
 {
     static bool apply(const VecBool<float, W>& self) noexcept
     {
         bool ret = true;
-        constexpr int nregs = VecBool<float, W>::n_regs();
+        constexpr auto nregs = VecBool<float, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret &= _mm_movemask_ps(self.reg(idx)) == 0x0F;
+            ret = ret && (_mm_movemask_ps(self.reg(idx)) == 0x0F);
         }
         return ret;
     }
@@ -173,10 +173,10 @@ struct all_of<double, W>
     static bool apply(const VecBool<double, W>& self) noexcept
     {
         bool ret = true;
-        constexpr int nregs = VecBool<double, W>::n_regs();
+        constexpr auto nregs = VecBool<double, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret &= _mm_movemask_pd(self.reg(idx)) == 0x03;
+            ret = ret && (_mm_movemask_pd(self.reg(idx)) == 0x03);
         }
         return ret;
     }
@@ -190,26 +190,26 @@ struct all_of<T, W, REQUIRE_INTEGRAL(T)>
         static_check_supported_type<T>();
 
         bool ret = true;
-        constexpr int nregs = VecBool<T, W>::n_regs();
+        constexpr auto nregs = VecBool<T, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret &= _mm_movemask_epi8(self.reg(idx)) == 0xFFFF;
+            ret = ret && (_mm_movemask_epi8(self.reg(idx)) == 0xFFFF);
         }
         return ret;
     }
 };
 
-/// any
+/// any_of
 template <size_t W>
 struct any_of<float, W>
 {
     static bool apply(const VecBool<float, W>& self) noexcept
     {
         bool ret = false;
-        constexpr int nregs = VecBool<float, W>::n_regs();
+        constexpr auto nregs = VecBool<float, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret |= _mm_movemask_ps(self.reg(idx)) != 0;
+            ret = ret || (_mm_movemask_ps(self.reg(idx)) != 0);
         }
         return ret;
     }
@@ -221,10 +221,10 @@ struct any_of<double, W>
     static bool apply(const VecBool<double, W>& self) noexcept
     {
         bool ret = false;
-        constexpr int nregs = VecBool<double, W>::n_regs();
+        constexpr auto nregs = VecBool<double, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret |= _mm_movemask_pd(self.reg(idx)) != 0;
+            ret = ret || (_mm_movemask_pd(self.reg(idx)) != 0);
         }
         return ret;
     }
@@ -238,10 +238,10 @@ struct any_of<T, W, REQUIRE_INTEGRAL(T)>
         static_check_supported_type<T>();
 
         bool ret = false;
-        constexpr int nregs = VecBool<T, W>::n_regs();
+        constexpr auto nregs = VecBool<T, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret |= !_mm_testz_si128(self.reg(idx),self.reg(idx));
+            ret = ret || (!_mm_testz_si128(self.reg(idx),self.reg(idx)));
         }
         return ret;
     }

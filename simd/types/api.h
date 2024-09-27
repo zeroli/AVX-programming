@@ -105,6 +105,20 @@ bool any_of(const VecBool<T, W>& x) noexcept
 }
 
 template <typename T, size_t W>
+bool none_of(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::none_of<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+bool some_of(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::some_of<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
 Vec<T, W> select(const VecBool<T, W>& cond, const Vec<T, W>& x, const Vec<T, W>& y) noexcept
 {
     using A = typename VecBool<T, W>::arch_t;

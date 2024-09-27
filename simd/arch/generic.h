@@ -8,6 +8,7 @@ namespace generic {
 }  // namespace kernel
 }  // namespace simd
 
+#include "simd/arch/generic/algorithm.h"
 #include "simd/arch/generic/arithmetic.h"
 #include "simd/arch/generic/cast.h"
 #include "simd/arch/generic/logical.h"
@@ -37,6 +38,18 @@ DEFINE_GENERIC_UNARY_OP(sign);
 DEFINE_GENERIC_UNARY_OP(bitofsign);
 
 DEFINE_GENERIC_BINARY_OP(copysign);
+
+template <typename T, size_t W>
+bool none_of(const VecBool<T, W>& self, requires_arch<Generic>) noexcept
+{
+    return generic::none_of<T, W>::apply(self);
+}
+
+template <typename T, size_t W>
+bool some_of(const VecBool<T, W>& self, requires_arch<Generic>) noexcept
+{
+    return generic::some_of<T, W>::apply(self);
+}
 
 #undef DEFINE_GENERIC_UNARY_OP
 #undef DEFINE_GENERIC_BINARY_OP
