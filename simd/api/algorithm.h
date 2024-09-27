@@ -71,4 +71,32 @@ Vec<T, W> select(const VecBool<T, W>& cond, const Vec<T, W>& x, const Vec<T, W>&
     return kernel::select<T, W>(cond, x, y, A{});
 }
 
+/// reduction
+template <typename T, size_t W, typename F>
+T reduce(F&& f, const Vec<T, W>& x) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::reduce<T, W, F>(std::forward<F>(f), x, A{});
+}
+
+template <typename T, size_t W>
+T reduce_sum(const Vec<T, W>& x) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::reduce_sum<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+T reduce_max(const Vec<T, W>& x) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::reduce_max<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+T reduce_min(const Vec<T, W>& x) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::reduce_min<T, W>(x, A{});
+}
 }  // namespace simd

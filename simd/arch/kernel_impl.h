@@ -40,17 +40,45 @@ DECLARE_OP_KERNEL(lt);
 DECLARE_OP_KERNEL(le);
 
 /// math function kernels
-DECLARE_OP_KERNEL(abs);
-DECLARE_OP_KERNEL(sqrt);
 DECLARE_OP_KERNEL(ceil);
 DECLARE_OP_KERNEL(floor);
-DECLARE_OP_KERNEL(sign);
-DECLARE_OP_KERNEL(bitofsign);
-DECLARE_OP_KERNEL(copysign);
+DECLARE_OP_KERNEL(abs);
+DECLARE_OP_KERNEL(sqrt);
+DECLARE_OP_KERNEL(exp);
+DECLARE_OP_KERNEL(exp10);
+DECLARE_OP_KERNEL(exp2);
+DECLARE_OP_KERNEL(expm1);
+DECLARE_OP_KERNEL(hypot);
+DECLARE_OP_KERNEL(log);
+DECLARE_OP_KERNEL(log2);
+DECLARE_OP_KERNEL(log10);
+DECLARE_OP_KERNEL(log1p);
+DECLARE_OP_KERNEL(avgr);
+DECLARE_OP_KERNEL(avg);
+
+/// trigo function kernels
+DECLARE_OP_KERNEL(sin);
+DECLARE_OP_KERNEL(cos);
+DECLARE_OP_KERNEL(sincos);
+DECLARE_OP_KERNEL(tan);
+DECLARE_OP_KERNEL(asin);
+DECLARE_OP_KERNEL(acos);
+DECLARE_OP_KERNEL(atan);
+DECLARE_OP_KERNEL(atan2);
+
+/// hyperbolic function kernels
+DECLARE_OP_KERNEL(sinh);
+DECLARE_OP_KERNEL(cosh);
+DECLARE_OP_KERNEL(tanh);
+DECLARE_OP_KERNEL(asinh);
+DECLARE_OP_KERNEL(atanh);
 
 /// algorithm kernels
 DECLARE_OP_KERNEL(max);
 DECLARE_OP_KERNEL(min);
+DECLARE_OP_KERNEL(sign);
+DECLARE_OP_KERNEL(bitofsign);
+DECLARE_OP_KERNEL(copysign);
 DECLARE_OP_KERNEL(all_of);
 DECLARE_OP_KERNEL(any_of);
 DECLARE_OP_KERNEL(none_of);
@@ -59,6 +87,13 @@ DECLARE_OP_KERNEL(popcount);
 DECLARE_OP_KERNEL(find_first_set);
 DECLARE_OP_KERNEL(find_last_set);
 DECLARE_OP_KERNEL(select);
+
+DECLARE_OP_KERNEL(reduce_sum);
+DECLARE_OP_KERNEL(reduce_max);
+DECLARE_OP_KERNEL(reduce_min);
+
+template <typename T, size_t W, typename F, typename Enable = void>
+struct reduce;
 
 template <typename U, typename T, size_t W, typename Enable = void>
 struct cast;

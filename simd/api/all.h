@@ -14,6 +14,7 @@
 #include "simd/api/math.h"
 #include "simd/api/memory.h"
 #include "simd/api/print.h"
+#include "simd/api/trigo.h"
 
 namespace simd {
 

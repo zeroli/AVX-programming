@@ -213,6 +213,31 @@ Vec<T, W> select(const VecBool<T, W>& cond, const Vec<T, W>& lhs, const Vec<T, W
     return sse::select<T, W>::apply(cond, lhs, rhs);
 }
 
+/// reduction
+template <typename T, size_t W, typename F>
+T reduce(F&& f, const Vec<T, W>& x, requires_arch<SSE>) noexcept
+{
+    return sse::reduce<T, W, F>(std::forward<F>(f), x);
+}
+
+template <typename T, size_t W>
+T reduce_sum(const Vec<T, W>& x, requires_arch<SSE>) noexcept
+{
+    return sse::reduce_sum<T, W>(x);
+}
+
+template <typename T, size_t W>
+T reduce_max(const Vec<T, W>& x, requires_arch<SSE>) noexcept
+{
+    return sse::reduce_max<T, W>(x);
+}
+
+template <typename T, size_t W>
+T reduce_min(const Vec<T, W>& x, requires_arch<SSE>) noexcept
+{
+    return sse::reduce_min<T, W>(x);
+}
+
 #undef DEFINE_SSE_UNARY_OP
 #undef DEFINE_SSE_BINARY_OP
 #undef DEFINE_SSE_BINARY_COMP_OP
