@@ -1,0 +1,74 @@
+#pragma once
+
+#include "simd/api/detail.h"
+
+namespace simd {
+DEFINE_API_BINARY_OP(max);
+DEFINE_API_BINARY_OP(min);
+
+DEFINE_API_BINARY_OP(copysign);
+
+/// Computes an estimate of the inverse square root of the vector x
+/// this doesn't return the same result as the equivalent scalar operations,
+/// trading accuracy for speed
+//DEFINE_API_UNARY_OP(rsqrt);
+DEFINE_API_UNARY_OP(sign);
+DEFINE_API_UNARY_OP(bitofsign);
+
+template <typename T, size_t W>
+bool all_of(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::all_of<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+bool any_of(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::any_of<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+bool none_of(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::none_of<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+bool some_of(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::some_of<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+int popcount(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::popcount<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+int find_first_set(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::find_first_set<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+int find_last_set(const VecBool<T, W>& x) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::find_last_set<T, W>(x, A{});
+}
+
+template <typename T, size_t W>
+Vec<T, W> select(const VecBool<T, W>& cond, const Vec<T, W>& x, const Vec<T, W>& y) noexcept
+{
+    using A = typename VecBool<T, W>::arch_t;
+    return kernel::select<T, W>(cond, x, y, A{});
+}
+
+}  // namespace simd

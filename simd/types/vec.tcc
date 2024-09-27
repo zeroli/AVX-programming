@@ -41,12 +41,7 @@ Vec<T, W>& integral_only_ops<T, W>::operator <<=(const Vec<T, W>& rhs) noexcept
 }  // namespace types
 
 template <typename T, size_t W>
-Vec<T, W>::Vec() noexcept
-{
-}
-
-template <typename T, size_t W>
-Vec<T, W>::Vec(T val) noexcept
+SIMD_INLINE Vec<T, W>::Vec(T val) noexcept
     : self_t(kernel::broadcast<T, W>(val, A{}))
 {
 }

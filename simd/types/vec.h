@@ -29,8 +29,13 @@ public:
     using register_t = typename base_t::register_t;
     using vec_bool_t = VecBool<T, W>;
 
-    Vec() noexcept;
-    Vec(T val) noexcept;
+    SIMD_INLINE Vec() noexcept = default;
+    SIMD_INLINE Vec(T val) noexcept;
+
+    SIMD_INLINE Vec(const Vec&) noexcept = default;
+    SIMD_INLINE Vec& operator =(const Vec&) noexcept = default;
+    SIMD_INLINE Vec(Vec&&) noexcept = default;
+    SIMD_INLINE Vec& operator =(Vec&&) noexcept = default;
 
     template <typename... Ts>
     Vec(T val0, T val1, Ts... vals) noexcept;
