@@ -171,6 +171,20 @@ TEST(vec_op_sse, test_algo_select)
 TEST(vec_op_sse, test_algo_popcount)
 {
     {
+        simd::VecBool<int8_t, 16> c(true, false, true, false,
+                                    false, true, false, true,
+                                    false, true, false, false,
+                                    false, true, true, true);
+        auto r = simd::popcount(c);
+        EXPECT_EQ(8, r) << c;
+    }
+    {
+        simd::VecBool<int16_t, 8> c(true, false, true, false,
+                                    false, true, true, true);
+        auto r = simd::popcount(c);
+        EXPECT_EQ(5, r) << c;
+    }
+    {
         simd::VecBool<int32_t, 4> c(true, false, true, false);
         auto r = simd::popcount(c);
         EXPECT_EQ(2, r) << c;
