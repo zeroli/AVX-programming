@@ -12,7 +12,7 @@ TEST(vec_sse, test_vec_init_regs)
         float pa[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
         auto b = simd::Vec<float, 8>::load_unaligned(pa);
         auto a = simd::Vec<float, 8>(al, ah);
-        EXPECT_TRUE(simd::all(a == b));
+        EXPECT_TRUE(simd::all_of(a == b));
         for (int i = 0; i < 8; i ++) {
             EXPECT_FLOAT_EQ(pa[i], a[i]);
         }
@@ -23,7 +23,7 @@ TEST(vec_sse, test_vec_init_regs)
         double pa[] = { 0, 1, 2, 3 };
         auto b = simd::Vec<double, 4>::load_unaligned(pa);
         auto a = simd::Vec<double, 4>(al, ah);
-        EXPECT_TRUE(simd::all(a == b));
+        EXPECT_TRUE(simd::all_of(a == b));
         for (int i = 0; i < 4; i ++) {
             EXPECT_FLOAT_EQ(pa[i], a[i]);
         }

@@ -263,38 +263,38 @@ VecBool<double, Arch> bitwise_not(const VecBool<double, Arch>& self, requires_ar
 
 template <typename Arch, typename T,
     typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-bool all(const VecBool<T, Arch>& self, requires_arch<AVX>) noexcept
+bool all_of(const VecBool<T, Arch>& self, requires_arch<AVX>) noexcept
 {
     return _mm256_testc_si256(self, VecBool<T, Arch>(true)) != 0);
 }
 
 template <typename Arch>
-bool all(const VecBool<float, Arch>& self, requires_arch<AVX>) noexcept
+bool all_of(const VecBool<float, Arch>& self, requires_arch<AVX>) noexcept
 {
     return _mm256_testc_ps(self, VecBool<float, Arch>(true)) != 0);
 }
 
 template <typename Arch>
-bool all(const VecBool<double, Arch>& self, requires_arch<AVX>) noexcept
+bool all_of(const VecBool<double, Arch>& self, requires_arch<AVX>) noexcept
 {
     return _mm256_testc_pd(self, VecBool<double, Arch>(true)) != 0);
 }
 
 template <typename Arch, typename T,
     typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-bool any(const VecBool<T, Arch>& self, requires_arch<AVX>) noexcept
+bool any_of(const VecBool<T, Arch>& self, requires_arch<AVX>) noexcept
 {
     return !_mm256_testz_si256(self, self);
 }
 
 template <typename Arch>
-bool any(const VecBool<float, Arch>& self, requires_arch<AVX>) noexcept
+bool any_of(const VecBool<float, Arch>& self, requires_arch<AVX>) noexcept
 {
     return !_mm256_testz_ps(self, self);
 }
 
 template <typename Arch>
-bool any(const VecBool<double, Arch>& self, requires_arch<AVX>) noexcept
+bool any_of(const VecBool<double, Arch>& self, requires_arch<AVX>) noexcept
 {
     return !_mm256_testz_pd(self, self);
 }

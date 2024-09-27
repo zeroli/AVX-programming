@@ -95,13 +95,13 @@ VecBool<T, W> bitwise_not(const VecBool<T, W>& self, requires_arch<SSE>) noexcep
 }
 
 template <typename T, size_t W>
-bool all(const VecBool<T, W>& self, requires_arch<SSE>) noexcept
+bool all_of(const VecBool<T, W>& self, requires_arch<SSE>) noexcept
 {
     return sse::all<T, W>::apply(self);
 }
 
 template <typename T, size_t W>
-bool any(const VecBool<T, W>& self, requires_arch<SSE>) noexcept
+bool any_of(const VecBool<T, W>& self, requires_arch<SSE>) noexcept
 {
     return sse::any<T, W>::apply(self);
 }
