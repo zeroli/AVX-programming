@@ -1,12 +1,24 @@
 #pragma once
 
 #include "simd/types/avx_register.h"
-#include "simd/types/vec.h"
+#include "simd/types/traits.h"
+
+#include <limits>
+#include <type_traits>
+#include <cstddef>
+#include <cstdint>
 
 namespace simd {
 namespace kernel {
+namespace avx {
 using namespace types;
 
+}  // namespace avx
+}  // namespace kernel
+}  // namespace simd
+
+
+#if 0
 /// eq
 template <typename Arch>
 VecBool<float, Arch> eq(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<AVX>) noexcept
@@ -299,5 +311,4 @@ bool any_of(const VecBool<double, Arch>& self, requires_arch<AVX>) noexcept
     return !_mm256_testz_pd(self, self);
 }
 
-}  // namespace kernel
-}  // namespace simd
+#endif

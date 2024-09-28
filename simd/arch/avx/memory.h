@@ -1,43 +1,18 @@
 #pragma once
 
 #include "simd/types/avx_register.h"
-#include "simd/types/vec.h"
+#include "simd/types/traits.h"
+
+#include <limits>
+#include <type_traits>
+#include <cstddef>
+#include <cstdint>
 
 namespace simd {
 namespace kernel {
+namespace avx {
 using namespace types;
 
-/// compress
-
-/// expand
-
-/// extract_pair
-
-/// gather
-
-/// insert
-
-/// get
-
-/// load_aligned
-
-/// load_unaligned
-
-/// rotate_left
-
-/// rotate_right
-
-/// scatter
-
-/// shuffle
-
-/// store
-
-/// store_aligned
-
-/// store_unaligned
-
-/// swizzle
-
+}  // namespace avx
 }  // namespace kernel
 }  // namespace simd

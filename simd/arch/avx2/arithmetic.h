@@ -1,12 +1,23 @@
 #pragma once
 
 #include "simd/types/avx2_register.h"
-#include "simd/types/vec.h"
+#include "simd/types/traits.h"
+
+#include <limits>
+#include <type_traits>
+#include <cstddef>
+#include <cstdint>
 
 namespace simd {
 namespace kernel {
+namespace avx2 {
 using namespace types;
 
+}  // namespace avx2
+}  // namespace kernel
+}  // namespace simd
+
+#if 0
 /// add
 template <typename Arch, typename T,
     typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
@@ -119,5 +130,4 @@ Vec<T, Arch> ssub(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires_
         }
     }
 }
-}  // namespace kernel
-}  // namespace simd
+#endif

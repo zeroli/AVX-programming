@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 
 project(AVX-Programming)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx -mavx2 -mfma")
-
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx -mavx2 -mfma")
 include_directories(${CMAKE_SOURCE_DIR})
 
 add_subdirectory(Ch02_01)

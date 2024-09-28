@@ -1,15 +1,23 @@
 #pragma once
 
 #include "simd/types/avx_register.h"
-#include "simd/types/vec.h"
+#include "simd/types/traits.h"
 
+#include <limits>
+#include <type_traits>
 #include <cstddef>
 #include <cstdint>
 
 namespace simd {
 namespace kernel {
+namespace avx {
 using namespace types;
 
+}  // namespace avx
+}  // namespace kernel
+}  // namespace simd
+
+#if 0
 template <typename Arch, typename T,
     typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
 Vec<T, Arch> add(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires_arch<AVX>) noexcept
@@ -372,6 +380,4 @@ Vec<double, Arch> fms(const Vec<double, Arch>& x, const Vec<double, Arch>& y,
     return _mm256_fmsub_pd(x, y, z);
 }
 
-
-}  // namespace kernel
-}  // namespace simd
+#endif

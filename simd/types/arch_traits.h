@@ -21,7 +21,7 @@ using arch_traits_t = typename arch_traits<T, W>::arch_t;
 template <> \
 struct arch_traits<T, 512/sizeof(T)/8> { \
     using arch_t = AVX512F; \
-}; \
+} \
 ///
 
 #elif SIMD_WITH_AVX2
@@ -29,7 +29,7 @@ struct arch_traits<T, 512/sizeof(T)/8> { \
 template <> \
 struct arch_traits<T, 512/sizeof(T)/8> { \
     using arch_t = AVX2; \
-}; \
+} \
 ///
 
 #elif SIMD_WITH_AVX
@@ -37,7 +37,7 @@ struct arch_traits<T, 512/sizeof(T)/8> { \
 template <> \
 struct arch_traits<T, 512/sizeof(T)/8> { \
     using arch_t = AVX; \
-}; \
+} \
 ///
 
 #elif SIMD_WITH_SSE
@@ -45,15 +45,15 @@ struct arch_traits<T, 512/sizeof(T)/8> { \
 template <> \
 struct arch_traits<T, 512/sizeof(T)/8> { \
     using arch_t = SSE; \
-}; \
+} \
 ///
 
 #else
 #define DEFINE_ARCH_TRAITS_512_BITS(T) \
 template <> \
 struct arch_traits<T, 512/sizeof(T)/8> { \
-    using arch_t = generic; \
-}; \
+    using arch_t = Generic; \
+} \
 ///
 #endif
 
@@ -74,11 +74,11 @@ DEFINE_ARCH_TRAITS_512_BITS(std::complex<double>);
 
 /// 256bits
 #if SIMD_WITH_AVX512F || SIMD_WITH_AVX2 || SIMD_WITH_AVX
-#define DEFINE_ARCH_TRAITS_512_BITS(T) \
+#define DEFINE_ARCH_TRAITS_256_BITS(T) \
 template <> \
 struct arch_traits<T, 256/sizeof(T)/8> { \
     using arch_t = AVX; \
-}; \
+} \
 ///
 
 #elif SIMD_WITH_SSE
@@ -86,15 +86,15 @@ struct arch_traits<T, 256/sizeof(T)/8> { \
 template <> \
 struct arch_traits<T, 256/sizeof(T)/8> { \
     using arch_t = SSE; \
-}; \
+} \
 ///
 
 #else
 #define DEFINE_ARCH_TRAITS_256_BITS(T) \
 template <> \
 struct arch_traits<T, 256/sizeof(T)/8> { \
-    using arch_t = generic; \
-}; \
+    using arch_t = Generic; \
+} \
 ///
 #endif
 
@@ -120,15 +120,15 @@ DEFINE_ARCH_TRAITS_256_BITS(std::complex<double>);
 template <> \
 struct arch_traits<T, 128/sizeof(T)/8> { \
     using arch_t = SSE; \
-}; \
+} \
 ///
 
 #else
 #define DEFINE_ARCH_TRAITS_128_BITS(T) \
 template <> \
 struct arch_traits<T, 128/sizeof(T)/8> { \
-    using arch_t = generic; \
-}; \
+    using arch_t = Generic; \
+} \
 ///
 #endif
 

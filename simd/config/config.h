@@ -1,15 +1,16 @@
 #pragma once
 
+/// minimum supported ISA: SSE for all SSE (>= SSE4.x)
 #define SIMD_WITH_SSE 1
 
 #ifdef __AVX__
-#define SIMD_WITH_AVX 0
+#define SIMD_WITH_AVX 1
 #else
 #define SIMD_WITH_AVX 0
 #endif
 
 #ifdef __AVX2__
-#define SIMD_WITH_AVX2 0
+#define SIMD_WITH_AVX2 1
 #else
 #define SIMD_WITH_AVX2 0
 #endif
@@ -31,7 +32,7 @@
 #endif  // __FMA__
 
 #ifdef __AVX512F__
-#define SIMD_WITH_AVX512F 0
+#define SIMD_WITH_AVX512F 1
 #else
 #define SIMD_WITH_AVX512F 0
 #endif  // __AVX512F__
