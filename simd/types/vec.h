@@ -124,22 +124,14 @@ public:
         store_unaligned(mem);
     }
 
-#if 0
     template <typename U, typename V>
     SIMD_INLINE
-    static Vec gather(const U* src, const Vec<V, W>& index) noexcept {
-        static_assert(std::is_convertible<U, T>::Vec,
-            "Cannot convert from src to this type");
-        return kernel::gather(Vec{}, src, index, A{});
-    }
-    template <typename U, typename V>
-    void scatter(U* dst, const Vec<V, W>& index) const noexcept {
-        static_assert(std::is_convertible<T, U>::Vec,
-            "Cannot convert from src to this type");
-        return kernel::scatter<A>(*this, dst, index, A{});
-    }
+    static Vec gather(const U* src, const Vec<V, W>& index) noexcept;
 
-#endif
+    template <typename U, typename V>
+    SIMD_INLINE
+    void scatter(U* dst, const Vec<V, W>& index) const noexcept;
+
     /// comparison operators
     SIMD_INLINE
     friend VecBool<T, W> operator ==(const Vec<T, W>& lhs, const Vec<T, W>& rhs)

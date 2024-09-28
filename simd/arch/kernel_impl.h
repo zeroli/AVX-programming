@@ -99,4 +99,9 @@ struct reduce;
 template <typename U, typename T, size_t W, typename Enable = void>
 struct cast;
 
+template <typename T, size_t W, typename U, typename V, typename Enable = void>
+struct gather;
+template <typename T, size_t W, typename U, typename V, typename Enable = void>
+struct scatter;
+
 #undef DECLARE_OP_KERNEL

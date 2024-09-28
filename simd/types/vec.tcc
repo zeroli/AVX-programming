@@ -136,6 +136,26 @@ Vec<T, W> Vec<T, W>::load_unaligned(const U* mem) noexcept
 }
 
 template <typename T, size_t W>
+template <typename U, typename V>
+SIMD_INLINE
+Vec<T, W> Vec<T, W>::gather(const U* src, const Vec<V, W>& index) noexcept
+{
+    static_assert(std::is_convertible<U, T>::value,
+        "Cannot convert from src type to scalar type T");
+    return kernel::gather<T, W>(src, index, A{});
+}
+
+template <typename T, size_t W>
+template <typename U, typename V>
+SIMD_INLINE
+void Vec<T, W>::scatter(U* dst, const Vec<V, W>& index) const noexcept
+{
+    static_assert(std::is_convertible<T, U>::Vec,
+        "Cannot convert from this type T to dst type");
+    return kernel::scatter<T, W>(*this, dst, index, A{});
+}
+
+template <typename T, size_t W>
 SIMD_INLINE
 Vec<T, W> Vec<T, W>::operator ~() const noexcept
 {

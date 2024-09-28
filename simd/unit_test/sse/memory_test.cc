@@ -178,3 +178,35 @@ TEST(vec_op_sse, test_memory_set)
         }
     }
 }
+
+TEST(vec_op_sse, test_memory_gather)
+{
+    {
+        simd::Vec<int32_t, 4> index(0, 1, 3, 2);
+        int32_t mem[] = { 4, 3, 2, 1 };
+        simd::Vec<int32_t, 4> p(4, 3, 1, 2);
+        auto a = simd::gather(mem, index);
+        EXPECT_TRUE(simd::all_of(p == a));
+    }
+    {
+        simd::Vec<int32_t, 4> index(0, 1, 3, 2);
+        int32_t mem[] = { 4, 3, 2, 1 };
+        simd::Vec<float, 4> p(4, 3, 1, 2);
+        auto a = simd::gather<float>(mem, index);
+        EXPECT_TRUE(simd::all_of(p == a));
+    }
+    {
+        simd::Vec<float, 4> index(0, 1, 3, 2);
+        float mem[] = { 4, 3, 2, 1 };
+        simd::Vec<float, 4> p(4, 3, 1, 2);
+        auto a = simd::gather(mem, index);
+        EXPECT_TRUE(simd::all_of(p == a));
+    }
+    {
+        simd::Vec<double, 4> index(0, 1, 3, 2);
+        double mem[] = { 4, 3, 2, 1 };
+        simd::Vec<double, 4> p(4, 3, 1, 2);
+        auto a = simd::gather(mem, index);
+        EXPECT_TRUE(simd::all_of(p == a));
+    }
+}

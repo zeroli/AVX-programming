@@ -762,6 +762,103 @@ struct from_mask<T, W, REQUIRE_INTEGRAL(T)>
     }
 };
 
+/// gather
+template <typename T, size_t W, typename U, typename V>
+struct gather<T, W, U, V, REQUIRE_INTEGRAL(T)>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const T* mem, const Vec<V, W>& index) noexcept
+    {
+        static_check_supported_type<T, 8>();
+
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            // TODO
+        }
+        return ret;
+    }
+};
+
+template <size_t W, typename U, typename V>
+struct gather<float, W, U, V>
+{
+    SIMD_INLINE
+    static Vec<float, W> apply(const U* mem, const Vec<V, W>& index) noexcept
+    {
+        Vec<float, W> ret;
+        constexpr auto nregs = Vec<float, W>::n_regs();
+        constexpr auto reg_lanes = Vec<float, W>::reg_lanes();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+        }
+        return ret;
+    }
+};
+
+template <size_t W, typename U, typename V>
+struct gather<double, W, U, V>
+{
+    SIMD_INLINE
+    static Vec<double, W> apply(const U* mem, const Vec<V, W>& index) noexcept
+    {
+        Vec<double, W> ret;
+        constexpr auto nregs = Vec<double, W>::n_regs();
+        constexpr auto reg_lanes = Vec<double, W>::reg_lanes();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+        }
+        return ret;
+    }
+};
+
+/// scatter
+template <typename T, size_t W, typename U, typename V>
+struct scatter<T, W, U, V, REQUIRE_INTEGRAL(T)>
+{
+    SIMD_INLINE
+    static void apply(const Vec<T, W>& x, U* mem, const Vec<V, W>& index) noexcept
+    {
+        static_check_supported_type<T, 8>();
+
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+        }
+    }
+};
+
+template <size_t W, typename U, typename V>
+struct scatter<float, W, U, V>
+{
+    SIMD_INLINE
+    static void apply(const Vec<float, W>& x, U* mem, const Vec<V, W>& index) noexcept
+    {
+        constexpr auto nregs = Vec<float, W>::n_regs();
+        constexpr auto reg_lanes = Vec<float, W>::reg_lanes();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+        }
+    }
+};
+
+template <size_t W, typename U, typename V>
+struct scatter<double, W, U, V>
+{
+    SIMD_INLINE
+    static void apply(const Vec<double, W>& x, U* mem, const Vec<V, W>& index) noexcept
+    {
+        constexpr auto nregs = Vec<double, W>::n_regs();
+        constexpr auto reg_lanes = Vec<double, W>::reg_lanes();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+        }
+    }
+};
+
 }  // namespace sse
 }  // namespace kernel
 }  // namespace simd

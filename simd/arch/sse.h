@@ -210,6 +210,20 @@ void store_unaligned(T* mem, const Vec<T, W>& x, requires_arch<SSE>) noexcept
     sse::store_unaligned<T, W>::apply(mem, x);
 }
 
+template <typename T, size_t W, typename U, typename V>
+SIMD_INLINE
+Vec<T, W> gather(const U* mem, const Vec<V, W>& index, requires_arch<SSE>) noexcept
+{
+    return sse::gather<T, W, U, V>::apply(mem, index);
+}
+
+template <typename T, size_t W, typename U, typename V>
+SIMD_INLINE
+void scatter(const Vec<T, W>& x, U* mem, const Vec<V, W>& index, requires_arch<SSE>) noexcept
+{
+    return sse::scatter<T, W, U, V>::apply(x, mem, index);
+}
+
 template <typename T, size_t W>
 SIMD_INLINE
 uint64_t to_mask(const VecBool<T, W>& x, requires_arch<SSE>) noexcept

@@ -8,7 +8,7 @@ template <typename T, size_t W>
 Vec<T, W> broadcast(T v) noexcept
 {
     using A = typename Vec<T, W>::arch_t;
-    return Vec<T, W>::broadcast(v, A{});
+    return kernel::broadcast<T, W>(v, A{});
 }
 
 template <typename T, size_t W>
@@ -94,18 +94,39 @@ void storeu(T* mem, const Vec<T, W>& x) noexcept
     store_unaligned<T, W>(mem, x);
 }
 
+template <typename T, size_t W, typename U, typename V>
+Vec<T, W> gather(const U* mem, const Vec<V, W>& index) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::gather<T, W, U, V>(mem, index, A{});
+}
+
+template <typename T, size_t W, typename V>
+Vec<T, W> gather(const T* mem, const Vec<V, W>& index) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::gather<T, W, T, V>(mem, index, A{});
+}
+
+template <typename T, size_t W, typename U, typename V>
+void scatter(const Vec<T, W>& x, U* mem, const Vec<V, W>& index) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::scatter<T, W, U, V>(x, mem, index, A{});
+}
+
 template <typename T, size_t W>
 uint64_t to_mask(const VecBool<T, W>& x) noexcept
 {
     using A = typename VecBool<T, W>::arch_t;
-    return to_mask(x, A{});
+    return kernel::to_mask(x, A{});
 }
 
 template <typename T, size_t W>
 VecBool<T, W> from_mask(uint64_t x) noexcept
 {
     using A = typename VecBool<T, W>::arch_t;
-    return from_mask<T, W>(x, A{});
+    return kernel::from_mask<T, W>(x, A{});
 }
 
 }  // namespace simd
