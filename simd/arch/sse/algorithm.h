@@ -557,33 +557,33 @@ T reduce_sum_i64(const __m128i& x) noexcept
 SIMD_INLINE
 float reduce_sum_f32(const __m128& x) noexcept
 {
-    /// _mm_movehl_ps: CPI=1
-    /// _mm_add_ps: CPI=0.5
-    /// _mm_shuffle_ps: CPI=0.5
-    /// _mm_cvtss_f32: CPI=0.5
-    /// total CPI: 3
+    /// _mm_movehl_ps: latency=1
+    /// _mm_add_ps: latency=4 (x2)
+    /// _mm_shuffle_ps: latency=1
+    /// _mm_cvtss_f32: latency=5
+    /// total latency: 15
     auto tmp1 = _mm_add_ps(x, _mm_movehl_ps(x, x));
     auto tmp2 = _mm_add_ps(tmp1, _mm_shuffle_ps(tmp1, tmp1, 1));
     return _mm_cvtss_f32(tmp2);
-#if 0  // alternative (CPI=4.5)
-    auto tmp = _mm_hadd_ps(x, x); /// CPI=2
-    tmp = _mm_hadd_ps(tmp, tmp);  /// CPI=2
-    return _mm_cvtss_f32(tmp);    /// CPI=0.5
+#if 0  // alternative (latency=19)
+    auto tmp = _mm_hadd_ps(x, x); /// latency=7
+    tmp = _mm_hadd_ps(tmp, tmp);  /// latency=7
+    return _mm_cvtss_f32(tmp);    /// latency=5
 #endif
 }
 
 SIMD_INLINE
 double reduce_sum_f64(const __m128d& x) noexcept
 {
-    /// _mm_unpackhi_pd: CPI=1
-    /// _mm_add_pd: CPI=0.5
-    /// _mm_cvtsd_f64: CPI=0.5
-    /// total CPI: 2
+    /// _mm_unpackhi_pd: latency=1
+    /// _mm_add_pd: latency=4
+    /// _mm_cvtsd_f64: latency=5
+    /// total latency: 10
     auto tmp = _mm_add_pd(x, _mm_unpackhi_pd(x, x));
     return _mm_cvtsd_f64(tmp);
-#if 0  // alternative (CPI=2.5)
-    auto tmp = _mm_hadd_pd(x, x); /// CPI=2
-    return _mm_cvtsd_f64(tmp);    /// CPI=0.5
+#if 0  // alternative (latency=12)
+    auto tmp = _mm_hadd_pd(x, x); /// latency=7
+    return _mm_cvtsd_f64(tmp);    /// latency=5
 #endif
 }
 }  // namespace detail
