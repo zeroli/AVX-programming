@@ -3,6 +3,20 @@
 namespace simd { namespace kernel { namespace avx {
 namespace detail {
 using namespace types;
+
+SIMD_INLINE
+avx_reg_i make_mask_i() {
+    return _mm256_set1_epi32(-1);
+}
+SIMD_INLINE
+avx_reg_f make_mask_f() {
+    return _mm256_castsi256_ps(_mm256_set1_epi32(-1));
+}
+SIMD_INLINE
+avx_reg_d make_mask_d() {
+    return _mm256_castsi256_pd(_mm256_set1_epi32(-1));
+}
+
 /// split from one avx register into two sse registers
 SIMD_INLINE
 void split(const avx_reg_i& val, sse_reg_i& low, sse_reg_i& high) noexcept
@@ -51,6 +65,33 @@ avx_reg_i forward_sse_op(const avx_reg_i& lhs, const avx_reg_i& rhs) noexcept
     detail::split(rhs, r_low, r_high);
     auto sum_low  = OP::template apply<VO, VI>(VI(l_low),  VI(r_low));
     auto sum_high = OP::template apply<VO, VI>(VI(l_high), VI(r_high));
+    return detail::merge(sum_low.reg(), sum_high.reg());
+}
+
+template <typename OP, typename VO, typename VI1 = VO, typename VI2 = VI1>
+SIMD_INLINE
+avx_reg_i forward_sse_op2(const avx_reg_i& lhs, const avx_reg_i& rhs) noexcept
+{
+    static_assert(VI1::n_regs() == 1);
+
+    sse_reg_i l_low, l_high, r_low, r_high;
+    detail::split(lhs, l_low, l_high);
+    detail::split(rhs, r_low, r_high);
+    auto sum_low  = OP::template apply<VO, VI1, VI2>(VI1(l_low),  VI2(r_low));
+    auto sum_high = OP::template apply<VO, VI1, VI2>(VI1(l_high), VI2(r_high));
+    return detail::merge(sum_low.reg(), sum_high.reg());
+}
+
+template <typename OP, typename VO, typename VI = VO>
+SIMD_INLINE
+avx_reg_i forward_sse_op(const avx_reg_i& lhs, int32_t rhs) noexcept
+{
+    static_assert(VI::n_regs() == 1);
+
+    sse_reg_i l_low, l_high;
+    detail::split(lhs, l_low, l_high);
+    auto sum_low  = OP::template apply<VO, VI>(VI(l_low),  rhs);
+    auto sum_high = OP::template apply<VO, VI>(VI(l_high), rhs);
     return detail::merge(sum_low.reg(), sum_high.reg());
 }
 }  // namespace detail

@@ -59,7 +59,6 @@ DEFINE_GENERIC_BINARY_OP(copysign);
 DEFINE_GENERIC_BINARY_OP(bitwise_and);
 DEFINE_GENERIC_BINARY_OP(bitwise_or);
 DEFINE_GENERIC_BINARY_OP(bitwise_xor);
-DEFINE_GENERIC_BINARY_OP(bitwise_andnot);
 DEFINE_GENERIC_BINARY_OP(bitwise_lshift);
 DEFINE_GENERIC_BINARY_OP(bitwise_rshift);
 
@@ -69,6 +68,13 @@ DEFINE_GENERIC_BINARY_CMP_OP(gt);
 DEFINE_GENERIC_BINARY_CMP_OP(ge);
 DEFINE_GENERIC_BINARY_CMP_OP(lt);
 DEFINE_GENERIC_BINARY_CMP_OP(le);
+
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> bitwise_andnot(const VecBool<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<Generic>) noexcept
+{
+    return generic::bitwise_andnot<T, W>::apply(lhs, rhs);
+}
 
 template <typename T, size_t W>
 SIMD_INLINE

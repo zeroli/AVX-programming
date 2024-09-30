@@ -34,6 +34,32 @@ DEFINE_AVX_BINARY_OP(mul);
 DEFINE_AVX_BINARY_OP(div);
 DEFINE_AVX_BINARY_OP(mod);
 
+DEFINE_AVX_BINARY_OP(bitwise_and);
+DEFINE_AVX_BINARY_OP(bitwise_or);
+DEFINE_AVX_BINARY_OP(bitwise_xor);
+DEFINE_AVX_BINARY_OP(bitwise_lshift);
+DEFINE_AVX_BINARY_OP(bitwise_rshift);
+
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> bitwise_andnot(const VecBool<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<AVX>) noexcept
+{
+    return avx::bitwise_andnot<T, W>::apply(lhs, rhs);
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> bitwise_lshift(const Vec<T, W>& lhs, int32_t rhs, requires_arch<AVX>) noexcept
+{
+    return avx::bitwise_lshift<T, W>::apply(lhs, rhs);
+}
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> bitwise_rshift(const Vec<T, W>& lhs, int32_t rhs, requires_arch<AVX>) noexcept
+{
+    return avx::bitwise_rshift<T, W>::apply(lhs, rhs);
+}
+
 #define DEFINE_AVX_UNARY_OP(OP) \
 template <typename T, size_t W> \
 SIMD_INLINE \
@@ -44,6 +70,7 @@ Vec<T, W> OP(const Vec<T, W>& x, requires_arch<AVX>) noexcept \
 ///
 
 DEFINE_AVX_UNARY_OP(neg);
+DEFINE_AVX_UNARY_OP(bitwise_not);
 
 #define DEFINE_AVX_BINARY_CMP_OP(OP) \
 template <typename T, size_t W> \

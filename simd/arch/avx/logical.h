@@ -3,301 +3,346 @@
 namespace simd { namespace kernel { namespace avx {
 using namespace types;
 
-} } } // namespace simd::kernel::avx
+namespace detail {
+struct sse_bitwise_and {
+    template <typename VO, typename VI>
+    static VO apply(const VI& x, const VI& y) noexcept {
+        return kernel::bitwise_and(x, y, SSE{});
+    }
+};
+struct sse_bitwise_or {
+    template <typename VO, typename VI>
+    static VO apply(const VI& x, const VI& y) noexcept {
+        return kernel::bitwise_or(x, y, SSE{});
+    }
+};
 
+struct sse_bitwise_xor {
+    template <typename VO, typename VI>
+    static VO apply(const VI& x, const VI& y) noexcept {
+        return kernel::bitwise_xor(x, y, SSE{});
+    }
+};
 
+struct and_functor {
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) const noexcept {
+        using sse_vec_t = Vec<int32_t, 4>;
+        return detail::forward_sse_op<detail::sse_bitwise_and, sse_vec_t>(x, y);
+    }
+    avx_reg_f operator ()(const avx_reg_f& x, const avx_reg_f& y) const noexcept {
+        return _mm256_and_ps(x, y);
+    }
+    avx_reg_d operator ()(const avx_reg_d& x, const avx_reg_d& y) const noexcept {
+        return _mm256_and_pd(x, y);
+    }
+};
+struct or_functor {
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) const noexcept {
+        using sse_vec_t = Vec<int32_t, 4>;
+        return detail::forward_sse_op<detail::sse_bitwise_or, sse_vec_t>(x, y);
+    }
+    avx_reg_f operator ()(const avx_reg_f& x, const avx_reg_f& y) const noexcept {
+        return _mm256_or_ps(x, y);
+    }
+    avx_reg_d operator ()(const avx_reg_d& x, const avx_reg_d& y) const noexcept {
+        return _mm256_or_pd(x, y);
+    }
+};
+struct xor_functor {
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) const noexcept {
+        using sse_vec_t = Vec<int32_t, 4>;
+        return detail::forward_sse_op<detail::sse_bitwise_xor, sse_vec_t>(x, y);
+    }
+    avx_reg_f operator ()(const avx_reg_f& x, const avx_reg_f& y) const noexcept {
+        return _mm256_xor_ps(x, y);
+    }
+    avx_reg_d operator ()(const avx_reg_d& x, const avx_reg_d& y) const noexcept {
+        return _mm256_xor_pd(x, y);
+    }
+};
 
-#if 0
-/// eq
-template <typename Arch>
-VecBool<float, Arch> eq(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<AVX>) noexcept
+template <typename T, size_t W, typename F>
+struct bitwise_op
 {
-    return _mm256_cmp_ps(self, other, _CMP_EQ_OQ);
-}
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = F()(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
+    }
+};
+}  // namespace detail
 
-template <typename Arch>
-VecBool<double, Arch> eq(const Vec<double, Arch>& self, const Vec<float, Arch>& other, requires_arch<AVX>) noexcept
+template <typename T, size_t W>
+struct bitwise_and<T, W> : detail::bitwise_op<T, W, detail::and_functor>
 {
-    return _mm256_cmp_pd(self, other, _CMP_EQ_OQ);
-}
+};
 
-template <typename Arch>
-VecBool<float, Arch> eq(const VecBool<float, Arch>& self, const VecBool<float, Arch>& other, requires_arch<AVX>) noexcept
+template <typename T, size_t W>
+struct bitwise_or<T, W> : detail::bitwise_op<T, W, detail::or_functor>
 {
-    return ~(self != other);
-}
+};
 
-template <typename Arch>
-VecBool<double, Arch> eq(const VecBool<double, Arch>& self, const VecBool<float, Arch>& other, requires_arch<AVX>) noexcept
+template <typename T, size_t W>
+struct bitwise_xor<T, W> : detail::bitwise_op<T, W, detail::xor_functor>
 {
-    return ~(self != other);
-}
+};
 
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-VecBool<T, Arch> eq(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return detail::fwd_to_sse([](__m128i s, __m128i o) noexcept {
-        return eq(Vec<T, SSE>(s), Vec<T, SSE>(o));
-    }, self, other);
-}
+namespace detail {
+struct sse_bitwise_lshift {
+    template <typename VO, typename VI>
+    static VO apply(const VI& lhs, int32_t rhs) noexcept {
+        return kernel::bitwise_lshift(lhs, rhs, SSE{});
+    }
+    template <typename VO, typename VI>
+    static VO apply(const VI& lhs, const VI& rhs) noexcept {
+        return kernel::bitwise_lshift(lhs, rhs, SSE{});
+    }
+};
 
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-VecBool<T, Arch> eq(const VecBool<T, Arch>& self, const VecBool<T, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return ~(self != other);
-}
+struct sse_bitwise_rshift {
+    template <typename VO, typename VI>
+    static VO apply(const VI& lhs, int32_t rhs) noexcept {
+        return kernel::bitwise_rshift(lhs, rhs, SSE{});
+    }
+    template <typename VO, typename VI>
+    static VO apply(const VI& lhs, const VI& rhs) noexcept {
+        return kernel::bitwise_rshift(lhs, rhs, SSE{});
+    }
+};
+}  // namespace detail
 
-template <typename Arch>
-Vec<float, Arch> bitwise_and(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<AVX>) noexcept
+template <typename T, size_t W>
+struct bitwise_lshift<T, W, REQUIRE_INTEGRAL(T)>
 {
-    return _mm256_and_ps(self, other);
-}
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, int32_t rhs) noexcept
+    {
+        static_check_supported_type<T>();
 
-template <typename Arch>
-Vec<double, Arch> bitwise_and(const Vec<double, Arch>& self, const Vec<double, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return _mm256_and_pd(self, other);
-}
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        using sse_vec_t = Vec<T, reg_lanes/2>;
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_bitwise_lshift, sse_vec_t>
+                                (lhs.reg(idx), rhs);
+        }
+        return ret;
+    }
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        static_check_supported_type<T>();
 
-template <typename Arch>
-VecBool<float, Arch> bitwise_and(const VecBool<float, Arch>& self, const VecBool<float, Arch>& other, requires_arch<AVX>) noexcept
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        using sse_vec_t = Vec<T, reg_lanes/2>;
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_bitwise_lshift, sse_vec_t>
+                                (lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
+    }
+};
+template <typename T, size_t W>
+struct bitwise_rshift<T, W, REQUIRE_INTEGRAL(T)>
 {
-    return _mm256_and_ps(self, other);
-}
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, int32_t rhs) noexcept
+    {
+        static_check_supported_type<T>();
 
-template <typename Arch>
-VecBool<double, Arch> bitwise_and(const VecBool<double, Arch>& self, const VecBool<double, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return _mm256_and_pd(self, other);
-}
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        using sse_vec_t = Vec<T, reg_lanes/2>;
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_bitwise_rshift, sse_vec_t>
+                                (lhs.reg(idx), rhs);
+        }
+        return ret;
+    }
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        static_check_supported_type<T>();
 
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-Vec<T, Arch> bitwise_and(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return detail::fwd_to_sse([](__m128i s, __m128i o) noexcept {
-        return bitwise_and(Vec<T, SSE>(s), Vec<T, SSE>(o));
-    }, self, other);
-}
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        using sse_vec_t = Vec<T, reg_lanes/2>;
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_bitwise_rshift, sse_vec_t>
+                                (lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
+    }
+};
 
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-VecBool<T, Arch> bitwise_and(const VecBool<T, Arch>& self, const VecBool<T, Arch>& other, requires_arch<AVX>) noexcept
+/// bitwise_not
+template <typename T, size_t W>
+struct bitwise_not<T, W, REQUIRE_INTEGRAL(T)>
 {
-    return detail::fwd_to_sse([](__m128i s, __m128i o) noexcept {
-        return bitwise_and(Vec<T, SSE>(s), Vec<T, SSE>(o));
-    }, self, other);
-}
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& x) noexcept
+    {
+        static_check_supported_type<T>();
+
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        auto mask = detail::make_mask_i();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm256_xor_si256(x.reg(idx), mask);
+        }
+        return ret;
+    }
+    SIMD_INLINE
+    static VecBool<T, W> apply(const VecBool<T, W>& x) noexcept
+    {
+        static_check_supported_type<T>();
+
+        VecBool<T, W> ret;
+        constexpr auto nregs = VecBool<T, W>::n_regs();
+        auto mask = detail::make_mask_i();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm256_xor_si256(x.reg(idx), mask);
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct bitwise_not<float, W>
+{
+    SIMD_INLINE
+    static Vec<float, W> apply(const Vec<float, W>& x) noexcept
+    {
+        Vec<float, W> ret;
+        constexpr auto nregs = Vec<float, W>::n_regs();
+        auto mask = detail::make_mask_f();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm256_xor_ps(x.reg(idx), mask);
+        }
+        return ret;
+    }
+    SIMD_INLINE
+    static VecBool<float, W> apply(const VecBool<float, W>& x) noexcept
+    {
+        VecBool<float, W> ret;
+        constexpr auto nregs = VecBool<float, W>::n_regs();
+        auto mask = detail::make_mask_f();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm256_xor_ps(x.reg(idx), mask);
+        }
+        return ret;
+    }
+};
+
+template <size_t W>
+struct bitwise_not<double, W>
+{
+    SIMD_INLINE
+    static Vec<double, W> apply(const Vec<double, W>& x) noexcept
+    {
+        Vec<double, W> ret;
+        constexpr auto nregs = Vec<double, W>::n_regs();
+        auto mask = detail::make_mask_d();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm256_xor_pd(x.reg(idx), mask);
+        }
+        return ret;
+    }
+    SIMD_INLINE
+    static VecBool<double, W> apply(const VecBool<double, W>& x) noexcept
+    {
+        VecBool<double, W> ret;
+        constexpr auto nregs = VecBool<double, W>::n_regs();
+        auto mask = detail::make_mask_d();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm256_xor_pd(x.reg(idx), mask);
+        }
+        return ret;
+    }
+};
 
 /// bitwise_andnot
-template <typename Arch>
-Vec<float, Arch> bitwise_andnot(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<AVX>) noexcept
+namespace detail {
+struct sse_bitwise_andnot {
+    template <typename VO, typename VI1, typename VI2>
+    static VO apply(const VI1& lhs, const VI2& rhs) noexcept {
+        return kernel::bitwise_andnot(lhs, rhs, SSE{});
+    }
+};
+}  // namespace detail
+template <typename T, size_t W>
+struct bitwise_andnot<T, W, REQUIRE_INTEGRAL(T)>
 {
-    return _mm256_andnot_ps(self, other);
-}
+    SIMD_INLINE
+    static Vec<T, W> apply(const VecBool<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        static_check_supported_type<T>();
 
-template <typename Arch>
-Vec<double, Arch> bitwise_andnot(const Vec<double, Arch>& self, const Vec<double, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return _mm256_andnot_pd(self, other);
-}
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        using sse_vec_t = Vec<T, reg_lanes/2>;
+        using sse_vbool_t = VecBool<T, reg_lanes/2>;
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = detail::forward_sse_op2<detail::sse_bitwise_andnot, sse_vec_t, sse_vbool_t, sse_vec_t>
+                                (lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
+    }
+};
 
-template <typename Arch>
-VecBool<float, Arch> bitwise_andnot(const VecBool<float, Arch>& self, const VecBool<float, Arch>& other, requires_arch<AVX>) noexcept
+template <size_t W>
+struct bitwise_andnot<float, W>
 {
-    return _mm256_andnot_ps(self, other);
-}
+    SIMD_INLINE
+    static Vec<float, W> apply(const VecBool<float, W>& lhs, const Vec<float, W>& rhs) noexcept
+    {
+        Vec<float, W> ret;
+        constexpr auto nregs = Vec<float, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm256_andnot_ps(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
+    }
+};
 
-template <typename Arch>
-VecBool<double, Arch> bitwise_andnot(const VecBool<double, Arch>& self, const VecBool<double, Arch>& other, requires_arch<AVX>) noexcept
+template <size_t W>
+struct bitwise_andnot<double, W>
 {
-    return _mm256_andnot_pd(self, other);
-}
+    SIMD_INLINE
+    static Vec<double, W> apply(const VecBool<double, W>& lhs, const Vec<double, W>& rhs) noexcept
+    {
+        Vec<double, W> ret;
+        constexpr auto nregs = Vec<double, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = _mm256_andnot_pd(lhs.reg(idx), rhs.reg(idx));
+        }
+        return ret;
+    }
+};
 
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-Vec<T, Arch> bitwise_andnot(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return detail::fwd_to_sse([](__m128i s, __m128i o) noexcept {
-        return bitwise_andnot(Vec<T, SSE>(s), Vec<T, SSE>(o));
-    }, self, other);
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-VecBool<T, Arch> bitwise_andnot(const VecBool<T, Arch>& self, const VecBool<T, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return detail::fwd_to_sse([](__m128i s, __m128i o) noexcept {
-        return bitwise_andnot(Vec<T, SSE>(s), Vec<T, SSE>(o));
-    }, self, other);
-}
-
-/// bitwise_not
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-Vec<T, Arch> bitwise_not(const Vec<T, Arch>& self, requires_arch<AVX>) noexcept
-{
-    return detail::fwd_to_sse([](__m128i s) noexcept {
-        return bitwise_not(Vec<T, SSE>(s), SSE{});
-    }, self);
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-VecBool<T, Arch> bitwise_not(const VecBool<T, Arch>& self, requires_arch<AVX>) noexcept
-{
-    return detail::fwd_to_sse([](__m128i s) noexcept {
-        return bitwise_not(Vec<T, SSE>(s), SSE{});
-    }, self, other);
-}
-
-/// bitwise_or
-template <typename Arch>
-Vec<float, Arch> bitwise_or(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return _mm256_or_ps(self, other);
-}
-
-template <typename Arch>
-Vec<double, Arch> bitwise_or(const Vec<double, Arch>& self, const Vec<double, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return _mm256_or_pd(self, other);
-}
-
-template <typename Arch>
-VecBool<float, Arch> bitwise_or(const VecBool<float, Arch>& self, const VecBool<float, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return _mm256_or_ps(self, other);
-}
-
-template <typename Arch>
-VecBool<double, Arch> bitwise_or(const VecBool<double, Arch>& self, const VecBool<double, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return _mm256_or_pd(self, other);
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-Vec<T, Arch> bitwise_or(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return detail::fwd_to_sse([](__m128i s, __m128i o) noexcept {
-        return bitwise_or(Vec<T, SSE>(s), Vec<T, SSE>(o));
-    }, self, other);
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-VecBool<T, Arch> bitwise_or(const VecBool<T, Arch>& self, const VecBool<T, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return detail::fwd_to_sse([](__m128i s, __m128i o) noexcept {
-        return bitwise_or(Vec<T, SSE>(s), Vec<T, SSE>(o));
-    }, self, other);
-}
-
-/// bitwise_xor
-template <typename Arch>
-Vec<float, Arch> bitwise_xor(const Vec<float, Arch>& self, const Vec<float, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return _mm256_xor_ps(self, other);
-}
-
-template <typename Arch>
-Vec<double, Arch> bitwise_xor(const Vec<double, Arch>& self, const Vec<double, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return _mm256_xor_pd(self, other);
-}
-
-template <typename Arch>
-VecBool<float, Arch> bitwise_xor(const VecBool<float, Arch>& self, const VecBool<float, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return _mm256_xor_ps(self, other);
-}
-
-template <typename Arch>
-VecBool<double, Arch> bitwise_xor(const VecBool<double, Arch>& self, const VecBool<double, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return _mm256_xor_pd(self, other);
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-Vec<T, Arch> bitwise_xor(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return detail::fwd_to_sse([](__m128i s, __m128i o) noexcept {
-        return bitwise_xor(Vec<T, SSE>(s), Vec<T, SSE>(o));
-    }, self, other);
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-VecBool<T, Arch> bitwise_xor(const VecBool<T, Arch>& self, const VecBool<T, Arch>& other, requires_arch<AVX>) noexcept
-{
-    return detail::fwd_to_sse([](__m128i s, __m128i o) noexcept {
-        return bitwise_xor(Vec<T, SSE>(s), Vec<T, SSE>(o));
-    }, self, other);
-}
-
-/// bitwise_not
-template <typename Arch>
-Vec<float, Arch> bitwise_not(const Vec<float, Arch>& self, requires_arch<AVX>) noexcept
-{
-    return _mm256_xor_ps(self, _m256_castsi256_ps(_mm256_set1_epi32(-1)));
-}
-template <typename Arch>
-Vec<double, Arch> bitwise_not(const Vec<double, Arch>& self, requires_arch<AVX>) noexcept
-{
-    return _mm256_xor_pd(self, _m256_castsi256_pd(_mm256_set1_epi32(-1)));
-}
-
-template <typename Arch>
-VecBool<float, Arch> bitwise_not(const VecBool<float, Arch>& self, requires_arch<AVX>) noexcept
-{
-    return _mm256_xor_ps(self, _m256_castsi256_ps(_mm256_set1_epi32(-1)));
-}
-template <typename Arch>
-VecBool<double, Arch> bitwise_not(const VecBool<double, Arch>& self, requires_arch<AVX>) noexcept
-{
-    return _mm256_xor_pd(self, _m256_castsi256_pd(_mm256_set1_epi32(-1)));
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-bool all_of(const VecBool<T, Arch>& self, requires_arch<AVX>) noexcept
-{
-    return _mm256_testc_si256(self, VecBool<T, Arch>(true)) != 0);
-}
-
-template <typename Arch>
-bool all_of(const VecBool<float, Arch>& self, requires_arch<AVX>) noexcept
-{
-    return _mm256_testc_ps(self, VecBool<float, Arch>(true)) != 0);
-}
-
-template <typename Arch>
-bool all_of(const VecBool<double, Arch>& self, requires_arch<AVX>) noexcept
-{
-    return _mm256_testc_pd(self, VecBool<double, Arch>(true)) != 0);
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-bool any_of(const VecBool<T, Arch>& self, requires_arch<AVX>) noexcept
-{
-    return !_mm256_testz_si256(self, self);
-}
-
-template <typename Arch>
-bool any_of(const VecBool<float, Arch>& self, requires_arch<AVX>) noexcept
-{
-    return !_mm256_testz_ps(self, self);
-}
-
-template <typename Arch>
-bool any_of(const VecBool<double, Arch>& self, requires_arch<AVX>) noexcept
-{
-    return !_mm256_testz_pd(self, self);
-}
-
-#endif
+} } } // namespace simd::kernel::avx

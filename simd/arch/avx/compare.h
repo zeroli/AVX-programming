@@ -35,10 +35,10 @@ struct eq<T, W, REQUIRE_INTEGRAL(T)>
         constexpr auto nregs = Vec<T, W>::n_regs();
         constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
         using sse_vec_t = Vec<T, reg_lanes/2>;
-        using sse_vecbool_t = VecBool<T, reg_lanes/2>;
+        using sse_vbool_t = VecBool<T, reg_lanes/2>;
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = detail::forward_sse_op<detail::sse_cmp_eq, sse_vecbool_t, sse_vec_t>
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_cmp_eq, sse_vbool_t, sse_vec_t>
                                 (lhs.reg(idx), rhs.reg(idx));
         }
         return ret;
@@ -51,10 +51,10 @@ struct eq<T, W, REQUIRE_INTEGRAL(T)>
         VecBool<T, W> ret;
         constexpr auto nregs = VecBool<T, W>::n_regs();
         constexpr auto reg_lanes = VecBool<T, W>::reg_lanes();
-        using sse_vecbool_t = VecBool<T, reg_lanes/2>;
+        using sse_vbool_t = VecBool<T, reg_lanes/2>;
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = detail::forward_sse_op<detail::sse_cmp_eq, sse_vecbool_t>
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_cmp_eq, sse_vbool_t>
                                 (lhs.reg(idx), rhs.reg(idx));
         }
         return ret;
@@ -337,10 +337,10 @@ struct lt<T, W, REQUIRE_INTEGRAL(T)>
         constexpr auto nregs = Vec<T, W>::n_regs();
         constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
         using sse_vec_t = Vec<T, reg_lanes/2>;
-        using sse_vecbool_t = VecBool<T, reg_lanes/2>;
+        using sse_vbool_t = VecBool<T, reg_lanes/2>;
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = detail::forward_sse_op<detail::sse_cmp_lt, sse_vecbool_t, sse_vec_t>
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_cmp_lt, sse_vbool_t, sse_vec_t>
                                 (lhs.reg(idx), rhs.reg(idx));
         }
         return ret;

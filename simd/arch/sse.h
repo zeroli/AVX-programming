@@ -35,9 +35,15 @@ DEFINE_SSE_BINARY_OP(mod);
 DEFINE_SSE_BINARY_OP(bitwise_and);
 DEFINE_SSE_BINARY_OP(bitwise_or);
 DEFINE_SSE_BINARY_OP(bitwise_xor);
-DEFINE_SSE_BINARY_OP(bitwise_andnot);
 DEFINE_SSE_BINARY_OP(bitwise_lshift);
 DEFINE_SSE_BINARY_OP(bitwise_rshift);
+
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> bitwise_andnot(const VecBool<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept
+{
+    return sse::bitwise_andnot<T, W>::apply(lhs, rhs);
+}
 
 template <typename T, size_t W>
 SIMD_INLINE
