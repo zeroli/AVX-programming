@@ -1,6 +1,8 @@
 #pragma once
 
 #include "simd/arch/generic/detail.h"
+#include "simd/types/generic_arch.h"
+#include "simd/types/traits.h"
 
 namespace simd {
 namespace kernel {

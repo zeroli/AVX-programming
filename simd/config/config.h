@@ -1,9 +1,14 @@
 #pragma once
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wignored-attributes"
+#elif defined(__clang__)
+#pragma clang diagnostic ignored "-Wignored-attributes"
+#endif
+
 /// minimum supported ISA: SSE for all SSE (>= SSE4.x)
 #define SIMD_WITH_SSE 1
 
-#define SIMD_WITH_EMULATED 1
 
 #ifdef __AVX__
 #define SIMD_WITH_AVX 1

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "simd/types/vec.h"
-
+#include <algorithm>
+#include <numeric>
 #include <type_traits>
 #include <cstddef>
 
@@ -9,38 +9,23 @@ namespace simd {
 namespace kernel {
 namespace generic {
 
-#if 0
 namespace detail {
-template <typename F, typename Arch, typename T>
-Vec<T, Arch> apply(F&& func, const Vec<T, Arch>& self, const Vec<T, Arch>& other) noexcept
+template <typename T, size_t W, typename F>
+Vec<T, W> apply(const Vec<T, W>& x, F&& f) noexcept
 {
-    constexpr size_t size = Vec<T, Arch>::size();
-    alignas(Arch::alignment()) T self_buffer[size];
-    alignas(Arch::alignment()) T other_buffer[size];
-    self.store_aligned(&self_buffer[0]);
-    other.store_aligned(&other_buffer[0]);
-    for (auto i = 0u; i < size; i++) {
-        self_buffer[i] = func(self_buffer[i], other_buffer[i]);
-    }
-    return Vec<T, Arch>::load_aligned(self_buffer);
+    Vec<T, W> ret;
+    std::transform(std::begin(x), std::end(x), std::begin(ret), f);
+    return ret;
 }
 
-template <typename U, typename F, typename Arch, typename T>
-Vec<T, Arch> apply_transform(F&& func, const Vec<T, Arch>& self) noexcept
+template <typename T, size_t W, typename F>
+Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y, F&& f) noexcept
 {
-    static_assert(Vec<T, Arch>::size() == Vec<U, Arch>::size(),
-        "source and destination sizes must match");
-    constexpr size_t size = Vec<T, Arch>::size();
-    alignas(Arch::alignment()) T self_buffer[size];
-    alignas(Arch::alignment()) T other_buffer[size];
-    self.store_aligned(&self_buffer[0]);
-    for (auto i = 0u; i < src_size; i++) {
-        other_buffer[i] = func(self_buffer[i]);
-    }
-    return Vec<T, Arch>::load_aligned(other_buffer);
+    Vec<T, W> ret;
+    std::transform(std::begin(x), std::end(x), std::begin(y), std::begin(ret), f);
+    return ret;
 }
 }  // namespace detail
-#endif
 }  // namespace generic
 }  // namespace kernel
 }  // namespace simd

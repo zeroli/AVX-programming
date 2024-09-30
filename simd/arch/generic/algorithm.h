@@ -1,6 +1,8 @@
 #pragma once
 
-#include "simd/types/vec.h"
+#include "simd/arch/generic/detail.h"
+#include "simd/types/generic_arch.h"
+#include "simd/types/traits.h"
 
 #include <limits>
 #include <type_traits>
