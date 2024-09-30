@@ -6,11 +6,8 @@ namespace simd {
 /// AVX2 instructions
 struct AVX2 : AVX
 {
-    SIMD_INLINE
     static constexpr bool supported() noexcept { return SIMD_WITH_AVX2; }
-    SIMD_INLINE
     static constexpr bool available() noexcept { return true; }
-    SIMD_INLINE
     static constexpr const char* name() noexcept { return "AVX2"; }
 };
 }  // namespace simd

@@ -660,18 +660,18 @@ struct reduce_max<T, W, REQUIRE_INTEGRAL(T)>
         T ret{};
         constexpr auto nregs = Vec<T, W>::n_regs();
         SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
-            ret = kernel::hadd<T, W>(x, Generic{});
+            // TODO
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
-            ret = kernel::hadd<T, W>(x, Generic{});
+            // TODO
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
-                ret += detail::reduce_sum_i32<T>(x.reg(idx));
+                // TODO
             }
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
-                ret += detail::reduce_sum_i64<T>(x.reg(idx));
+                // TODO
             }
         }
         return ret;
@@ -688,7 +688,7 @@ struct reduce_max<float, W>
         constexpr int nregs = Vec<float, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret += detail::reduce_sum_f32(x.reg(idx));
+            // TODO
         }
         return ret;
     }
@@ -704,7 +704,7 @@ struct reduce_max<double, W>
         constexpr int nregs = Vec<double, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret += detail::reduce_sum_f64(x.reg(idx));
+            // TODO
         }
         return ret;
     }
@@ -722,18 +722,18 @@ struct reduce_min<T, W, REQUIRE_INTEGRAL(T)>
         T ret{};
         constexpr auto nregs = Vec<T, W>::n_regs();
         SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
-            ret = kernel::hadd<T, W>(x, Generic{});
+            // TODO
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
-            ret = kernel::hadd<T, W>(x, Generic{});
+            // TODO
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
-                ret += detail::reduce_sum_i32<T>(x.reg(idx));
+                // TODO
             }
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
-                ret += detail::reduce_sum_i64<T>(x.reg(idx));
+                // TODO
             }
         }
         return ret;
@@ -750,7 +750,7 @@ struct reduce_min<float, W>
         constexpr int nregs = Vec<float, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret += detail::reduce_sum_f32(x.reg(idx));
+            // TODO
         }
         return ret;
     }
@@ -766,7 +766,7 @@ struct reduce_min<double, W>
         constexpr int nregs = Vec<double, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret += detail::reduce_sum_f64(x.reg(idx));
+            // TODO
         }
         return ret;
     }
@@ -784,18 +784,18 @@ struct reduce<T, W, F, REQUIRE_INTEGRAL(T)>
         T ret;
         constexpr auto nregs = Vec<T, W>::n_regs();
         SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
-            ret = kernel::hadd<T, W>(x, Generic{});
+            // TODO
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
-            ret = kernel::hadd<T, W>(x, Generic{});
+            // TODO
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
-                ret += detail::reduce_sum_i32<T>(x.reg(idx));
+                // TODO
             }
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
-                ret += detail::reduce_sum_i64<T>(x.reg(idx));
+                // TODO
             }
         }
         return ret;
@@ -812,7 +812,7 @@ struct reduce<float, W, F>
         constexpr int nregs = Vec<float, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret += detail::reduce_sum_f32(x.reg(idx));
+            // TODO
         }
         return ret;
     }
@@ -828,7 +828,7 @@ struct reduce<double, W, F>
         constexpr int nregs = Vec<double, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret += detail::reduce_sum_f64(x.reg(idx));
+            // TODO
         }
         return ret;
     }
