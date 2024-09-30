@@ -4,6 +4,8 @@
 
 using namespace simd;
 
+STATIC_CHECK_ARCH_ENABLED(SSE);
+
 TEST(api, test_setzero)
 {
     {

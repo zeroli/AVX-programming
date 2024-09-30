@@ -9,7 +9,6 @@
 /// minimum supported ISA: SSE for all SSE (>= SSE4.x)
 #define SIMD_WITH_SSE 1
 
-
 #ifdef __AVX__
 #define SIMD_WITH_AVX 1
 #else

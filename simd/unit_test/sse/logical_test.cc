@@ -2,6 +2,8 @@
 
 #include "simd/simd.h"
 
+STATIC_CHECK_ARCH_ENABLED(SSE);
+
 #define OP_FLOATS(op, x, y) \
 ({ \
     float x_ = x, y_ = y; \

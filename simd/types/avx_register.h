@@ -16,23 +16,21 @@ struct AVX : Generic
 
 #if SIMD_WITH_AVX
 #include <immintrin.h>
+#include <complex>
 
 namespace simd {
 namespace types {
-DECLARE_SIMD_REGISTER(signed char, AVX, __m256i);
-DECLARE_SIMD_REGISTER(unsigned char, AVX, __m256i);
-DECLARE_SIMD_REGISTER(char, AVX, __m256i);
-DECLARE_SIMD_REGISTER(unsigned short, AVX, __m256i);
-DECLARE_SIMD_REGISTER(short, AVX, __m256i);
-DECLARE_SIMD_REGISTER(unsigned int, AVX, __m256i);
-DECLARE_SIMD_REGISTER(int, AVX, __m256i);
-DECLARE_SIMD_REGISTER(unsigned long int, AVX, __m256i);
-DECLARE_SIMD_REGISTER(long int, AVX, __m256i);
-DECLARE_SIMD_REGISTER(unsigned long long int, AVX, __m256i);
-DECLARE_SIMD_REGISTER(long long int, AVX, __m256i);
-DECLARE_SIMD_REGISTER(float, AVX, __m256);
-DECLARE_SIMD_REGISTER(double, AVX, __m256d);
-DECLARE_SIMD_REGISTER(std::complex<float>, AVX, __m256);
+DECLARE_SIMD_REGISTER(int8_t,               AVX, __m256i);
+DECLARE_SIMD_REGISTER(uint8_t,              AVX, __m256i);
+DECLARE_SIMD_REGISTER(int16_t,              AVX, __m256i);
+DECLARE_SIMD_REGISTER(uint16_t,             AVX, __m256i);
+DECLARE_SIMD_REGISTER(int32_t,              AVX, __m256i);
+DECLARE_SIMD_REGISTER(uint32_t,             AVX, __m256i);
+DECLARE_SIMD_REGISTER(int64_t,              AVX, __m256i);
+DECLARE_SIMD_REGISTER(uint64_t,             AVX, __m256i);
+DECLARE_SIMD_REGISTER(float,                AVX, __m256 );
+DECLARE_SIMD_REGISTER(double,               AVX, __m256d);
+DECLARE_SIMD_REGISTER(std::complex<float>,  AVX, __m256 );
 DECLARE_SIMD_REGISTER(std::complex<double>, AVX, __m256d);
 }  // namespace types
 }  // namespace simd

@@ -137,7 +137,7 @@ template <typename T, size_t W>  \
 struct simd_register<T, W, ISA> : simd_register<T, W, ISA_BASE>  \
 {  \
     using base_t = simd_register<T, W, ISA_BASE>; \
-    using register_t = typename simd_register<T, W, ISA_BASE>::register_t; \
+    using arch_t = ISA; /* this is derived arch */ \
     using base_t::base_t; \
 };  \
 template <typename T, size_t W> \

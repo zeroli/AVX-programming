@@ -2,6 +2,8 @@
 
 #include "simd/simd.h"
 
+STATIC_CHECK_ARCH_ENABLED(SSE);
+
 TEST(vec_op_sse, test_math_abs)
 {
     {

@@ -24,6 +24,9 @@ struct add<T, W, REQUIRE_INTEGRAL(T)>
 
         Vec<T, W> ret;
         constexpr auto nregs = Vec<T, W>::n_regs();
+        //static_assert(0, "no support integral type add for avx");
+        assert(0);
+        #if 0
         SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
@@ -45,6 +48,7 @@ struct add<T, W, REQUIRE_INTEGRAL(T)>
                 ret.reg(idx) = _mm_add_epi64(lhs.reg(idx), rhs.reg(idx));
             }
         }
+        #endif
         return ret;
     }
 };
@@ -150,14 +154,6 @@ struct sub<double, W>
 };
 
 /// mul
-template <typename T, size_t W>
-struct mul<T, W, REQUIRE_INTEGRAL(T)>
-{
-    // TODO
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept = delete;
-};
-
 template <size_t W>
 struct mul<float, W>
 {
@@ -191,14 +187,6 @@ struct mul<double, W>
 };
 
 /// div
-template <typename T, size_t W>
-struct div<T, W, REQUIRE_INTEGRAL(T)>
-{
-    // TODO
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept = delete;
-};
-
 template <size_t W>
 struct div<float, W>
 {
@@ -239,20 +227,6 @@ struct mod<T, W, REQUIRE_INTEGRAL(T)>
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept {
         return {};  // TODO
     }
-};
-
-template <size_t W>
-struct mod<float, W>
-{
-    SIMD_INLINE
-    static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept = delete;
-};
-
-template <size_t W>
-struct mod<double, W>
-{
-    SIMD_INLINE
-    static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept = delete;
 };
 
 template <typename T, size_t W>

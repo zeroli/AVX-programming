@@ -4,6 +4,8 @@
 
 using namespace simd;
 
+STATIC_CHECK_ARCH_ENABLED(SSE);
+
 TEST(vec_sse, test_vec_init_regs)
 {
     {

@@ -504,28 +504,28 @@ struct to_mask<T, W, REQUIRE_INTEGRAL(T)>
         static_check_supported_type<T, 8>();
 
         uint64_t ret = 0;
-        constexpr auto nregs = VecBool<T, W>::n_regs();
+        constexpr int nregs = VecBool<T, W>::n_regs();
         SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
             #pragma unroll
-            for (auto idx = nregs - 1; idx >= 0; idx--) {
+            for (int idx = nregs - 1; idx >= 0; idx--) {
                 ret <<= 16;  /// 16 * elements for 16 bits
                 ret |= _mm_movemask_epi8(x.reg(idx));
             }
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
             #pragma unroll
-            for (auto idx = nregs - 1; idx >= 0; idx--) {
+            for (int idx = nregs - 1; idx >= 0; idx--) {
                 ret <= 8;  // 8 * elements for 8 bits
                 ret |= detail::movemask_epi16(x.reg(idx));
             }
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
             #pragma unroll
-            for (auto idx = nregs - 1; idx >= 0; idx--) {
+            for (int idx = nregs - 1; idx >= 0; idx--) {
                 ret <<= 4;  // 4 * elements for 4 bits
                 ret |= detail::movemask_epi32(x.reg(idx));
             }
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
             #pragma unroll
-            for (auto idx = nregs - 1; idx >= 0; idx--) {
+            for (int idx = nregs - 1; idx >= 0; idx--) {
                 ret <<= 2;  // 2 * elements for 2 bits
                 ret |= detail::movemask_epi64(x.reg(idx));
             }
@@ -541,9 +541,9 @@ struct to_mask<float, W>
     static uint64_t apply(const VecBool<float, W>& x) noexcept
     {
         uint64_t ret = 0;
-        constexpr auto nregs = VecBool<float, W>::n_regs();
+        constexpr int nregs = VecBool<float, W>::n_regs();
         #pragma unroll
-        for (auto idx = nregs - 1; idx >= 0; idx--) {
+        for (int idx = nregs - 1; idx >= 0; idx--) {
             ret <<= 4;  // 4 * elements for 4 bits
             ret |= _mm_movemask_ps(x.reg(idx));
         }
@@ -558,9 +558,9 @@ struct to_mask<double, W>
     static uint64_t apply(const VecBool<double, W>& x) noexcept
     {
         uint64_t ret = 0;
-        constexpr auto nregs = VecBool<double, W>::n_regs();
+        constexpr int nregs = VecBool<double, W>::n_regs();
         #pragma unroll
-        for (auto idx = nregs - 1; idx >= 0; idx--) {
+        for (int idx = nregs - 1; idx >= 0; idx--) {
             ret <<= 2;  // 2 * elements for 2 bits
             ret |= _mm_movemask_pd(x.reg(idx));
         }

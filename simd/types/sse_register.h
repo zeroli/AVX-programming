@@ -28,20 +28,17 @@ struct SSE : Generic
 
 namespace simd {
 namespace types {
-DECLARE_SIMD_REGISTER(signed char, SSE, __m128i);
-DECLARE_SIMD_REGISTER(unsigned char, SSE, __m128i);
-DECLARE_SIMD_REGISTER(char, SSE, __m128i);
-DECLARE_SIMD_REGISTER(unsigned short, SSE, __m128i);
-DECLARE_SIMD_REGISTER(short, SSE, __m128i);
-DECLARE_SIMD_REGISTER(unsigned int, SSE, __m128i);
-DECLARE_SIMD_REGISTER(int, SSE, __m128i);
-DECLARE_SIMD_REGISTER(unsigned long int, SSE, __m128i);
-DECLARE_SIMD_REGISTER(long int, SSE, __m128i);
-DECLARE_SIMD_REGISTER(unsigned long long int, SSE, __m128i);
-DECLARE_SIMD_REGISTER(long long int, SSE, __m128i);
-DECLARE_SIMD_REGISTER(float, SSE, __m128);
-DECLARE_SIMD_REGISTER(double, SSE, __m128d);
-DECLARE_SIMD_REGISTER(std::complex<float>, SSE, __m128);
+DECLARE_SIMD_REGISTER(int8_t,               SSE, __m128i);
+DECLARE_SIMD_REGISTER(uint8_t,              SSE, __m128i);
+DECLARE_SIMD_REGISTER(int16_t,              SSE, __m128i);
+DECLARE_SIMD_REGISTER(uint16_t,             SSE, __m128i);
+DECLARE_SIMD_REGISTER(int32_t,              SSE, __m128i);
+DECLARE_SIMD_REGISTER(uint32_t,             SSE, __m128i);
+DECLARE_SIMD_REGISTER(int64_t,              SSE, __m128i);
+DECLARE_SIMD_REGISTER(uint64_t,             SSE, __m128i);
+DECLARE_SIMD_REGISTER(float,                SSE, __m128 );
+DECLARE_SIMD_REGISTER(double,               SSE, __m128d);
+DECLARE_SIMD_REGISTER(std::complex<float>,  SSE, __m128 );
 DECLARE_SIMD_REGISTER(std::complex<double>, SSE, __m128d);
 }  // namespace types
 }  // namespace simd

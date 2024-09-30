@@ -13,6 +13,41 @@ namespace kernel {
 namespace avx2 {
 using namespace types;
 
+/// add
+template <typename T, size_t W>
+struct add<T, W, REQUIRE_INTEGRAL(T)>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        static_check_supported_type<T>();
+
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm256_add_epi8(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm256_add_epi16(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm256_add_epi32(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm256_add_epi64(lhs.reg(idx), rhs.reg(idx));
+            }
+        }
+        return ret;
+    }
+};
 }  // namespace avx2
 }  // namespace kernel
 }  // namespace simd

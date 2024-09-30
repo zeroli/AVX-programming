@@ -4,6 +4,8 @@
 
 using namespace simd;
 
+STATIC_CHECK_ARCH_ENABLED(AVX);
+
 TEST(vec_avx, test_types)
 {
     {

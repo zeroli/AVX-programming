@@ -73,7 +73,15 @@ DEFINE_ARCH_TRAITS_512_BITS(std::complex<double>);
 #undef DEFINE_ARCH_TRAITS_512_BITS
 
 /// 256bits
-#if SIMD_WITH_AVX512F || SIMD_WITH_AVX2 || SIMD_WITH_AVX
+#if SIMD_WITH_AVX512F || SIMD_WITH_AVX2
+#define DEFINE_ARCH_TRAITS_256_BITS(T) \
+template <> \
+struct arch_traits<T, 256/sizeof(T)/8> { \
+    using arch_t = AVX2; \
+} \
+///
+
+#elif SIMD_WITH_AVX
 #define DEFINE_ARCH_TRAITS_256_BITS(T) \
 template <> \
 struct arch_traits<T, 256/sizeof(T)/8> { \
@@ -115,7 +123,7 @@ DEFINE_ARCH_TRAITS_256_BITS(std::complex<double>);
 
 /// 128bits
 #if SIMD_WITH_AVX512F || SIMD_WITH_AVX2 || \
-     SIMD_WITH_AVX || SIMD_WITH_SSE
+    SIMD_WITH_AVX || SIMD_WITH_SSE
 #define DEFINE_ARCH_TRAITS_128_BITS(T) \
 template <> \
 struct arch_traits<T, 128/sizeof(T)/8> { \
