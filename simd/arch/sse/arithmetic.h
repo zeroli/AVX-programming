@@ -23,7 +23,7 @@ struct add<T, W, REQUIRE_INTEGRAL(T)>
         static_check_supported_type<T>();
 
         Vec<T, W> ret;
-        constexpr int nregs = Vec<T, W>::n_regs();
+        constexpr auto nregs = Vec<T, W>::n_regs();
         SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
@@ -56,7 +56,7 @@ struct add<float, W>
     static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         Vec<float, W> ret;
-        constexpr int nregs = Vec<float, W>::n_regs();
+        constexpr auto nregs = Vec<float, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm_add_ps(lhs.reg(idx), rhs.reg(idx));
@@ -72,7 +72,7 @@ struct add<double, W>
     static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         Vec<double, W> ret;
-        constexpr int nregs = Vec<double, W>::n_regs();
+        constexpr auto nregs = Vec<double, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm_add_pd(lhs.reg(idx), rhs.reg(idx));
@@ -91,7 +91,7 @@ struct sub<T, W, REQUIRE_INTEGRAL(T)>
         static_check_supported_type<T>();
 
         Vec<T, W> ret;
-        constexpr int nregs = Vec<T, W>::n_regs();
+        constexpr auto nregs = Vec<T, W>::n_regs();
         SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
@@ -124,7 +124,7 @@ struct sub<float, W>
     static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         Vec<float, W> ret;
-        constexpr int nregs = Vec<float, W>::n_regs();
+        constexpr auto nregs = Vec<float, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm_sub_ps(lhs.reg(idx), rhs.reg(idx));
@@ -140,7 +140,7 @@ struct sub<double, W>
     static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         Vec<double, W> ret;
-        constexpr int nregs = Vec<double, W>::n_regs();
+        constexpr auto nregs = Vec<double, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm_sub_pd(lhs.reg(idx), rhs.reg(idx));
@@ -165,7 +165,7 @@ struct mul<float, W>
     static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         Vec<float, W> ret;
-        constexpr int nregs = Vec<float, W>::n_regs();
+        constexpr auto nregs = Vec<float, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm_mul_ps(lhs.reg(idx), rhs.reg(idx));
@@ -181,7 +181,7 @@ struct mul<double, W>
     static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         Vec<double, W> ret;
-        constexpr int nregs = Vec<double, W>::n_regs();
+        constexpr auto nregs = Vec<double, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm_mul_pd(lhs.reg(idx), rhs.reg(idx));
@@ -206,7 +206,7 @@ struct div<float, W>
     static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
     {
         Vec<float, W> ret;
-        constexpr int nregs = Vec<float, W>::n_regs();
+        constexpr auto nregs = Vec<float, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm_div_ps(lhs.reg(idx), rhs.reg(idx));
@@ -222,7 +222,7 @@ struct div<double, W>
     static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
     {
         Vec<double, W> ret;
-        constexpr int nregs = Vec<double, W>::n_regs();
+        constexpr auto nregs = Vec<double, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm_div_pd(lhs.reg(idx), rhs.reg(idx));
@@ -259,9 +259,9 @@ template <typename T, size_t W>
 struct neg<T, W, REQUIRE_INTEGRAL(T)>
 {
     SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& self) noexcept
+    static Vec<T, W> apply(const Vec<T, W>& x) noexcept
     {
-        return sse::sub<T, W>::apply(Vec<T, W>(0), self);
+        return sse::sub<T, W>::apply(Vec<T, W>(0), x);
     }
 };
 
@@ -269,14 +269,14 @@ template <size_t W>
 struct neg<float, W>
 {
     SIMD_INLINE
-    static Vec<float, W> apply(const Vec<float, W>& self) noexcept
+    static Vec<float, W> apply(const Vec<float, W>& x) noexcept
     {
         Vec<float, W> ret;
-        constexpr int nregs = Vec<float, W>::n_regs();
+        constexpr auto nregs = Vec<float, W>::n_regs();
         auto mask = _mm_castsi128_ps(_mm_set1_epi32(0x80000000));
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_xor_ps(self.reg(idx), mask);
+            ret.reg(idx) = _mm_xor_ps(x.reg(idx), mask);
         }
         return ret;
     }
@@ -286,14 +286,14 @@ template <size_t W>
 struct neg<double, W>
 {
     SIMD_INLINE
-    static Vec<double, W> apply(const Vec<double, W>& self) noexcept
+    static Vec<double, W> apply(const Vec<double, W>& x) noexcept
     {
         Vec<double, W> ret;
-        constexpr int nregs = Vec<double, W>::n_regs();
+        constexpr auto nregs = Vec<double, W>::n_regs();
         auto mask = _mm_castsi128_pd(_mm_setr_epi32(0, 0x80000000, 0, 0x80000000));
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_xor_pd(self.reg(idx), mask);
+            ret.reg(idx) = _mm_xor_pd(x.reg(idx), mask);
         }
         return ret;
     }

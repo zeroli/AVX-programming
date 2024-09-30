@@ -99,4 +99,13 @@ T reduce_min(const Vec<T, W>& x) noexcept
     using A = typename Vec<T, W>::arch_t;
     return kernel::reduce_min<T, W>(x, A{});
 }
+
+/// permute
+// template <typename T, size_t W, typename U>
+// Vec<T, W> permute(const Vec<T, W>& x, const Vec<U, W>& index) noexcept
+// {
+//     using A = typename Vec<T, W>::arch_t;
+//     return kernel::permute<T, W>(x, index, A{});
+// }
+
 }  // namespace simd

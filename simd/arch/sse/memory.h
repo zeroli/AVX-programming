@@ -10,7 +10,6 @@ namespace sse {
 using namespace types;
 
 /// broadcast
-/// sse doesn't provide `broadcast` instr, use `set1` instead
 template <typename T, size_t W>
 struct broadcast<T, W, REQUIRE_INTEGRAL(T)>
 {
