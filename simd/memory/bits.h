@@ -66,6 +66,16 @@ T signmask()
     return one_zeros<T>();
 }
 
+/// extend bit to full bits for T
+/// 1 => 1111...1
+/// 0 => 0000...0
+template <typename T>
+SIMD_INLINE
+T extend(bool lsb)
+{
+    return lsb ? ones<T>() : zeros<T>();
+}
+
 /// return bit state at msb: true for 1, false for 0
 template <typename T>
 SIMD_INLINE
@@ -89,6 +99,7 @@ int count1(uint64_t x)
     }
     return cnt;
 }
+
 }  // namespace bits
 
 template <typename TO, typename FROM>

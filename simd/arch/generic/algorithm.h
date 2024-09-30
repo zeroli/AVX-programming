@@ -1,18 +1,42 @@
 #pragma once
 
-#include "simd/arch/generic/detail.h"
-#include "simd/types/generic_arch.h"
-#include "simd/types/traits.h"
+#include <algorithm>
+#include <numeric>
 
-#include <limits>
-#include <type_traits>
-#include <complex>
-
-namespace simd {
-namespace kernel {
-namespace generic {
-
+namespace simd { namespace kernel { namespace generic {
 using namespace types;
+
+template <typename T, size_t W>
+struct all_of<T, W>
+{
+    SIMD_INLINE
+    static bool apply(const VecBool<T, W>& x) noexcept
+    {
+        bool ret = true;
+        constexpr auto nregs = VecBool<T, W>::n_regs();
+        #pragma unroll
+        for (auto i = 0; i < W; i++) {
+            ret = ret && (true == bits::at_msb(x[i]));
+        }
+        return ret;
+    }
+};
+
+template <typename T, size_t W>
+struct any_of<T, W>
+{
+    SIMD_INLINE
+    static bool apply(const VecBool<T, W>& x) noexcept
+    {
+        bool ret = false;
+        constexpr auto nregs = VecBool<T, W>::n_regs();
+        #pragma unroll
+        for (auto i = 0; i < W; i++) {
+            ret = ret || (true == bits::at_msb(x[i]));
+        }
+        return ret;
+    }
+};
 
 /// none_of (!any_of)
 template <typename T, size_t W>
@@ -56,6 +80,4 @@ struct hadd<T, W>
         return ret;
     }
 };
-}  // namespace generic
-}  // namespace kernel
-}  // namespace simd
+} } } // namespace simd::kernel::generic

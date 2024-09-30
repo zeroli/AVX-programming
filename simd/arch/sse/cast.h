@@ -1,11 +1,6 @@
 #pragma once
 
-#include "simd/types/sse_register.h"
-#include "simd/types/vec.h"
-
-namespace simd {
-namespace kernel {
-namespace sse {
+namespace simd { namespace kernel { namespace sse {
 using namespace types;
 
 /// cast
@@ -168,6 +163,4 @@ struct cast<float, double, W>
         return ret;
     }
 };
-}  // namespace sse
-}  // namespace kernel
-}  // namespace simd
+} } } // namespace simd::kernel::sse

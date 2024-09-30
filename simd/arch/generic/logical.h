@@ -1,12 +1,6 @@
 #pragma once
 
-#include "simd/arch/generic/detail.h"
-#include "simd/types/generic_arch.h"
-#include "simd/types/traits.h"
-
-namespace simd {
-namespace kernel {
-namespace generic {
+namespace simd { namespace kernel { namespace generic {
 #if 0
 using namespace types;
 
@@ -104,6 +98,4 @@ VecBool<T, Arch> to_mask(const VecBool<T, Arch>&,  requires<Generic>) noexcept
     return res;
 }
 #endif
-}  // namespace generic
-}  // namespace kernel
-}  // namespace simd
+} } } // namespace simd::kernel::generic

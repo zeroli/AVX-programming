@@ -1,14 +1,12 @@
 #pragma once
 
-namespace simd {
-namespace kernel {
-namespace avx {
+namespace simd { namespace kernel { namespace avx {
 #include "simd/arch/kernel_impl.h"
-}  // namespace avx
-}  // namespace kernel
-}  // namespace simd
+} } } // namespace simd::kernel::avx
 
 #include "simd/types/avx_register.h"
+#include "simd/types/traits.h"
+#include "simd/arch/avx/detail.h"
 #include "simd/arch/avx/algorithm.h"
 #include "simd/arch/avx/arithmetic.h"
 #include "simd/arch/avx/cast.h"
@@ -19,8 +17,7 @@ namespace avx {
 #include "simd/arch/avx/memory.h"
 #include "simd/arch/avx/trigo.h"
 
-namespace simd {
-namespace kernel {
+namespace simd { namespace kernel {
 
 #define DEFINE_AVX_BINARY_OP(OP) \
 template <typename T, size_t W> \
@@ -58,5 +55,4 @@ Vec<T, W> broadcast(T val, requires_arch<AVX>) noexcept
 #undef DEFINE_AVX_BINARY_OP
 #undef DEFINE_AVX_UNARY_OP
 
-}  // namespace kernel
-}  // namespace simd
+} } // namespace simd::kernel

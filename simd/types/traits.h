@@ -46,6 +46,9 @@ using enable_if_t = typename std::enable_if<cond, V>::type;
 #define REQUIRES(cond) \
     traits::enable_if_t<cond>* = nullptr
 
+#define ENABLE_IF(cond) \
+    traits::enable_if_t<cond>
+
 #define REQUIRE_INTEGRAL(T) \
     traits::enable_if_t<std::is_integral<T>::value>
 

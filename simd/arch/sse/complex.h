@@ -1,13 +1,10 @@
 #pragma once
 
-#include "simd/types/sse_register.h"
-#include "simd/types/traits.h"
-
 #include <complex>
 
-namespace simd {
-namespace kernel {
-namespace sse {
+namespace simd { namespace kernel { namespace sse {
+using namespace types;
+
 template <size_t W>
 struct add<std::complex<float>, W>
 {
@@ -80,6 +77,4 @@ struct broadcast<std::complex<double>, W>
     }
 };
 
-}  // namespace sse
-}  // namespace kernel
-}  // namespace simd
+} } } // namespace simd::kernel::sse

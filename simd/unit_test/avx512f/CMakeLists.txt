@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
 
-project(simd_ut_avx512 CXX)
+project(simd_ut_avx512f CXX)
 
 aux_source_directory(. SRC)
 

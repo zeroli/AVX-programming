@@ -1,14 +1,6 @@
 #pragma once
 
-#include "simd/types/sse_register.h"
-#include "simd/types/vec.h"
-
-#include <cstdint>
-#include <cstddef>
-
-namespace simd {
-namespace kernel {
-namespace sse {
+namespace simd { namespace kernel { namespace sse {
 using namespace types;
 
 namespace detail {
@@ -320,6 +312,4 @@ struct bitwise_not<double, W>
         return ret;
     }
 };
-}  // namespace sse
-}  // namespace kernel
-}  // namespace simd
+} } } // namespace simd::kernel::sse

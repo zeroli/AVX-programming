@@ -1,14 +1,11 @@
 #pragma once
 
-namespace simd {
-namespace kernel {
-namespace avx2 {
+namespace simd { namespace kernel { namespace avx2 {
 #include "simd/arch/kernel_impl.h"
-}  // namespace avx2
-}  // namespace kernel
-}  // namespace simd
+} } } // namespace simd::kernel::avx2
 
 #include "simd/types/avx2_register.h"
+#include "simd/types/traits.h"
 #include "simd/arch/avx2/algorithm.h"
 #include "simd/arch/avx2/arithmetic.h"
 #include "simd/arch/avx2/cast.h"
@@ -19,8 +16,7 @@ namespace avx2 {
 #include "simd/arch/avx2/memory.h"
 #include "simd/arch/avx2/trigo.h"
 
-namespace simd {
-namespace kernel {
+namespace simd { namespace kernel {
 
 #define DEFINE_AVX2_BINARY_OP(OP) \
 template <typename T, size_t W> \
@@ -51,5 +47,4 @@ DEFINE_AVX2_UNARY_OP(neg);
 #undef DEFINE_AVX2_BINARY_OP
 #undef DEFINE_AVX2_UNARY_OP
 
-}  // namespace kernel
-}  // namespace simd
+} }  // namespace simd::kernel

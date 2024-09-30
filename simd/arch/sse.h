@@ -1,14 +1,11 @@
 #pragma once
 
-namespace simd {
-namespace kernel {
-namespace sse {
+namespace simd { namespace kernel { namespace sse {
 #include "simd/arch/kernel_impl.h"
-}  // namespace sse
-}  // namespace kernel
-}  // namespace simd
+} } } // namespace simd::kernel::sse
 
 #include "simd/types/sse_register.h"
+#include "simd/types/traits.h"
 #include "simd/arch/sse/algorithm.h"
 #include "simd/arch/sse/arithmetic.h"
 #include "simd/arch/sse/cast.h"
@@ -19,9 +16,7 @@ namespace sse {
 #include "simd/arch/sse/memory.h"
 #include "simd/arch/sse/trigo.h"
 
-namespace simd {
-namespace kernel {
-
+namespace simd { namespace kernel {
 #define DEFINE_SSE_BINARY_OP(OP) \
 template <typename T, size_t W> \
 SIMD_INLINE \
@@ -284,5 +279,5 @@ T reduce_min(const Vec<T, W>& x, requires_arch<SSE>) noexcept
 #undef DEFINE_SSE_UNARY_OP
 #undef DEFINE_SSE_BINARY_OP
 #undef DEFINE_SSE_BINARY_COMP_OP
-}  // namespace kernel
-}  // namespace simd
+
+} } // namespace simd::kernel

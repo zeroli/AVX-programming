@@ -1,16 +1,6 @@
 #pragma once
 
-#include "simd/types/sse_register.h"
-#include "simd/types/traits.h"
-
-#include <limits>
-#include <type_traits>
-#include <cstddef>
-#include <cstdint>
-
-namespace simd {
-namespace kernel {
-namespace sse {
+namespace simd { namespace kernel { namespace sse {
 using namespace types;
 
 /// add
@@ -299,6 +289,4 @@ struct neg<double, W>
     }
 };
 
-}  // namespace sse
-}  // namespace kernel
-}  // namespace simd
+} } } // namespace simd::kernel::sse

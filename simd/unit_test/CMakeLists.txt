@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.17)
 add_subdirectory(sse)
 add_subdirectory(avx)
 add_subdirectory(avx2)
-add_subdirectory(avx512)
+add_subdirectory(avx512f)
 
 project(simd_ut CXX)
 

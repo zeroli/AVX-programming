@@ -20,18 +20,22 @@ struct AVX512F : Generic
 
 namespace simd {
 namespace types {
-DECLARE_SIMD_REGISTER(int8_t,               AVX512F, __m512i);
-DECLARE_SIMD_REGISTER(uint8_t,              AVX512F, __m512i);
-DECLARE_SIMD_REGISTER(int16_t,              AVX512F, __m512i);
-DECLARE_SIMD_REGISTER(uint16_t,             AVX512F, __m512i);
-DECLARE_SIMD_REGISTER(int32_t,              AVX512F, __m512i);
-DECLARE_SIMD_REGISTER(uint32_t,             AVX512F, __m512i);
-DECLARE_SIMD_REGISTER(int64_t,              AVX512F, __m512i);
-DECLARE_SIMD_REGISTER(uint64_t,             AVX512F, __m512i);
-DECLARE_SIMD_REGISTER(float,                AVX512F, __m512 );
-DECLARE_SIMD_REGISTER(double,               AVX512F, __m512d);
-DECLARE_SIMD_REGISTER(std::complex<float>,  AVX512F, __m512 );
-DECLARE_SIMD_REGISTER(std::complex<double>, AVX512F, __m512d);
+using avx512_reg_i = __m512i;
+using avx512_reg_f = __m512;
+using avx512_reg_d = __m512d;
+
+DECLARE_SIMD_REGISTER(int8_t,               AVX512F, avx512_reg_i);
+DECLARE_SIMD_REGISTER(uint8_t,              AVX512F, avx512_reg_i);
+DECLARE_SIMD_REGISTER(int16_t,              AVX512F, avx512_reg_i);
+DECLARE_SIMD_REGISTER(uint16_t,             AVX512F, avx512_reg_i);
+DECLARE_SIMD_REGISTER(int32_t,              AVX512F, avx512_reg_i);
+DECLARE_SIMD_REGISTER(uint32_t,             AVX512F, avx512_reg_i);
+DECLARE_SIMD_REGISTER(int64_t,              AVX512F, avx512_reg_i);
+DECLARE_SIMD_REGISTER(uint64_t,             AVX512F, avx512_reg_i);
+DECLARE_SIMD_REGISTER(float,                AVX512F, avx512_reg_f);
+DECLARE_SIMD_REGISTER(double,               AVX512F, avx512_reg_d);
+DECLARE_SIMD_REGISTER(std::complex<float>,  AVX512F, avx512_reg_f);
+DECLARE_SIMD_REGISTER(std::complex<double>, AVX512F, avx512_reg_d);
 }  // namespace types
 }  // namespace simd
 #endif  // SIMD_WITH_AVX512F

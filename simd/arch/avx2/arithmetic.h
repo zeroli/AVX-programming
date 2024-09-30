@@ -1,18 +1,7 @@
 #pragma once
 
-#include "simd/types/avx2_register.h"
-#include "simd/types/traits.h"
-
-#include <limits>
-#include <type_traits>
-#include <cstddef>
-#include <cstdint>
-
-namespace simd {
-namespace kernel {
-namespace avx2 {
+namespace simd { namespace kernel { namespace avx2 {
 using namespace types;
-
 /// add
 template <typename T, size_t W>
 struct add<T, W, REQUIRE_INTEGRAL(T)>
@@ -48,9 +37,7 @@ struct add<T, W, REQUIRE_INTEGRAL(T)>
         return ret;
     }
 };
-}  // namespace avx2
-}  // namespace kernel
-}  // namespace simd
+} } } // namespace simd::kernel::avx2
 
 #if 0
 /// add

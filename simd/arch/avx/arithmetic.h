@@ -1,19 +1,25 @@
 #pragma once
 
-#include "simd/types/avx_register.h"
-#include "simd/types/traits.h"
-
-#include <limits>
-#include <type_traits>
-#include <cstddef>
-#include <cstdint>
-
-namespace simd {
-namespace kernel {
-namespace avx {
+namespace simd { namespace kernel { namespace avx {
 using namespace types;
 
 /// add
+namespace detail {
+template <typename T, size_t W>
+avx_reg_i forward_sse_add(const avx_reg_i& lhs, const avx_reg_i& rhs) noexcept
+{
+    using A = SSE;
+    using V = Vec<T, W>;
+    static_assert(V::n_regs() == 1);
+
+    sse_reg_i l_low, l_high, r_low, r_high;
+    detail::split(lhs, l_low, l_high);
+    detail::split(rhs, r_low, r_high);
+    auto sum_low = kernel::add(V(l_low), V(r_low), A{});
+    auto sum_high = kernel::add(V(l_low), V(r_low), A{});
+    return detail::merge(sum_low.reg(), sum_high.reg());
+}
+}  // namespace detail
 template <typename T, size_t W>
 struct add<T, W, REQUIRE_INTEGRAL(T)>
 {
@@ -24,31 +30,11 @@ struct add<T, W, REQUIRE_INTEGRAL(T)>
 
         Vec<T, W> ret;
         constexpr auto nregs = Vec<T, W>::n_regs();
-        //static_assert(0, "no support integral type add for avx");
-        assert(0);
-        #if 0
-        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm_add_epi8(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm_add_epi16(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm_add_epi32(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm_add_epi64(lhs.reg(idx), rhs.reg(idx));
-            }
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = detail::forward_sse_add<T, reg_lanes/2>(lhs.reg(idx), rhs.reg(idx));
         }
-        #endif
         return ret;
     }
 };
@@ -272,6 +258,5 @@ struct neg<double, W>
         return ret;
     }
 };
-}  // namespace avx
-}  // namespace kernel
-}  // namespace simd
+
+} } } // namespace simd::kernel::avx

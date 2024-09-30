@@ -28,6 +28,11 @@ struct SSE : Generic
 
 namespace simd {
 namespace types {
+
+using sse_reg_i = __m128i;
+using sse_reg_f = __m128;
+using sse_reg_d = __m128d;
+
 DECLARE_SIMD_REGISTER(int8_t,               SSE, __m128i);
 DECLARE_SIMD_REGISTER(uint8_t,              SSE, __m128i);
 DECLARE_SIMD_REGISTER(int16_t,              SSE, __m128i);
