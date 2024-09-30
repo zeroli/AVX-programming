@@ -45,6 +45,22 @@ Vec<T, W> OP(const Vec<T, W>& x, requires_arch<AVX>) noexcept \
 
 DEFINE_AVX_UNARY_OP(neg);
 
+#define DEFINE_AVX_BINARY_CMP_OP(OP) \
+template <typename T, size_t W> \
+SIMD_INLINE \
+VecBool<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<AVX>) noexcept \
+{ \
+    return avx::OP<T, W>::apply(lhs, rhs); \
+} \
+///
+
+DEFINE_AVX_BINARY_CMP_OP(eq);
+DEFINE_AVX_BINARY_CMP_OP(ne);
+DEFINE_AVX_BINARY_CMP_OP(gt);
+DEFINE_AVX_BINARY_CMP_OP(ge);
+DEFINE_AVX_BINARY_CMP_OP(lt);
+DEFINE_AVX_BINARY_CMP_OP(le);
+
 template <typename T, size_t W>
 SIMD_INLINE
 Vec<T, W> broadcast(T val, requires_arch<AVX>) noexcept
@@ -54,5 +70,6 @@ Vec<T, W> broadcast(T val, requires_arch<AVX>) noexcept
 
 #undef DEFINE_AVX_BINARY_OP
 #undef DEFINE_AVX_UNARY_OP
+#undef DEFINE_AVX_BINARY_CMP_OP
 
 } } // namespace simd::kernel

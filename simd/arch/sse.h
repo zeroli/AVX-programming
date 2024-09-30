@@ -52,7 +52,7 @@ Vec<T, W> bitwise_rshift(const Vec<T, W>& lhs, int32_t rhs, requires_arch<SSE>) 
     return sse::bitwise_rshift<T, W>::apply(lhs, rhs);
 }
 
-#define DEFINE_SSE_BINARY_COMP_OP(OP) \
+#define DEFINE_SSE_BINARY_CMP_OP(OP) \
 template <typename T, size_t W> \
 SIMD_INLINE \
 VecBool<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>) noexcept \
@@ -61,12 +61,12 @@ VecBool<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<SSE>)
 } \
 ///
 
-DEFINE_SSE_BINARY_COMP_OP(eq);
-DEFINE_SSE_BINARY_COMP_OP(ne);
-DEFINE_SSE_BINARY_COMP_OP(gt);
-DEFINE_SSE_BINARY_COMP_OP(ge);
-DEFINE_SSE_BINARY_COMP_OP(lt);
-DEFINE_SSE_BINARY_COMP_OP(le);
+DEFINE_SSE_BINARY_CMP_OP(eq);
+DEFINE_SSE_BINARY_CMP_OP(ne);
+DEFINE_SSE_BINARY_CMP_OP(gt);
+DEFINE_SSE_BINARY_CMP_OP(ge);
+DEFINE_SSE_BINARY_CMP_OP(lt);
+DEFINE_SSE_BINARY_CMP_OP(le);
 
 DEFINE_SSE_BINARY_OP(max);
 DEFINE_SSE_BINARY_OP(min);
@@ -278,6 +278,6 @@ T reduce_min(const Vec<T, W>& x, requires_arch<SSE>) noexcept
 
 #undef DEFINE_SSE_UNARY_OP
 #undef DEFINE_SSE_BINARY_OP
-#undef DEFINE_SSE_BINARY_COMP_OP
+#undef DEFINE_SSE_BINARY_CMP_OP
 
 } } // namespace simd::kernel

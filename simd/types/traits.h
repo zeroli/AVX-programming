@@ -2,6 +2,7 @@
 
 #include <type_traits>
 #include <cstddef>
+#include <complex>
 
 namespace simd {
 namespace detail {
@@ -74,6 +75,26 @@ using enable_if_t = typename std::enable_if<cond, V>::type;
 #define REQUIRE_INTEGRAL_SIZE_2(T) REQUIRE_INTEGRAL_SIZE_MATCH(T, 2)
 #define REQUIRE_INTEGRAL_SIZE_4(T) REQUIRE_INTEGRAL_SIZE_MATCH(T, 4)
 #define REQUIRE_INTEGRAL_SIZE_8(T) REQUIRE_INTEGRAL_SIZE_MATCH(T, 8)
+
+namespace detail {
+template <typename T, typename Enable = void>
+struct to_integral { };
+template <typename T>
+struct to_integral<T, REQUIRE_INTEGRAL(T)> {
+    using type = T;
+};
+template <>
+struct to_integral<float> {
+    using type = int32_t;  // keep sign bit
+};
+template <>
+struct to_integral<double> {
+    using type = int64_t;  // keep sign bit
+};
+}  // namespace detail
+
+template <typename T>
+using to_integral_t = typename detail::to_integral<T>::type;
 
 template <typename T, size_t W>
 struct vec_type_traits;

@@ -318,6 +318,8 @@ struct gt<double, W>
     }
 };
 
+/// lt for integral
+/// a < b
 template <typename T, size_t W>
 struct lt<T, W, REQUIRE_INTEGRAL(T)>
 {
@@ -374,17 +376,21 @@ struct lt<T, W, REQUIRE_INTEGRAL(T)>
     }
 };
 
-// a <= b => ~(b < a)
+/// le for integral
+/// a <= b => ~(b < a)
 template <typename T, size_t W>
 struct le<T, W, REQUIRE_INTEGRAL(T)>
 {
     SIMD_INLINE
     static VecBool<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
-        return ~(sse::lt<T, W>::apply(rhs, lhs));
+        auto ret = ~(sse::lt<T, W>::apply(rhs, lhs));
+        return ret;
     }
 };
 
+/// gt for integral
+/// a > b
 template <typename T, size_t W>
 struct gt<T, W, REQUIRE_INTEGRAL(T)>
 {
@@ -441,14 +447,16 @@ struct gt<T, W, REQUIRE_INTEGRAL(T)>
     }
 };
 
-// a >= b => ~(b < a)
+/// ge for integral
+/// a >= b => ~(a < b)
 template <typename T, size_t W>
 struct ge<T, W, REQUIRE_INTEGRAL(T)>
 {
     SIMD_INLINE
     static VecBool<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
-        return ~(sse::gt<T, W>::apply(rhs, lhs));
+        auto ret = ~(sse::lt<T, W>::apply(lhs, rhs));
+        return ret;
     }
 };
 

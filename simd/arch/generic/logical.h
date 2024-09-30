@@ -1,101 +1,144 @@
 #pragma once
 
 namespace simd { namespace kernel { namespace generic {
-#if 0
 using namespace types;
 
-template <typename Arch, typename T>
-VecBool<T, Arch> from_mask(const VecBool<T, Arch>&, uint64_t mask, requires<Generic>) noexcept
+template <typename T, size_t W>
+struct bitwise_and<T, W>
 {
-    alignas(Arch::alignment()) bool buffer[VecBool<T, Arch>::size()];
-    for (auto i = 0u; i < VecBool<T, Arch>::size(); i++) {
-        buffer[i] = mask & (1ull << i);
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, rhs, [](T x, T y) {
+            return bits::bitwise_and(x, y);
+        });
+        return ret;
     }
-    return VecBool<T, Arch>::load_aligned(buffer);
-}
+};
 
-template <typename Arch, typename T>
-VecBool<T, Arch> ge(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires<Generic>) noexcept
+template <typename T, size_t W>
+struct bitwise_or<T, W>
 {
-    return other <= self;
-}
-
-template <typename Arch, typename T>
-VecBool<T, Arch> gt(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires<Generic>) noexcept
-{
-    return other < self;
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-VecBool<T, Arch> isinf(const Vec<T, Arch>& self, requires<Generic>) noexcept
-{
-    return VecBool<T, Arch>(false);
-}
-
-template <typename Arch>
-VecBool<float, Arch> isinf(const Vec<float, Arch>& self, requires<Generic>) noexcept
-{
-    return abs(self) == std::numeric_limits<float>::infinity();
-}
-
-template <typename Arch>
-VecBool<double, Arch> isinf(const Vec<double, Arch>& self, requires<Generic>) noexcept
-{
-    return abs(self) == std::numeric_limits<double>::infinity();
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-VecBool<T, Arch> isfinite(const Vec<T, Arch>& self, requires<Generic>) noexcept
-{
-    return VecBool<T, Arch>(true);
-}
-
-template <typename Arch>
-VecBool<float, Arch> isfinite(const Vec<float, Arch>& self, requires<Generic>) noexcept
-{
-    return (self - self) == 0.f;
-}
-
-template <typename Arch>
-VecBool<double, Arch> isfinite(const Vec<double, Arch>& self, requires<Generic>) noexcept
-{
-    return (self - self) == 0.;
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-VecBool<T, Arch> isnan(const Vec<T, Arch>& self, requires<Generic>) noexcept
-{
-    return VecBool<T, Arch>(false);
-}
-
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-VecBool<T, Arch> le(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires<Generic>) noexcept
-{
-    return (self < other) || (self == other);
-}
-
-template <typename Arch, typename T>
-VecBool<T, Arch> ne(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires<Generic>) noexcept
-{
-    return !(other == self);
-}
-
-template <typename Arch, typename T>
-VecBool<T, Arch> to_mask(const VecBool<T, Arch>&,  requires<Generic>) noexcept
-{
-    alignas(Arch::alignment()) bool buffer[VecBool<T, Arch>::size()];
-    self.store_aligned(buffer);
-    uint64_t res = 0;
-    for (auto i = 0u; i < VecBool<T, Arch>::size(); i++) {
-        if (buffer[i]) {
-            res |= 1ul << i;
-        }
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, rhs, [](T x, T y) {
+            return bits::bitwise_or(x, y);
+        });
+        return ret;
     }
-    return res;
-}
-#endif
+};
+
+template <typename T, size_t W>
+struct bitwise_xor<T, W>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, rhs, [](T x, T y) {
+            return bits::bitwise_xor(x, y);
+        });
+        return ret;
+    }
+};
+
+template <typename T, size_t W>
+struct bitwise_lshift<T, W, REQUIRE_INTEGRAL(T)>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, int32_t y) noexcept
+    {
+        static_check_supported_type<T>();
+
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, [y](T x) {
+            return bits::bitwise_lshift(x, y);
+        });
+        return ret;
+    }
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, rhs, [](T x, T y) {
+            return bits::bitwise_lshift(x, y);
+        });
+        return ret;
+    }
+};
+template <typename T, size_t W>
+struct bitwise_rshift<T, W, REQUIRE_INTEGRAL(T)>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, int32_t y) noexcept
+    {
+        static_check_supported_type<T>();
+
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, [y](T x) {
+            return bits::bitwise_rshift(x, y);
+        });
+        return ret;
+    }
+    SIMD_INLINE
+    static Vec<T, W> apply(const VecBool<T, W>& lhs, const VecBool<T, W>& rhs) noexcept
+    {
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, rhs, [](T x, T y) {
+            return bits::bitwise_rshift(x, y);
+        });
+        return ret;
+    }
+};
+
+/// bitwise_not
+template <typename T, size_t W>
+struct bitwise_not<T, W>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& self) noexcept
+    {
+        Vec<T, W> ret;
+        detail::apply(ret, self, [](T x) {
+            return bits::bitwise_not(x);
+        });
+        return ret;
+    }
+    SIMD_INLINE
+    static VecBool<T, W> apply(const VecBool<T, W>& self) noexcept
+    {
+        VecBool<T, W> ret;
+        detail::apply(ret, self, [](T x) {
+            return bits::bitwise_not(x);
+        });
+        return ret;
+    }
+};
+
+/// bitwise_andnot
+template <typename T, size_t W>
+struct bitwise_andnot<T, W>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, rhs, [](T x, T y) {
+            return bits::bitwise_andnot(x, y);
+        });
+        return ret;
+    }
+    SIMD_INLINE
+    static Vec<T, W> apply(const VecBool<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, rhs, [](T x, T y) {
+            return bits::bitwise_andnot(x, y);
+        });
+        return ret;
+    }
+};
 } } } // namespace simd::kernel::generic

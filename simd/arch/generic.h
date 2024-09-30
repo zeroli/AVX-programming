@@ -5,6 +5,7 @@ namespace simd { namespace kernel { namespace generic {
 } } } // namespace simd::kernel::generic
 
 #include "simd/types/generic_arch.h"
+#include "simd/types/traits.h"
 #include "simd/arch/generic/detail.h"
 #include "simd/arch/generic/algorithm.h"
 #include "simd/arch/generic/arithmetic.h"
@@ -23,7 +24,13 @@ Vec<T, W> OP(const Vec<T, W>& x, requires_arch<Generic>) noexcept \
 { \
     return generic::OP<T, W>::apply(x); \
 } \
-///
+template <typename T, size_t W> \
+SIMD_INLINE \
+VecBool<T, W> OP(const VecBool<T, W>& x, requires_arch<Generic>) noexcept \
+{ \
+    return generic::OP<T, W>::apply(x); \
+} \
+///###
 
 #define DEFINE_GENERIC_BINARY_OP(OP) \
 template <typename T, size_t W> \
@@ -32,12 +39,36 @@ Vec<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<Generic>)
 { \
     return generic::OP<T, W>::apply(lhs, rhs); \
 } \
+///###
+
+#define DEFINE_GENERIC_BINARY_CMP_OP(OP) \
+template <typename T, size_t W> \
+SIMD_INLINE \
+VecBool<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<Generic>) noexcept \
+{ \
+    return generic::OP<T, W>::apply(lhs, rhs); \
+} \
 ///
 
 DEFINE_GENERIC_UNARY_OP(sign);
 DEFINE_GENERIC_UNARY_OP(bitofsign);
+DEFINE_GENERIC_UNARY_OP(bitwise_not);
 
 DEFINE_GENERIC_BINARY_OP(copysign);
+
+DEFINE_GENERIC_BINARY_OP(bitwise_and);
+DEFINE_GENERIC_BINARY_OP(bitwise_or);
+DEFINE_GENERIC_BINARY_OP(bitwise_xor);
+DEFINE_GENERIC_BINARY_OP(bitwise_andnot);
+DEFINE_GENERIC_BINARY_OP(bitwise_lshift);
+DEFINE_GENERIC_BINARY_OP(bitwise_rshift);
+
+DEFINE_GENERIC_BINARY_CMP_OP(eq);
+DEFINE_GENERIC_BINARY_CMP_OP(ne);
+DEFINE_GENERIC_BINARY_CMP_OP(gt);
+DEFINE_GENERIC_BINARY_CMP_OP(ge);
+DEFINE_GENERIC_BINARY_CMP_OP(lt);
+DEFINE_GENERIC_BINARY_CMP_OP(le);
 
 template <typename T, size_t W>
 SIMD_INLINE
@@ -74,23 +105,7 @@ T hadd(const Vec<T, W>& x, requires_arch<Generic>) noexcept
     return generic::hadd<T, W>::apply(x);
 }
 
-#define DEFINE_GENERIC_BINARY_COMP_OP(OP) \
-template <typename T, size_t W> \
-SIMD_INLINE \
-VecBool<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<Generic>) noexcept \
-{ \
-    return generic::OP<T, W>::apply(lhs, rhs); \
-} \
-///
-
-DEFINE_GENERIC_BINARY_COMP_OP(eq);
-DEFINE_GENERIC_BINARY_COMP_OP(ne);
-DEFINE_GENERIC_BINARY_COMP_OP(gt);
-DEFINE_GENERIC_BINARY_COMP_OP(ge);
-DEFINE_GENERIC_BINARY_COMP_OP(lt);
-DEFINE_GENERIC_BINARY_COMP_OP(le);
-
 #undef DEFINE_GENERIC_UNARY_OP
 #undef DEFINE_GENERIC_BINARY_OP
-#undef DEFINE_GENERIC_BINARY_COMP_OP
+#undef DEFINE_GENERIC_BINARY_CMP_OP
 } } // namespace simd::kernel

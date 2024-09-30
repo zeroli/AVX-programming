@@ -2,108 +2,108 @@
 
 #include "simd/simd.h"
 
-STATIC_CHECK_ARCH_ENABLED(SSE);
+STATIC_CHECK_ARCH_ENABLED(AVX);
 
-TEST(vec_op_sse, test_cmp_eq)
+TEST(vec_op_avx, test_cmp_eq)
 {
     {
-        simd::Vec<int32_t, 4> a(2), b(2);
+        simd::vi32x8_t a(2), b(2);
         EXPECT_TRUE(simd::all_of(a == b));
     }
     {
-        simd::Vec<float, 4> a(2.f), b(2.f);
+        simd::vf32x8_t a(2.f), b(2.f);
         EXPECT_TRUE(simd::all_of(b == a));
     }
     {
-        simd::Vec<double, 2> a(2.0), b(2.0);
+        simd::vf64x4_t a(2.0), b(2.0);
         EXPECT_TRUE(simd::all_of(b == a));
     }
     {
-        simd::Vec<double, 2> a(1.0), b(2.0);
+        simd::vf64x4_t a(1.0), b(2.0);
         EXPECT_TRUE(simd::none_of(b == a));
     }
 }
 
-TEST(vec_op_sse, test_cmp_ne)
+TEST(vec_op_avx, test_cmp_ne)
 {
     {
-        simd::Vec<int32_t, 4> a(2), b(1);
+        simd::vi32x8_t a(2), b(1);
         EXPECT_TRUE(simd::all_of(a != b));
     }
     {
-        simd::Vec<float, 4> a(1.f), b(2.f);
+        simd::vf32x8_t a(1.f), b(2.f);
         EXPECT_TRUE(simd::all_of(b != a));
     }
     {
-        simd::Vec<double, 2> a(1.0), b(2.0);
+        simd::vf64x4_t a(1.0), b(2.0);
         EXPECT_TRUE(simd::all_of(b != a));
     }
 }
 
-TEST(vec_op_sse, test_cmp_lt)
+TEST(vec_op_avx, test_cmp_lt)
 {
     {
-        simd::Vec<int32_t, 4> a(1), b(2);
+        simd::vi32x8_t a(1), b(2);
         EXPECT_TRUE(simd::all_of(a < b));
     }
     {
-        simd::Vec<float, 4> a(1.f), b(2.f);
+        simd::vf32x8_t a(1.f), b(2.f);
         EXPECT_TRUE(simd::all_of(a < b));
     }
     {
-        simd::Vec<double, 2> a(1.0), b(2.0);
+        simd::vf64x4_t a(1.0), b(2.0);
         EXPECT_TRUE(simd::all_of(a < b));
     }
 }
 
-TEST(vec_op_sse, test_cmp_le)
+TEST(vec_op_avx, test_cmp_le)
 {
     {
-        simd::Vec<int32_t, 4> a(1), b(1);
+        simd::vi32x8_t a(1), b(1);
         EXPECT_TRUE(simd::all_of(a <= b));
     }
     {
-        simd::Vec<float, 4> a(1.f), b(2.f);
+        simd::vf32x8_t a(1.f), b(2.f);
         EXPECT_TRUE(simd::all_of(a <= b));
     }
     {
-        simd::Vec<double, 2> a(1.0), b(2.0);
+        simd::vf64x4_t a(1.0), b(2.0);
         EXPECT_TRUE(simd::all_of(a <= b));
     }
 }
 
-TEST(vec_op_sse, test_cmp_gt)
+TEST(vec_op_avx, test_cmp_gt)
 {
     {
-        simd::Vec<int32_t, 4> a(2), b(1);
+        simd::vi32x8_t a(2), b(1);
         EXPECT_TRUE(simd::all_of(a > b));
     }
     {
-        simd::Vec<float, 4> a(1.f), b(2.f);
+        simd::vf32x8_t a(1.f), b(2.f);
         EXPECT_TRUE(simd::all_of(b > a));
     }
     {
-        simd::Vec<double, 2> a(1.0), b(2.0);
+        simd::vf64x4_t a(1.0), b(2.0);
         EXPECT_TRUE(simd::all_of(b > a));
     }
 }
 
-TEST(vec_op_sse, test_cmp_ge)
+TEST(vec_op_avx, test_cmp_ge)
 {
     {
-        simd::Vec<int32_t, 4> a(2), b(1);
+        simd::vi32x8_t a(2), b(1);
         EXPECT_TRUE(simd::all_of(a >= b));
     }
     {
-        simd::Vec<float, 4> a(1.f), b(2.f);
+        simd::vf32x8_t a(1.f), b(2.f);
         EXPECT_TRUE(simd::all_of(b >= a));
     }
     {
-        simd::Vec<double, 2> a(1.0), b(2.0);
+        simd::vf64x4_t a(1.0), b(2.0);
         EXPECT_TRUE(simd::all_of(b >= a));
     }
     {
-        simd::Vec<double, 2> a(2.0), b(2.0);
+        simd::vf64x4_t a(2.0), b(2.0);
         EXPECT_TRUE(simd::all_of(b >= a));
     }
 }
