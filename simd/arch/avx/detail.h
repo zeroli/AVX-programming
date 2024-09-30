@@ -40,5 +40,18 @@ avx_reg_d merge(const sse_reg_d& low, const sse_reg_d& high) noexcept
     return _mm256_insertf128_pd(_mm256_castpd128_pd256(low), high, 1);
 }
 
+template <typename OP, typename VO, typename VI = VO>
+SIMD_INLINE
+avx_reg_i forward_sse_op(const avx_reg_i& lhs, const avx_reg_i& rhs) noexcept
+{
+    static_assert(VI::n_regs() == 1);
+
+    sse_reg_i l_low, l_high, r_low, r_high;
+    detail::split(lhs, l_low, l_high);
+    detail::split(rhs, r_low, r_high);
+    auto sum_low  = OP::template apply<VO, VI>(VI(l_low),  VI(r_low));
+    auto sum_high = OP::template apply<VO, VI>(VI(l_high), VI(r_high));
+    return detail::merge(sum_low.reg(), sum_high.reg());
+}
 }  // namespace detail
 } } }  // namespace simd::kernel::avx

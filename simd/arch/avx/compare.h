@@ -4,35 +4,22 @@ namespace simd { namespace kernel { namespace avx {
 using namespace types;
 
 namespace detail {
-template <typename T, size_t W>
-avx_reg_i forward_sse_cmpeq(const avx_reg_i& lhs, const avx_reg_i& rhs) noexcept
-{
-    using A = SSE;
-    using V = Vec<T, W>;
-    static_assert(V::n_regs() == 1);
+struct sse_cmp_eq {
+    template <typename VO, typename VI>
+    SIMD_INLINE
+    static VO apply(const VI& x, const VI& y) noexcept {
+        return kernel::eq(x, y, SSE{});
+    }
+};
 
-    sse_reg_i l_low, l_high, r_low, r_high;
-    detail::split(lhs, l_low, l_high);
-    detail::split(rhs, r_low, r_high);
-    auto sum_low = kernel::eq(V(l_low), V(r_low), A{});
-    auto sum_high = kernel::eq(V(l_low), V(r_low), A{});
-    return detail::merge(sum_low.reg(), sum_high.reg());
-}
+struct sse_cmp_lt {
+    template <typename VO, typename VI>
+    SIMD_INLINE
+    static VO apply(const VI& x, const VI& y) noexcept {
+        return kernel::lt(x, y, SSE{});
+    }
+};
 
-template <typename T, size_t W>
-avx_reg_i forward_sse_cmplt(const avx_reg_i& lhs, const avx_reg_i& rhs) noexcept
-{
-    using A = SSE;
-    using V = Vec<T, W>;
-    static_assert(V::n_regs() == 1);
-
-    sse_reg_i l_low, l_high, r_low, r_high;
-    detail::split(lhs, l_low, l_high);
-    detail::split(rhs, r_low, r_high);
-    auto sum_low = kernel::lt(V(l_low), V(r_low), A{});
-    auto sum_high = kernel::lt(V(l_low), V(r_low), A{});
-    return detail::merge(sum_low.reg(), sum_high.reg());
-}
 }  // namespace detail
 
 /// eq
@@ -45,11 +32,14 @@ struct eq<T, W, REQUIRE_INTEGRAL(T)>
         static_check_supported_type<T>();
 
         VecBool<T, W> ret;
-        constexpr auto nregs = VecBool<T, W>::n_regs();
-        constexpr auto reg_lanes = VecBool<T, W>::reg_lanes();
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        using sse_vec_t = Vec<T, reg_lanes/2>;
+        using sse_vecbool_t = VecBool<T, reg_lanes/2>;
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = detail::forward_sse_cmpeq<T, reg_lanes/2>(lhs.reg(idx), rhs.reg(idx));
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_cmp_eq, sse_vecbool_t, sse_vec_t>
+                                (lhs.reg(idx), rhs.reg(idx));
         }
         return ret;
     }
@@ -61,10 +51,13 @@ struct eq<T, W, REQUIRE_INTEGRAL(T)>
         VecBool<T, W> ret;
         constexpr auto nregs = VecBool<T, W>::n_regs();
         constexpr auto reg_lanes = VecBool<T, W>::reg_lanes();
+        using sse_vecbool_t = VecBool<T, reg_lanes/2>;
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = detail::forward_sse_cmpeq<T, reg_lanes/2>(lhs.reg(idx), rhs.reg(idx));
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_cmp_eq, sse_vecbool_t>
+                                (lhs.reg(idx), rhs.reg(idx));
         }
+        return ret;
     }
 };
 
@@ -341,11 +334,14 @@ struct lt<T, W, REQUIRE_INTEGRAL(T)>
         static_check_supported_type<T>();
 
         VecBool<T, W> ret;
-        constexpr auto nregs = VecBool<T, W>::n_regs();
-        constexpr auto reg_lanes = VecBool<T, W>::reg_lanes();
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        using sse_vec_t = Vec<T, reg_lanes/2>;
+        using sse_vecbool_t = VecBool<T, reg_lanes/2>;
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = detail::forward_sse_cmplt<T, reg_lanes/2>(lhs.reg(idx), rhs.reg(idx));
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_cmp_lt, sse_vecbool_t, sse_vec_t>
+                                (lhs.reg(idx), rhs.reg(idx));
         }
         return ret;
     }

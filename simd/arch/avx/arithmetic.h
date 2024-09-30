@@ -3,23 +3,43 @@
 namespace simd { namespace kernel { namespace avx {
 using namespace types;
 
-/// add
 namespace detail {
-template <typename T, size_t W>
-avx_reg_i forward_sse_add(const avx_reg_i& lhs, const avx_reg_i& rhs) noexcept
-{
-    using A = SSE;
-    using V = Vec<T, W>;
-    static_assert(V::n_regs() == 1);
+struct sse_add {
+    template <typename VO, typename VI>
+    SIMD_INLINE
+    static VO apply(const VI& x, const VI& y) noexcept {
+        return kernel::add(x, y, SSE{});
+    }
+};
 
-    sse_reg_i l_low, l_high, r_low, r_high;
-    detail::split(lhs, l_low, l_high);
-    detail::split(rhs, r_low, r_high);
-    auto sum_low = kernel::add(V(l_low), V(r_low), A{});
-    auto sum_high = kernel::add(V(l_low), V(r_low), A{});
-    return detail::merge(sum_low.reg(), sum_high.reg());
-}
+struct sse_sub {
+    template <typename VO, typename VI>
+    SIMD_INLINE
+    static VO apply(const VI& x, const VI& y) noexcept {
+        return kernel::sub(x, y, SSE{});
+    }
+};
+
+struct sse_mul {
+    template <typename VO, typename VI>
+    SIMD_INLINE
+    static VO apply(const VI& x, const VI& y) noexcept {
+        return kernel::mul(x, y, SSE{});
+    }
+};
+
+struct sse_div {
+    template <typename VO, typename VI>
+    SIMD_INLINE
+    static VO apply(const VI& x, const VI& y) noexcept {
+        return kernel::div(x, y, SSE{});
+    }
+};
+
 }  // namespace detail
+
+/// add
+
 template <typename T, size_t W>
 struct add<T, W, REQUIRE_INTEGRAL(T)>
 {
@@ -31,9 +51,10 @@ struct add<T, W, REQUIRE_INTEGRAL(T)>
         Vec<T, W> ret;
         constexpr auto nregs = Vec<T, W>::n_regs();
         constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        using sse_vec_t = Vec<T, reg_lanes/2>;
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = detail::forward_sse_add<T, reg_lanes/2>(lhs.reg(idx), rhs.reg(idx));
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_add, sse_vec_t>(lhs.reg(idx), rhs.reg(idx));
         }
         return ret;
     }
@@ -82,26 +103,11 @@ struct sub<T, W, REQUIRE_INTEGRAL(T)>
 
         Vec<T, W> ret;
         constexpr auto nregs = Vec<T, W>::n_regs();
-        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm_sub_epi8(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm_sub_epi16(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm_sub_epi32(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm_sub_epi64(lhs.reg(idx), rhs.reg(idx));
-            }
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        using sse_vec_t = Vec<T, reg_lanes/2>;
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_sub, sse_vec_t>(lhs.reg(idx), rhs.reg(idx));
         }
         return ret;
     }
