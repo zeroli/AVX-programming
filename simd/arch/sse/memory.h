@@ -651,6 +651,7 @@ struct from_mask<T, W, REQUIRE_INTEGRAL(T)>
     SIMD_INLINE
     static uint32_t mask_lut32(uint64_t mask) noexcept
     {
+        /// 1 bit expands to 8 bits(1 byte), total 32bits
         alignas(A::alignment()) static const uint32_t lut[] = {
             0x00000000,
             0x000000FF,
@@ -669,12 +670,13 @@ struct from_mask<T, W, REQUIRE_INTEGRAL(T)>
             0xFFFFFF00,
             0xFFFFFFFF,
         };
-        assert(!(mask & ~0xFFFF) && "inbound mask: [0, 0xFFFF]");
+        assert(!(mask & ~0xF) && "inbound mask: [0, 0xF]");
         return lut[mask];
     }
     SIMD_INLINE
     static uint64_t mask_lut64(uint64_t mask) noexcept
     {
+        /// 1 bit expands to 16 bits(2 bytes), total 64bits
         alignas(A::alignment()) static const uint64_t lut[] = {
             0x0000000000000000,
             0x000000000000FFFF,
@@ -693,7 +695,7 @@ struct from_mask<T, W, REQUIRE_INTEGRAL(T)>
             0xFFFFFFFFFFFF0000,
             0xFFFFFFFFFFFFFFFF,
         };
-        assert(!(mask & ~0xFF) && "inbound mask: [0, 0xFF]");
+        assert(!(mask & ~0xF) && "inbound mask: [0, 0xF]");
         return lut[mask];
     }
 
@@ -710,11 +712,11 @@ struct from_mask<T, W, REQUIRE_INTEGRAL(T)>
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
                 auto mask = x & lanes_mask;
-                ret.reg(idx) = _mm_setr_epi32(
-                                    mask_lut32(mask & 0xF),
-                                    mask_lut32((mask >> 4) & 0xF),
-                                    mask_lut32((mask >> 8) & 0xF),
-                                    mask_lut32(mask >> 12)
+                ret.reg(idx) = _mm_setr_epi32(  // each one gen 4 bytes(32bits)
+                                    mask_lut32((mask >>  0) & 0xF),
+                                    mask_lut32((mask >>  4) & 0xF),
+                                    mask_lut32((mask >>  8) & 0xF),
+                                    mask_lut32((mask >> 12) & 0xF)
                                 );
                 x >>= reg_lanes;
             }
@@ -727,9 +729,9 @@ struct from_mask<T, W, REQUIRE_INTEGRAL(T)>
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
                 auto mask = x & lanes_mask;
-                ret.reg(idx) = _mm_set_epi64x(
-                                    mask_lut64(mask >> 4),
-                                    mask_lut64(mask & 0xF)
+                ret.reg(idx) = _mm_set_epi64x(  // each one gen 8 bytes(64bits)
+                                    mask_lut64((mask >> 4) & 0xF),
+                                    mask_lut64((mask >> 0) & 0xF)
                                 );
                 x >>= reg_lanes;
             }
