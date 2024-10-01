@@ -24,18 +24,32 @@ using avx512_reg_i = __m512i;
 using avx512_reg_f = __m512;
 using avx512_reg_d = __m512d;
 
-DECLARE_SIMD_REGISTER(int8_t,               AVX512F, avx512_reg_i);
-DECLARE_SIMD_REGISTER(uint8_t,              AVX512F, avx512_reg_i);
-DECLARE_SIMD_REGISTER(int16_t,              AVX512F, avx512_reg_i);
-DECLARE_SIMD_REGISTER(uint16_t,             AVX512F, avx512_reg_i);
-DECLARE_SIMD_REGISTER(int32_t,              AVX512F, avx512_reg_i);
-DECLARE_SIMD_REGISTER(uint32_t,             AVX512F, avx512_reg_i);
-DECLARE_SIMD_REGISTER(int64_t,              AVX512F, avx512_reg_i);
-DECLARE_SIMD_REGISTER(uint64_t,             AVX512F, avx512_reg_i);
-DECLARE_SIMD_REGISTER(float,                AVX512F, avx512_reg_f);
-DECLARE_SIMD_REGISTER(double,               AVX512F, avx512_reg_d);
-DECLARE_SIMD_REGISTER(std::complex<float>,  AVX512F, avx512_reg_f);
-DECLARE_SIMD_REGISTER(std::complex<double>, AVX512F, avx512_reg_d);
+template <typename T, typename Enable = void>
+struct avx512_reg_traits;
+
+template <typename T>
+using avx512_reg_traits_t = typename avx512_reg_traits<T>::type;
+
+#define DECLARE_SIMD_AVX512_REGISTER(SCALAR_TYPE, ISA, VECTOR_TYPE) \
+template <> \
+struct avx512_reg_traits<SCALAR_TYPE> { \
+    using type = VECTOR_TYPE; \
+}; \
+DECLARE_SIMD_REGISTER(SCALAR_TYPE, ISA, VECTOR_TYPE) \
+///###
+
+DECLARE_SIMD_AVX512_REGISTER(int8_t,               AVX512F, avx512_reg_i);
+DECLARE_SIMD_AVX512_REGISTER(uint8_t,              AVX512F, avx512_reg_i);
+DECLARE_SIMD_AVX512_REGISTER(int16_t,              AVX512F, avx512_reg_i);
+DECLARE_SIMD_AVX512_REGISTER(uint16_t,             AVX512F, avx512_reg_i);
+DECLARE_SIMD_AVX512_REGISTER(int32_t,              AVX512F, avx512_reg_i);
+DECLARE_SIMD_AVX512_REGISTER(uint32_t,             AVX512F, avx512_reg_i);
+DECLARE_SIMD_AVX512_REGISTER(int64_t,              AVX512F, avx512_reg_i);
+DECLARE_SIMD_AVX512_REGISTER(uint64_t,             AVX512F, avx512_reg_i);
+DECLARE_SIMD_AVX512_REGISTER(float,                AVX512F, avx512_reg_f);
+DECLARE_SIMD_AVX512_REGISTER(double,               AVX512F, avx512_reg_d);
+DECLARE_SIMD_AVX512_REGISTER(std::complex<float>,  AVX512F, avx512_reg_f);
+DECLARE_SIMD_AVX512_REGISTER(std::complex<double>, AVX512F, avx512_reg_d);
 }  // namespace types
 }  // namespace simd
 #endif  // SIMD_WITH_AVX512F

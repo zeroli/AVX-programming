@@ -37,47 +37,83 @@ struct add<T, W, REQUIRE_INTEGRAL(T)>
         return ret;
     }
 };
+
+/// sub
+template <typename T, size_t W>
+struct sub<T, W, REQUIRE_INTEGRAL(T)>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    {
+        static_check_supported_type<T>();
+
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm256_sub_epi8(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm256_sub_epi16(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm256_sub_epi32(lhs.reg(idx), rhs.reg(idx));
+            }
+        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
+            #pragma unroll
+            for (auto idx = 0; idx < nregs; idx++) {
+                ret.reg(idx) = _mm256_sub_epi64(lhs.reg(idx), rhs.reg(idx));
+            }
+        }
+        return ret;
+    }
+};
+
+/// mul
+template <typename T, size_t W>
+struct mul<T, W, REQUIRE_INTEGRAL(T)>
+{
+    // TODO
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept = delete;
+};
+
+/// div
+template <typename T, size_t W>
+struct div<T, W, REQUIRE_INTEGRAL(T)>
+{
+    // TODO
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept = delete;
+};
+
+/// mod for integral only (float/double, deleted)
+template <typename T, size_t W>
+struct mod<T, W, REQUIRE_INTEGRAL(T)>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept {
+        return {};  // TODO
+    }
+};
+
+template <typename T, size_t W>
+struct neg<T, W, REQUIRE_INTEGRAL(T)>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& x) noexcept
+    {
+        return avx2::sub<T, W>::apply(Vec<T, W>(0), x);
+    }
+};
 } } } // namespace simd::kernel::avx2
 
 #if 0
-/// add
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-Vec<T, Arch> add(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires_arch<AVX2>) noexcept
-{
-    if (sizeof(T) == 1) {
-        return _mm256_add_epi8(self, other);
-    } else if (sizeof(T) == 2) {
-        return _mm256_add_epi16(self, other);
-    } else if (sizeof(T) == 4) {
-        return _mm256_add_epi32(self, other);
-    } else if (sizeof(T) == 8) {
-        return _mm256_add_epi64(self, other);
-    } else {
-        // TODO:
-        assert(0);
-    }
-}
-
-/// sub
-template <typename Arch, typename T,
-    typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-Vec<T, Arch> sub(const Vec<T, Arch>& self, const Vec<T, Arch>& other, requires_arch<AVX2>) noexcept
-{
-    if (sizeof(T) == 1) {
-        return _mm256_sub_epi8(self, other);
-    } else if (sizeof(T) == 2) {
-        return _mm256_sub_epi16(self, other);
-    } else if (sizeof(T) == 4) {
-        return _mm256_sub_epi32(self, other);
-    } else if (sizeof(T) == 8) {
-        return _mm256_sub_epi64(self, other);
-    } else {
-        // TODO:
-        assert(0);
-    }
-}
-
 /// mul
 template <typename Arch, typename T,
     typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>

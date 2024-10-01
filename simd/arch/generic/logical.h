@@ -84,7 +84,7 @@ struct bitwise_rshift<T, W, REQUIRE_INTEGRAL(T)>
         return ret;
     }
     SIMD_INLINE
-    static Vec<T, W> apply(const VecBool<T, W>& lhs, const VecBool<T, W>& rhs) noexcept
+    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         Vec<T, W> ret;
         detail::apply(ret, lhs, rhs, [](T x, T y) {

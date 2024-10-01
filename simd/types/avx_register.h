@@ -24,18 +24,32 @@ using avx_reg_i = __m256i;
 using avx_reg_f = __m256;
 using avx_reg_d = __m256d;
 
-DECLARE_SIMD_REGISTER(int8_t,               AVX, avx_reg_i);
-DECLARE_SIMD_REGISTER(uint8_t,              AVX, avx_reg_i);
-DECLARE_SIMD_REGISTER(int16_t,              AVX, avx_reg_i);
-DECLARE_SIMD_REGISTER(uint16_t,             AVX, avx_reg_i);
-DECLARE_SIMD_REGISTER(int32_t,              AVX, avx_reg_i);
-DECLARE_SIMD_REGISTER(uint32_t,             AVX, avx_reg_i);
-DECLARE_SIMD_REGISTER(int64_t,              AVX, avx_reg_i);
-DECLARE_SIMD_REGISTER(uint64_t,             AVX, avx_reg_i);
-DECLARE_SIMD_REGISTER(float,                AVX, avx_reg_f);
-DECLARE_SIMD_REGISTER(double,               AVX, avx_reg_d);
-DECLARE_SIMD_REGISTER(std::complex<float>,  AVX, avx_reg_f);
-DECLARE_SIMD_REGISTER(std::complex<double>, AVX, avx_reg_d);
+template <typename T, typename Enable = void>
+struct avx_reg_traits;
+
+template <typename T>
+using avx_reg_traits_t = typename avx_reg_traits<T>::type;
+
+#define DECLARE_SIMD_AVX_REGISTER(SCALAR_TYPE, ISA, VECTOR_TYPE) \
+template <> \
+struct avx_reg_traits<SCALAR_TYPE> { \
+    using type = VECTOR_TYPE; \
+}; \
+DECLARE_SIMD_REGISTER(SCALAR_TYPE, ISA, VECTOR_TYPE) \
+///###
+
+DECLARE_SIMD_AVX_REGISTER(int8_t,               AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(uint8_t,              AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(int16_t,              AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(uint16_t,             AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(int32_t,              AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(uint32_t,             AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(int64_t,              AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(uint64_t,             AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(float,                AVX, avx_reg_f);
+DECLARE_SIMD_AVX_REGISTER(double,               AVX, avx_reg_d);
+DECLARE_SIMD_AVX_REGISTER(std::complex<float>,  AVX, avx_reg_f);
+DECLARE_SIMD_AVX_REGISTER(std::complex<double>, AVX, avx_reg_d);
 }  // namespace types
 }  // namespace simd
 #endif  // SIMD_WITH_AVX

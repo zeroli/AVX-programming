@@ -170,8 +170,9 @@ template <typename T>
 SIMD_INLINE
 T bitwise_lshift(T x, int32_t y)
 {
+    /// cast to `to_integral<T>` to prevent promotion of operator `<<`
     return cast<T>(
-        cast<traits::to_integral_t<T>>(x) << y
+        (traits::to_integral_t<T>)(cast<traits::to_integral_t<T>>(x) << y)
     );
 }
 
@@ -179,8 +180,9 @@ template <typename T>
 SIMD_INLINE
 T bitwise_rshift(T x, int32_t y)
 {
+    /// cast to `to_integral<T>` to prevent promotion of operator `<<`
     return cast<T>(
-        cast<traits::to_integral_t<T>>(x) >> y
+        (traits::to_integral_t<T>)(cast<traits::to_integral_t<T>>(x) >> y)
     );
 }
 

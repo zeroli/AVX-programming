@@ -201,7 +201,7 @@ struct bitwise_not<T, W, REQUIRE_INTEGRAL(T)>
 
         Vec<T, W> ret;
         constexpr auto nregs = Vec<T, W>::n_regs();
-        auto mask = detail::make_mask_i();
+        auto mask = detail::make_mask<T>();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm256_xor_si256(x.reg(idx), mask);
@@ -215,7 +215,7 @@ struct bitwise_not<T, W, REQUIRE_INTEGRAL(T)>
 
         VecBool<T, W> ret;
         constexpr auto nregs = VecBool<T, W>::n_regs();
-        auto mask = detail::make_mask_i();
+        auto mask = detail::make_mask<T>();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm256_xor_si256(x.reg(idx), mask);
@@ -232,7 +232,7 @@ struct bitwise_not<float, W>
     {
         Vec<float, W> ret;
         constexpr auto nregs = Vec<float, W>::n_regs();
-        auto mask = detail::make_mask_f();
+        auto mask = detail::make_mask<float>();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm256_xor_ps(x.reg(idx), mask);
@@ -244,7 +244,7 @@ struct bitwise_not<float, W>
     {
         VecBool<float, W> ret;
         constexpr auto nregs = VecBool<float, W>::n_regs();
-        auto mask = detail::make_mask_f();
+        auto mask = detail::make_mask<float>();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm256_xor_ps(x.reg(idx), mask);
@@ -261,7 +261,7 @@ struct bitwise_not<double, W>
     {
         Vec<double, W> ret;
         constexpr auto nregs = Vec<double, W>::n_regs();
-        auto mask = detail::make_mask_d();
+        auto mask = detail::make_mask<double>();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm256_xor_pd(x.reg(idx), mask);
@@ -273,7 +273,7 @@ struct bitwise_not<double, W>
     {
         VecBool<double, W> ret;
         constexpr auto nregs = VecBool<double, W>::n_regs();
-        auto mask = detail::make_mask_d();
+        auto mask = detail::make_mask<double>();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.reg(idx) = _mm256_xor_pd(x.reg(idx), mask);

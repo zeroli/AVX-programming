@@ -4,17 +4,37 @@ namespace simd { namespace kernel { namespace avx {
 namespace detail {
 using namespace types;
 
+template <typename T>
 SIMD_INLINE
-avx_reg_i make_mask_i() {
+avx_reg_traits_t<T> make_mask() {
     return _mm256_set1_epi32(-1);
 }
+template <>
 SIMD_INLINE
-avx_reg_f make_mask_f() {
+avx_reg_traits_t<float> make_mask<float>() {
     return _mm256_castsi256_ps(_mm256_set1_epi32(-1));
 }
+
+template <>
 SIMD_INLINE
-avx_reg_d make_mask_d() {
+avx_reg_traits_t<double> make_mask<double>() {
     return _mm256_castsi256_pd(_mm256_set1_epi32(-1));
+}
+
+template <typename T>
+SIMD_INLINE
+avx_reg_traits_t<T> make_signmask();  // no implementation
+
+template <>
+SIMD_INLINE
+avx_reg_traits_t<float> make_signmask<float>() {
+    return _mm256_set1_ps(-0.f);  // -0.f => 1 << 31
+}
+
+template <>
+SIMD_INLINE
+avx_reg_traits_t<double> make_signmask<double>() {
+    return _mm256_set1_pd(-0.f);  // -0.f => 1 << 63
 }
 
 /// split from one avx register into two sse registers
@@ -92,6 +112,19 @@ avx_reg_i forward_sse_op(const avx_reg_i& lhs, int32_t rhs) noexcept
     detail::split(lhs, l_low, l_high);
     auto sum_low  = OP::template apply<VO, VI>(VI(l_low),  rhs);
     auto sum_high = OP::template apply<VO, VI>(VI(l_high), rhs);
+    return detail::merge(sum_low.reg(), sum_high.reg());
+}
+
+template <typename OP, typename VO, typename VI = VO>
+SIMD_INLINE
+avx_reg_i forward_sse_op(const avx_reg_i& lhs) noexcept
+{
+    static_assert(VI::n_regs() == 1);
+
+    sse_reg_i l_low, l_high;
+    detail::split(lhs, l_low, l_high);
+    auto sum_low  = OP::template apply<VO, VI>(VI(l_low));
+    auto sum_high = OP::template apply<VO, VI>(VI(l_high));
     return detail::merge(sum_low.reg(), sum_high.reg());
 }
 }  // namespace detail

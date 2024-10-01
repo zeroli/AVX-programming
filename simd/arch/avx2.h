@@ -6,6 +6,7 @@ namespace simd { namespace kernel { namespace avx2 {
 
 #include "simd/types/avx2_register.h"
 #include "simd/types/traits.h"
+#include "simd/arch/avx2/detail.h"
 #include "simd/arch/avx2/algorithm.h"
 #include "simd/arch/avx2/arithmetic.h"
 #include "simd/arch/avx2/cast.h"
@@ -19,7 +20,8 @@ namespace simd { namespace kernel { namespace avx2 {
 namespace simd { namespace kernel {
 
 #define DEFINE_AVX2_BINARY_OP(OP) \
-template <typename T, size_t W> \
+template <typename T, size_t W, \
+  REQUIRES(std::is_integral<T>::value)> \
 SIMD_INLINE \
 Vec<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<AVX2>) noexcept \
 { \
@@ -34,7 +36,8 @@ DEFINE_AVX2_BINARY_OP(div);
 DEFINE_AVX2_BINARY_OP(mod);
 
 #define DEFINE_AVX2_UNARY_OP(OP) \
-template <typename T, size_t W> \
+template <typename T, size_t W, \
+  REQUIRES(std::is_integral<T>::value)> \
 SIMD_INLINE \
 Vec<T, W> OP(const Vec<T, W>& x, requires_arch<AVX2>) noexcept \
 { \
@@ -44,8 +47,11 @@ Vec<T, W> OP(const Vec<T, W>& x, requires_arch<AVX2>) noexcept \
 
 DEFINE_AVX2_UNARY_OP(neg);
 
+DEFINE_AVX2_UNARY_OP(abs);
+
 #define DEFINE_AVX2_BINARY_CMP_OP(OP) \
-template <typename T, size_t W> \
+template <typename T, size_t W, \
+  REQUIRES(std::is_integral<T>::value)> \
 SIMD_INLINE \
 VecBool<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<AVX2>) noexcept \
 { \
@@ -53,14 +59,14 @@ VecBool<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<AVX2>
 } \
 ///
 
-// DEFINE_AVX2_BINARY_CMP_OP(eq);
-// DEFINE_AVX2_BINARY_CMP_OP(ne);
-// DEFINE_AVX2_BINARY_CMP_OP(gt);
-// DEFINE_AVX2_BINARY_CMP_OP(ge);
-// DEFINE_AVX2_BINARY_CMP_OP(lt);
-// DEFINE_AVX2_BINARY_CMP_OP(le);
+DEFINE_AVX2_BINARY_CMP_OP(eq);
+DEFINE_AVX2_BINARY_CMP_OP(ne);
+DEFINE_AVX2_BINARY_CMP_OP(gt);
+DEFINE_AVX2_BINARY_CMP_OP(ge);
+DEFINE_AVX2_BINARY_CMP_OP(lt);
+DEFINE_AVX2_BINARY_CMP_OP(le);
 
-#undef DEFINE_AVX2_BINARY_OP
 #undef DEFINE_AVX2_UNARY_OP
+#undef DEFINE_AVX2_BINARY_OP
 #undef DEFINE_AVX2_BINARY_CMP_OP
 } }  // namespace simd::kernel

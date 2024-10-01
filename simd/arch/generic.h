@@ -78,6 +78,20 @@ Vec<T, W> bitwise_andnot(const VecBool<T, W>& lhs, const Vec<T, W>& rhs, require
 
 template <typename T, size_t W>
 SIMD_INLINE
+Vec<T, W> bitwise_lshift(const Vec<T, W>& lhs, int32_t rhs, requires_arch<Generic>) noexcept
+{
+    return generic::bitwise_lshift<T, W>::apply(lhs, rhs);
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> bitwise_rshift(const Vec<T, W>& lhs, int32_t rhs, requires_arch<Generic>) noexcept
+{
+    return generic::bitwise_rshift<T, W>::apply(lhs, rhs);
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
 bool all_of(const VecBool<T, W>& x, requires_arch<Generic>) noexcept
 {
     return generic::all_of<T, W>::apply(x);
