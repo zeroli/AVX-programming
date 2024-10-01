@@ -95,6 +95,41 @@ Vec<T, W> broadcast(T val, requires_arch<AVX>) noexcept
     return avx::broadcast<T, W>::apply(val);
 }
 
+template <typename T, size_t W>
+SIMD_INLINE
+bool all_of(const VecBool<T, W>& x, requires_arch<AVX>) noexcept
+{
+    return avx::all_of<T, W>::apply(x);
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+bool any_of(const VecBool<T, W>& x, requires_arch<AVX>) noexcept
+{
+    return avx::any_of<T, W>::apply(x);
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+int popcount(const VecBool<T, W>& x, requires_arch<AVX>) noexcept
+{
+    return avx::popcount<T, W>::apply(x);
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+int find_first_set(const VecBool<T, W>& x, requires_arch<AVX>) noexcept
+{
+    return avx::find_first_set<T, W>::apply(x);
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+int find_last_set(const VecBool<T, W>& x, requires_arch<AVX>) noexcept
+{
+    return avx::find_last_set<T, W>::apply(x);
+}
+
 #undef DEFINE_AVX_BINARY_OP
 #undef DEFINE_AVX_UNARY_OP
 #undef DEFINE_AVX_BINARY_CMP_OP

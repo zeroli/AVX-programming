@@ -37,6 +37,19 @@ avx_reg_traits_t<double> make_signmask<double>() {
     return _mm256_set1_pd(-0.f);  // -0.f => 1 << 63
 }
 
+struct sse_min {
+    template <typename VO, typename VI>
+    static VO apply(const VI& x, const VI& y) noexcept {
+        return kernel::min(x, y, SSE{});
+    }
+};
+struct sse_max {
+    template <typename VO, typename VI>
+    static VO apply(const VI& x, const VI& y) noexcept {
+        return kernel::max(x, y, SSE{});
+    }
+};
+
 /// split from one avx register into two sse registers
 SIMD_INLINE
 void split(const avx_reg_i& val, sse_reg_i& low, sse_reg_i& high) noexcept
@@ -83,9 +96,9 @@ avx_reg_i forward_sse_op(const avx_reg_i& lhs, const avx_reg_i& rhs) noexcept
     sse_reg_i l_low, l_high, r_low, r_high;
     detail::split(lhs, l_low, l_high);
     detail::split(rhs, r_low, r_high);
-    auto sum_low  = OP::template apply<VO, VI>(VI(l_low),  VI(r_low));
-    auto sum_high = OP::template apply<VO, VI>(VI(l_high), VI(r_high));
-    return detail::merge(sum_low.reg(), sum_high.reg());
+    auto low_result  = OP::template apply<VO, VI>(VI(l_low),  VI(r_low));
+    auto high_result = OP::template apply<VO, VI>(VI(l_high), VI(r_high));
+    return detail::merge(low_result.reg(), high_result.reg());
 }
 
 template <typename OP, typename VO, typename VI1 = VO, typename VI2 = VI1>
@@ -97,9 +110,9 @@ avx_reg_i forward_sse_op2(const avx_reg_i& lhs, const avx_reg_i& rhs) noexcept
     sse_reg_i l_low, l_high, r_low, r_high;
     detail::split(lhs, l_low, l_high);
     detail::split(rhs, r_low, r_high);
-    auto sum_low  = OP::template apply<VO, VI1, VI2>(VI1(l_low),  VI2(r_low));
-    auto sum_high = OP::template apply<VO, VI1, VI2>(VI1(l_high), VI2(r_high));
-    return detail::merge(sum_low.reg(), sum_high.reg());
+    auto low_result  = OP::template apply<VO, VI1, VI2>(VI1(l_low),  VI2(r_low));
+    auto high_result = OP::template apply<VO, VI1, VI2>(VI1(l_high), VI2(r_high));
+    return detail::merge(low_result.reg(), high_result.reg());
 }
 
 template <typename OP, typename VO, typename VI = VO>
@@ -110,9 +123,9 @@ avx_reg_i forward_sse_op(const avx_reg_i& lhs, int32_t rhs) noexcept
 
     sse_reg_i l_low, l_high;
     detail::split(lhs, l_low, l_high);
-    auto sum_low  = OP::template apply<VO, VI>(VI(l_low),  rhs);
-    auto sum_high = OP::template apply<VO, VI>(VI(l_high), rhs);
-    return detail::merge(sum_low.reg(), sum_high.reg());
+    auto low_result  = OP::template apply<VO, VI>(VI(l_low),  rhs);
+    auto high_result = OP::template apply<VO, VI>(VI(l_high), rhs);
+    return detail::merge(low_result.reg(), high_result.reg());
 }
 
 template <typename OP, typename VO, typename VI = VO>
@@ -123,9 +136,23 @@ avx_reg_i forward_sse_op(const avx_reg_i& lhs) noexcept
 
     sse_reg_i l_low, l_high;
     detail::split(lhs, l_low, l_high);
-    auto sum_low  = OP::template apply<VO, VI>(VI(l_low));
-    auto sum_high = OP::template apply<VO, VI>(VI(l_high));
-    return detail::merge(sum_low.reg(), sum_high.reg());
+    auto low_result  = OP::template apply<VO, VI>(VI(l_low));
+    auto high_result = OP::template apply<VO, VI>(VI(l_high));
+    return detail::merge(low_result.reg(), high_result.reg());
 }
+
+template <typename OP, typename VO, typename VI = VO>
+SIMD_INLINE
+std::pair<VO, VO> forward_sse_op0(const avx_reg_i& lhs) noexcept
+{
+    static_assert(VI::n_regs() == 1);
+
+    sse_reg_i l_low, l_high;
+    detail::split(lhs, l_low, l_high);
+    auto low_result  = OP::template apply<VO, VI>(VI(l_low));
+    auto high_result = OP::template apply<VO, VI>(VI(l_high));
+    return std::make_pair(low_result, high_result);
+}
+
 }  // namespace detail
 } } }  // namespace simd::kernel::avx

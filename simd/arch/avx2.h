@@ -35,6 +35,9 @@ DEFINE_AVX2_BINARY_OP(mul);
 DEFINE_AVX2_BINARY_OP(div);
 DEFINE_AVX2_BINARY_OP(mod);
 
+DEFINE_AVX2_BINARY_OP(min);
+DEFINE_AVX2_BINARY_OP(max);
+
 #define DEFINE_AVX2_UNARY_OP(OP) \
 template <typename T, size_t W, \
   REQUIRES(std::is_integral<T>::value)> \
@@ -65,6 +68,14 @@ DEFINE_AVX2_BINARY_CMP_OP(gt);
 DEFINE_AVX2_BINARY_CMP_OP(ge);
 DEFINE_AVX2_BINARY_CMP_OP(lt);
 DEFINE_AVX2_BINARY_CMP_OP(le);
+
+template <typename T, size_t W,
+  REQUIRES(std::is_integral<T>::value)>
+SIMD_INLINE
+bool all_of(const VecBool<T, W>& x, requires_arch<AVX2>) noexcept
+{
+    return avx2::all_of<T, W>::apply(x);
+}
 
 #undef DEFINE_AVX2_UNARY_OP
 #undef DEFINE_AVX2_BINARY_OP

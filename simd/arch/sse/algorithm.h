@@ -10,7 +10,7 @@ struct min<T, W, REQUIRE_INTEGRAL(T)>
     SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
-        static_check_supported_type<T, 4>();
+        static_check_supported_type<T>();
 
         Vec<T, W> ret;
         constexpr int nregs = Vec<T, W>::n_regs();
@@ -82,7 +82,7 @@ struct max<T, W, REQUIRE_INTEGRAL(T)>
     SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
-        static_check_supported_type<T, 4>();
+        static_check_supported_type<T>();
 
         Vec<T, W> ret;
         constexpr int nregs = Vec<T, W>::n_regs();
@@ -348,6 +348,29 @@ struct popcount<double, W>
     }
 };
 
+namespace detail {
+SIMD_INLINE
+static int sse_count1_mask_epi16(const sse_reg_i& x) noexcept
+{
+    /// _mm_movemask_epi16 not available in sse
+    return bits::count1(_mm_movemask_epi8(x)) >> 1;
+}
+
+SIMD_INLINE
+static int sse_count1_mask_epi32(const sse_reg_i& x) noexcept
+{
+    /// _mm_movemask_epi32 not available in sse
+    return bits::count1(_mm_movemask_ps(_mm_castsi128_ps(x)));
+}
+
+SIMD_INLINE
+static int sse_count1_mask_epi64(const sse_reg_i& x) noexcept
+{
+    /// _mm_movemask_epi64 not available in sse
+    return bits::count1(_mm_movemask_pd(_mm_castsi128_pd(x)));
+}
+
+}  // namespace detail
 template <typename T, size_t W>
 struct popcount<T, W, REQUIRE_INTEGRAL(T)>
 {
@@ -366,18 +389,18 @@ struct popcount<T, W, REQUIRE_INTEGRAL(T)>
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
-                ret += bits::count1(_mm_movemask_epi8(x.reg(idx)));
+                ret += detail::sse_count1_mask_epi16(x.reg(idx));
             }
-            ret >>= 1;
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
-                ret += bits::count1(_mm_movemask_ps(_mm_castsi128_ps(x.reg(idx))));
+                ret += detail::sse_count1_mask_epi32(x.reg(idx));
+
             }
         } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
             #pragma unroll
             for (auto idx = 0; idx < nregs; idx++) {
-                ret += bits::count1(_mm_movemask_pd(_mm_castsi128_pd(x.reg(idx))));
+                ret += detail::sse_count1_mask_epi64(x.reg(idx));
             }
         }
         return ret;
