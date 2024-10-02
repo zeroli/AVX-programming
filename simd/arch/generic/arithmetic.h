@@ -97,4 +97,44 @@ struct neg<T, W>
     }
 };
 
+template <typename T, size_t W>
+struct fmadd<T, W, REQUIRE_FLOATING(T)>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
+    {
+        return x * y + z;
+    }
+};
+
+template <typename T, size_t W>
+struct fmsub<T, W, REQUIRE_FLOATING(T)>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
+    {
+        return x * y - z;
+    }
+};
+
+template <typename T, size_t W>
+struct fnmadd<T, W, REQUIRE_FLOATING(T)>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
+    {
+        return -(x * y) + z;
+    }
+};
+
+template <typename T, size_t W>
+struct fnmsub<T, W, REQUIRE_FLOATING(T)>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
+    {
+        return -(x * y) - z;
+    }
+};
+
 } } } // namespace simd::kernel::generic

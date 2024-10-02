@@ -11,4 +11,45 @@ DEFINE_API_BINARY_OP(div);
 DEFINE_API_BINARY_OP(mod);
 
 DEFINE_API_UNARY_OP(neg);
+
+/// compute `(x * y) + z` in one instructon when possible
+template <typename T, size_t W,
+    REQUIRES(std::is_floating_point<T>::value)
+>
+Vec<T, W> fmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::fmadd<T, W>(x, y, z, A{});
+}
+
+/// compute `(x * y) - z` in one instructon when possible
+template <typename T, size_t W,
+    REQUIRES(std::is_floating_point<T>::value)
+>
+Vec<T, W> fmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::fmsub<T, W>(x, y, z, A{});
+}
+
+/// compute `-(x * y) + z` in one instructon when possible
+template <typename T, size_t W,
+    REQUIRES(std::is_floating_point<T>::value)
+>
+Vec<T, W> fnmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::fnmadd<T, W>(x, y, z, A{});
+}
+
+/// compute `-(x * y) - z` in one instructon when possible
+template <typename T, size_t W,
+    REQUIRES(std::is_floating_point<T>::value)
+>
+Vec<T, W> fnmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::fnmsub<T, W>(x, y, z, A{});
+}
+
 }  // namespace simd

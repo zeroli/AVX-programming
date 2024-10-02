@@ -125,6 +125,30 @@ T hadd(const Vec<T, W>& x, requires_arch<Generic>) noexcept
     return generic::hadd<T, W>::apply(x);
 }
 
+template <typename T, size_t W>
+Vec<T, W> fmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<Generic>) noexcept
+{
+    return generic::fmadd<T, W>::apply(x, y, z);
+}
+
+template <typename T, size_t W>
+Vec<T, W> fmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<Generic>) noexcept
+{
+    return generic::fmsub<T, W>::apply(x, y, z);
+}
+
+template <typename T, size_t W>
+Vec<T, W> fnmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<Generic>) noexcept
+{
+    return generic::fnmadd<T, W>::apply(x, y, z);
+}
+
+template <typename T, size_t W>
+Vec<T, W> fnmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<Generic>) noexcept
+{
+    return generic::fnmsub<T, W>::apply(x, y, z);
+}
+
 #undef DEFINE_GENERIC_UNARY_OP
 #undef DEFINE_GENERIC_BINARY_OP
 #undef DEFINE_GENERIC_BINARY_CMP_OP
