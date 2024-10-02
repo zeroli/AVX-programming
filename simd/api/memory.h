@@ -94,6 +94,17 @@ void storeu(T* mem, const Vec<T, W>& x) noexcept
     store_unaligned<T, W>(mem, x);
 }
 
+/// set values sequentially from lower to higher
+/// vec[0] = v0, vec[1] = v1, vec[2] = v2, ...
+/// NOTE: the order is opposite from sse/avx intrinsic: set
+template <typename T, size_t W, typename... Ts>
+Vec<T, W> set(T v0, T v1, Ts... vals) noexcept
+{
+    static_assert(sizeof...(Ts) + 2 == W);
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::set<T, W>(A{}, v0, v1, static_cast<T>(vals)...);
+}
+
 template <typename T, size_t W, typename U, typename V>
 Vec<T, W> gather(const U* mem, const Vec<V, W>& index) noexcept
 {

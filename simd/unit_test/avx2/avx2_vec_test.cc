@@ -35,6 +35,14 @@ TEST(vec_avx2, test_types)
     ut::test_type<simd::vu32x8_t,  8,  1, 8, simd::AVX2>();
     ut::test_type<simd::vu32x16_t, 16, 2, 8, simd::AVX2>();
 
+    ut::test_type<simd::vi64x2_t,  2,  1, 2, simd::SSE>();
+    ut::test_type<simd::vi64x4_t,  4,  1, 4, simd::AVX2>();
+    ut::test_type<simd::vi64x8_t,  8,  2, 4, simd::AVX2>();
+
+    ut::test_type<simd::vu64x2_t,  2,  1, 2, simd::SSE>();
+    ut::test_type<simd::vu64x4_t,  4,  1, 4, simd::AVX2>();
+    ut::test_type<simd::vu64x8_t,  8,  2, 4, simd::AVX2>();
+
     ut::test_type<simd::vf32x4_t,  4,  1, 4, simd::SSE>();
     ut::test_type<simd::vf32x8_t,  8,  1, 8, simd::AVX2>();
     ut::test_type<simd::vf32x16_t, 16, 2, 8, simd::AVX2>();

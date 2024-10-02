@@ -56,7 +56,7 @@ template <typename T, size_t W>
 template <typename... Ts>
 SIMD_INLINE
 Vec<T, W>::Vec(T val0, T val1, Ts... vals) noexcept
-    : self_t(kernel::set<T, W>(val0, val1, static_cast<T>(vals)..., A{}))
+    : self_t(kernel::set<T, W>(A{}, val0, val1, static_cast<T>(vals)...))
 {
     static_assert(sizeof...(Ts) + 2 == W,
         "the constructor requires as many arguments as vector elements");
@@ -90,6 +90,19 @@ Vec<T, W>::Vec(const Vec<T, Ws>&... vecs) noexcept
     : self_t(vecs.reg()...)
 {
     // TODO: validation
+}
+
+template <typename T, size_t W>
+template <typename G>
+SIMD_INLINE
+void Vec<T, W>::gen_values(G&& generator) noexcept
+{
+    alignas(A::alignment()) T buf[W];
+    #pragma unroll
+    for (int i = 0; i < W; i++) {
+        buf[i] = (T)generator(i);
+    }
+    load(buf);
 }
 
 template <typename T, size_t W>
@@ -180,20 +193,20 @@ VecBool<T, W>::VecBool(register_t arg, Regs... others) noexcept
 
 template <typename T, size_t W>
 template <typename... V>
-typename VecBool<T, W>::register_t
 SIMD_INLINE
+typename VecBool<T, W>::register_t
 VecBool<T, W>::make_register(detail::index_sequence<>, V... v) noexcept
 {
-    return kernel::set<T, W>(
-        static_cast<T>(v ? bits::ones<T>() : bits::zeros<T>())..., A{}).reg(0);
+    return kernel::set<T, self_t::reg_lanes()>(A{},
+        static_cast<T>(v ? bits::ones<T>() : bits::zeros<T>())...).reg(0);
 }
 
 template <typename T, size_t W>
 SIMD_INLINE
 VecBool<T, W>::VecBool(bool val) noexcept
 {
-    auto regval = make_register(detail::make_index_sequence<size() - 1>(), val);
-    constexpr int nregs = VecBool<T, W>::n_regs();
+    auto regval = make_register(detail::make_index_sequence<self_t::reg_lanes() - 1>(), val);
+    constexpr auto nregs = VecBool<T, W>::n_regs();
     #pragma unroll
     for (auto idx = 0; idx < nregs; idx++) {
         this->reg(idx) = regval;
@@ -207,10 +220,10 @@ VecBool<T, W>::VecBool(bool val0, bool val1, Ts... vals) noexcept
 {
     static_assert(sizeof...(Ts) + 2 == W,
         "constructor requires as many as arguments as vector elements");
-    auto vec = kernel::set<T, W>(
+    auto vec = kernel::set<T, W>(A{},
                     val0 ? bits::ones<T>() : bits::zeros<T>(),
                     val1 ? bits::ones<T>() : bits::zeros<T>(),
-     static_cast<T>(vals ? bits::ones<T>() : bits::zeros<T>())..., A{});
+     static_cast<T>(vals ? bits::ones<T>() : bits::zeros<T>())...);
     constexpr int nregs = self_t::n_regs();
     #pragma unroll
     for (auto idx = 0; idx < nregs; idx++) {

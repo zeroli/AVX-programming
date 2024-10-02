@@ -191,6 +191,15 @@ struct bitwise_rshift<T, W, REQUIRE_INTEGRAL(T)>
 };
 
 /// bitwise_not
+namespace detail {
+struct sse_bitwise_not {
+    template <typename VO, typename VI>
+    SIMD_INLINE
+    static VO apply(const VI& x) noexcept {
+        return kernel::bitwise_not(x, SSE{});
+    }
+};
+}  // namespace detail
 template <typename T, size_t W>
 struct bitwise_not<T, W, REQUIRE_INTEGRAL(T)>
 {
@@ -201,10 +210,12 @@ struct bitwise_not<T, W, REQUIRE_INTEGRAL(T)>
 
         Vec<T, W> ret;
         constexpr auto nregs = Vec<T, W>::n_regs();
-        auto mask = detail::make_mask<T>();
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        using sse_vec_t = Vec<T, reg_lanes/2>;
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm256_xor_si256(x.reg(idx), mask);
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_bitwise_not, sse_vec_t>
+                                (x.reg(idx));
         }
         return ret;
     }
@@ -215,10 +226,12 @@ struct bitwise_not<T, W, REQUIRE_INTEGRAL(T)>
 
         VecBool<T, W> ret;
         constexpr auto nregs = VecBool<T, W>::n_regs();
-        auto mask = detail::make_mask<T>();
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        using sse_vbool_t = VecBool<T, reg_lanes/2>;
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm256_xor_si256(x.reg(idx), mask);
+            ret.reg(idx) = detail::forward_sse_op<detail::sse_bitwise_not, sse_vbool_t>
+                                (x.reg(idx));
         }
         return ret;
     }

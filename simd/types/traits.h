@@ -17,16 +17,19 @@ constexpr bool is_pow_of_2() {
     return N != 0 && (N & (N - 1)) == 0;
 }
 
-template <typename T, T... Vs>
-struct interger_sequence {
-    using type = T;
+template <size_t... Idx>
+struct index_sequence { };
+
+template <size_t N, size_t... Vs>
+struct index_sequence_helper : index_sequence_helper<N-1, N-1, Vs...> {};
+
+template <size_t... Vs>
+struct index_sequence_helper<0, Vs...> {
+    using type = index_sequence<Vs...>;
 };
 
-template <size_t... Idx>
-using index_sequence = interger_sequence<size_t, Idx...>;
-
 template <size_t Num>
-using make_index_sequence = interger_sequence<size_t, Num>;
+using make_index_sequence = typename index_sequence_helper<Num>::type;
 
 }  // namespace detail
 

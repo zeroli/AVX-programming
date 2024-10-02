@@ -2,6 +2,7 @@
 
 namespace simd {
 namespace ut {
+
 template <typename VT,
     size_t CHECK_SIZE,
     size_t CHECK_N_REGS,
@@ -16,6 +17,5 @@ static void test_type()
     EXPECT_EQ(CHECK_REG_LANES, vec_t::reg_lanes());
     EXPECT_EQ(vec_t::size(), vec_t::n_regs() * vec_t::reg_lanes());
 }
-
 }  // namespace ut
 }  // namespace simd

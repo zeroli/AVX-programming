@@ -150,37 +150,13 @@ Vec<T, W> setzero(requires_arch<SSE>) noexcept
     return sse::setzero<T, W>::apply();
 }
 
-template <typename T, size_t W,
+template <typename T, size_t W, typename... Ts,
     REQUIRES((!std::is_same<T, bool>::value))>
 SIMD_INLINE
-Vec<T, W> set(T v0, T v1, requires_arch<SSE>) noexcept
+Vec<T, W> set(requires_arch<SSE>, T v0, T v1, Ts... vals) noexcept
 {
-    return sse::set<T, W>::apply(v0, v1);
-}
-
-template <typename T, size_t W,
-    REQUIRES((!std::is_same<T, bool>::value))>
-SIMD_INLINE
-Vec<T, W> set(T v0, T v1, T v2, T v3, requires_arch<SSE>) noexcept
-{
-    return sse::set<T, W>::apply(v0, v1, v2, v3);
-}
-
-template <typename T, size_t W,
-    REQUIRES((!std::is_same<T, bool>::value))>
-SIMD_INLINE
-Vec<T, W> set(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7, requires_arch<SSE>) noexcept
-{
-    return sse::set<T, W>::apply(v0, v1, v2, v3, v4, v5, v6, v7);
-}
-
-template <typename T, size_t W,
-    REQUIRES((!std::is_same<T, bool>::value))>
-SIMD_INLINE
-Vec<T, W> set(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7,
-                    T v8, T v9, T v10, T v11, T v12, T v13, T v14, T v15, requires_arch<SSE>) noexcept
-{
-    return sse::set<T, W>::apply(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
+    static_assert(sizeof...(Ts) + 2 == W);
+    return sse::set<T, W>::apply(v0, v1, static_cast<T>(vals)...);
 }
 
 template <typename T, size_t W>

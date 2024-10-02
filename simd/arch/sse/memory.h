@@ -253,7 +253,7 @@ struct load_aligned<T, W, REQUIRE_INTEGRAL(T)>
         constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_load_si128((const __m128i*)(mem + idx * reg_lanes));
+            ret.reg(idx) = _mm_load_si128((const sse_reg_i*)(mem + idx * reg_lanes));
         }
         return ret;
     }
@@ -307,7 +307,7 @@ struct load_unaligned<T, W, REQUIRE_INTEGRAL(T)>
         constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm_loadu_si128((const __m128i*)(mem + idx * reg_lanes));
+            ret.reg(idx) = _mm_loadu_si128((const sse_reg_i*)(mem + idx * reg_lanes));
         }
         return ret;
     }
@@ -360,7 +360,7 @@ struct store_aligned<T, W, REQUIRE_INTEGRAL(T)>
         constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            _mm_store_si128((__m128i*)(mem + idx * reg_lanes), x.reg(idx));
+            _mm_store_si128((sse_reg_i*)(mem + idx * reg_lanes), x.reg(idx));
         }
     }
 };
@@ -409,7 +409,7 @@ struct store_unaligned<T, W, REQUIRE_INTEGRAL(T)>
         constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            _mm_storeu_si128((__m128i*)(mem + idx * reg_lanes), x.reg(idx));
+            _mm_storeu_si128((sse_reg_i*)(mem + idx * reg_lanes), x.reg(idx));
         }
     }
 };
@@ -473,18 +473,18 @@ static int mask_lut(int mask)
 }
 
 SIMD_INLINE
-static uint64_t movemask_epi16(const __m128i& x)
+static uint64_t movemask_epi16(const sse_reg_i& x)
 {
     uint64_t mask8 = _mm_movemask_epi8(x);
     return mask_lut(mask8) | (mask_lut(mask8 >> 8) << 4);
 }
 SIMD_INLINE
-static uint64_t movemask_epi32(const __m128i& x)
+static uint64_t movemask_epi32(const sse_reg_i& x)
 {
     return _mm_movemask_ps(_mm_castsi128_ps(x));
 }
 SIMD_INLINE
-static uint64_t movemask_epi64(const __m128i& x)
+static uint64_t movemask_epi64(const sse_reg_i& x)
 {
     return _mm_movemask_pd(_mm_castsi128_pd(x));
 }
@@ -570,7 +570,7 @@ struct from_mask<float, W>
 {
     /// mask, lower 4 bits, each bit indicates one element (4 * sizeof(float) = 128)
     SIMD_INLINE
-    static const __m128i* mask_lut(uint64_t mask) noexcept
+    static const sse_reg_i* mask_lut(uint64_t mask) noexcept
     {
         using A = typename VecBool<float, W>::arch_t;
         alignas(A::alignment()) static const uint32_t lut[][4] = {
@@ -592,7 +592,7 @@ struct from_mask<float, W>
             { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF },
         };
         assert(!(mask & ~0xFul) && "inbound mask: [0, 0xF]");  // cannot beyond 16 (2^4)
-        return (const __m128i*)lut[mask];
+        return (const sse_reg_i*)lut[mask];
     }
     SIMD_INLINE
     static VecBool<float, W> apply(uint64_t x) noexcept
@@ -615,7 +615,7 @@ struct from_mask<double, W>
 {
     /// mask, lower 2 bits, each bit indicates one element (2 * sizeof(double) = 128)
     SIMD_INLINE
-    static const __m128i* mask_lut(uint64_t mask) noexcept
+    static const sse_reg_i* mask_lut(uint64_t mask) noexcept
     {
         using A = typename VecBool<double, W>::arch_t;
         alignas(A::alignment()) static const uint64_t lut[][4] = {
@@ -625,7 +625,7 @@ struct from_mask<double, W>
             { 0xFFFFFFFFFFFFFFFFul, 0xFFFFFFFFFFFFFFFFul },
         };
         assert(!(mask & ~0x3ul) && "inbound mask: [0, 3]");
-        return (const __m128i*)lut[mask];
+        return (const sse_reg_i*)lut[mask];
     }
     SIMD_INLINE
     static VecBool<double, W> apply(uint64_t x) noexcept

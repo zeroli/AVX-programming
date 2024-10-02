@@ -110,7 +110,7 @@ TEST(vec_op_sse, test_memory_store_unaligned)
     {
         float pa[] = { 1.f, 1.f, 1.f, 1.f };
         simd::Vec<float, 4> a(2.f);
-        a.store_aligned(pa);
+        a.store_unaligned(pa);
         auto b = simd::Vec<float, 4>::load_unaligned(pa);
         EXPECT_TRUE(simd::all_of(b == a));
     }

@@ -55,6 +55,20 @@ public:
     SIMD_INLINE
     Vec(const Vec<T, Ws>&... vecs) noexcept;
 
+    /// generate values for each slot through generator,
+    /// which must satisfy below operation:
+    /// `T operator ()(int idx);`
+    template <typename G,
+     REQUIRES((std::is_convertible<
+                decltype(std::declval<G>()(0)),
+                T
+            >::value))
+    >
+    SIMD_INLINE
+    Vec(G&& generator) noexcept {
+        gen_values(std::forward<G>(generator));
+    }
+
     /// set all elements to 0
     SIMD_INLINE
     void clear() noexcept;
@@ -269,6 +283,11 @@ public:
     {
         return ops::bitwise_xor<T, W>(lhs, rhs);
     }
+
+private:
+    template <typename G>
+    SIMD_INLINE
+    void gen_values(G&& generator) noexcept;
 };
 
 using vi8x64_t  = Vec<int8_t,  64>;    // 512 bits
