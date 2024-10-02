@@ -104,7 +104,7 @@ TEST(vec_op_sse, test_memory_store_unaligned)
         int32_t pa[] = { 1, 1, 1, 1 };
         simd::Vec<int32_t, 4> a(2);
         a.store_unaligned(pa);
-        auto b = simd::Vec<int32_t, 4>::load_aligned(pa);
+        auto b = simd::Vec<int32_t, 4>::load_unaligned(pa);
         EXPECT_TRUE(simd::all_of(a == b));
     }
     {

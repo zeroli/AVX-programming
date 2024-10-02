@@ -58,6 +58,12 @@ template <typename T, size_t W>
 Vec<T, W> fnmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept;
 
 template <typename T, size_t W>
+Vec<T, W> fmaddsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept;
+
+template <typename T, size_t W>
+Vec<T, W> fmsubadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept;
+
+template <typename T, size_t W>
 SIMD_INLINE
 VecBool<T, W> bitwise_not(const VecBool<T, W>& lhs, requires_arch<Generic>) noexcept;
 

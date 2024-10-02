@@ -104,7 +104,7 @@ TEST(vec_op_avx, test_memory_store_unaligned)
         int32_t pa[] = { 1, 1, 1, 1, 1, 1, 1, 1 };
         simd::vi32x8_t a(2);
         a.store_unaligned(pa);
-        auto b = simd::vi32x8_t::load_aligned(pa);
+        auto b = simd::vi32x8_t::load_unaligned(pa);
         EXPECT_TRUE(simd::all_of(a == b));
     }
     {

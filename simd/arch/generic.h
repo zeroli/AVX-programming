@@ -149,6 +149,18 @@ Vec<T, W> fnmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, req
     return generic::fnmsub<T, W>::apply(x, y, z);
 }
 
+template <typename T, size_t W>
+Vec<T, W> fmaddsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<Generic>) noexcept
+{
+    return generic::fmaddsub<T, W>::apply(x, y, z);
+}
+
+template <typename T, size_t W>
+Vec<T, W> fmsubadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<Generic>) noexcept
+{
+    return generic::fmsubadd<T, W>::apply(x, y, z);
+}
+
 #undef DEFINE_GENERIC_UNARY_OP
 #undef DEFINE_GENERIC_BINARY_OP
 #undef DEFINE_GENERIC_BINARY_CMP_OP

@@ -11,10 +11,13 @@ DECLARE_OP_KERNEL(div);
 DECLARE_OP_KERNEL(mod);
 DECLARE_OP_KERNEL(neg);
 
+/// FMA kernels
 DECLARE_OP_KERNEL(fmadd);
 DECLARE_OP_KERNEL(fmsub);
 DECLARE_OP_KERNEL(fnmadd);
 DECLARE_OP_KERNEL(fnmsub);
+DECLARE_OP_KERNEL(fmaddsub);
+DECLARE_OP_KERNEL(fmsubadd);
 
 /// memory IO kernels
 DECLARE_OP_KERNEL(set);

@@ -52,4 +52,27 @@ Vec<T, W> fnmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noe
     return kernel::fnmsub<T, W>(x, y, z, A{});
 }
 
+/// compute `(x * y) - z` for even index (0, 2, 4, ...)
+/// compute `(x * y) + z` for odd index (1, 3, 5, ...)
+/// in one instructon when possible
+template <typename T, size_t W,
+    REQUIRES(std::is_floating_point<T>::value)
+>
+Vec<T, W> fmaddsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::fmaddsub<T, W>(x, y, z, A{});
+}
+
+/// compute `(x * y) + z` for even index (0, 2, 4, ...)
+/// compute `(x * y) - z` for odd index (1, 3, 5, ...)
+/// in one instructon when possible
+template <typename T, size_t W,
+    REQUIRES(std::is_floating_point<T>::value)
+>
+Vec<T, W> fmsubadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
+{
+    using A = typename Vec<T, W>::arch_t;
+    return kernel::fmsubadd<T, W>(x, y, z, A{});
+}
 }  // namespace simd

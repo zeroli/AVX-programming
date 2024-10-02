@@ -119,12 +119,12 @@ public:
     /// short/convenience functions for load/store
     template <typename U>
     SIMD_INLINE
-    void load(U* mem) noexcept {
+    void load(const U* mem) noexcept {
         *this = load_aligned(mem);
     }
     template <typename U>
     SIMD_INLINE
-    void loadu(U* mem) noexcept {
+    void loadu(const U* mem) noexcept {
         *this = load_unaligned(mem);
     }
     template <typename U>
