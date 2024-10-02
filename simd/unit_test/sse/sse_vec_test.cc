@@ -2,9 +2,92 @@
 
 #include "simd/simd.h"
 
+#include "simd/unit_test/test_common.h"
+
 using namespace simd;
 
 STATIC_CHECK_ARCH_ENABLED(SSE);
+
+TEST(vec_sse, test_types)
+{
+    ut::test_type<simd::vi8x16_t, 16, 1, 16, simd::SSE>();
+    ut::test_type<simd::vi8x32_t, 32, 2, 16, simd::SSE>();
+    ut::test_type<simd::vi8x64_t, 64, 4, 16, simd::SSE>();
+
+    ut::test_type<simd::vu8x16_t, 16, 1, 16, simd::SSE>();
+    ut::test_type<simd::vu8x32_t, 32, 2, 16, simd::SSE>();
+    ut::test_type<simd::vu8x64_t, 64, 4, 16, simd::SSE>();
+
+    ut::test_type<simd::vi16x8_t,  8,  1, 8, simd::SSE>();
+    ut::test_type<simd::vi16x16_t, 16, 2, 8, simd::SSE>();
+    ut::test_type<simd::vi16x32_t, 32, 4, 8, simd::SSE>();
+
+    ut::test_type<simd::vu16x8_t,  8,  1, 8, simd::SSE>();
+    ut::test_type<simd::vu16x16_t, 16, 2, 8, simd::SSE>();
+    ut::test_type<simd::vu16x32_t, 32, 4, 8, simd::SSE>();
+
+    ut::test_type<simd::vi32x4_t,  4,  1, 4, simd::SSE>();
+    ut::test_type<simd::vi32x8_t,  8,  2, 4, simd::SSE>();
+    ut::test_type<simd::vi32x16_t, 16, 4, 4, simd::SSE>();
+
+    ut::test_type<simd::vu32x4_t,  4,  1, 4, simd::SSE>();
+    ut::test_type<simd::vu32x8_t,  8,  2, 4, simd::SSE>();
+    ut::test_type<simd::vu32x16_t, 16, 4, 4, simd::SSE>();
+
+    ut::test_type<simd::vf32x4_t,  4,  1, 4, simd::SSE>();
+    ut::test_type<simd::vf32x8_t,  8,  2, 4, simd::SSE>();
+    ut::test_type<simd::vf32x16_t, 16, 4, 4, simd::SSE>();
+
+    ut::test_type<simd::vf64x2_t, 2, 1, 2, simd::SSE>();
+    ut::test_type<simd::vf64x4_t, 4, 2, 2, simd::SSE>();
+    ut::test_type<simd::vf64x8_t, 8, 4, 2, simd::SSE>();
+}
+
+TEST(vec_sse, test_arch_reg)
+{
+    {  // 128bits
+        static_assert(std::is_same<simd::vi8x16_t::arch_t, simd::SSE>::value);
+        static_assert(std::is_same<simd::vi16x8_t::arch_t, simd::SSE>::value);
+        static_assert(std::is_same<simd::vi32x4_t::arch_t, simd::SSE>::value);
+        static_assert(std::is_same<simd::vf32x4_t::arch_t, simd::SSE>::value);
+        static_assert(std::is_same<simd::vf64x2_t::arch_t, simd::SSE>::value);
+    }
+    {  // 256bits
+        static_assert(std::is_same<simd::vi8x32_t::arch_t,  simd::SSE>::value);
+        static_assert(std::is_same<simd::vi16x16_t::arch_t, simd::SSE>::value);
+        static_assert(std::is_same<simd::vi32x8_t::arch_t,  simd::SSE>::value);
+        static_assert(std::is_same<simd::vf32x8_t::arch_t,  simd::SSE>::value);
+        static_assert(std::is_same<simd::vf64x4_t::arch_t,  simd::SSE>::value);
+    }
+    {  // 512bits
+        static_assert(std::is_same<simd::vi8x64_t::arch_t,  simd::SSE>::value);
+        static_assert(std::is_same<simd::vi16x32_t::arch_t, simd::SSE>::value);
+        static_assert(std::is_same<simd::vi32x16_t::arch_t, simd::SSE>::value);
+        static_assert(std::is_same<simd::vf32x16_t::arch_t, simd::SSE>::value);
+        static_assert(std::is_same<simd::vf64x8_t::arch_t,  simd::SSE>::value);
+    }
+    {
+        using vec_t = simd::vi32x4_t;
+        EXPECT_EQ(4, vec_t::size());
+        EXPECT_EQ(1, vec_t::n_regs());
+        EXPECT_EQ(4, vec_t::reg_lanes());
+        EXPECT_TRUE(vec_t::size() == vec_t::n_regs() * vec_t::reg_lanes());
+    }
+    {
+        using vec_t = simd::vi32x8_t;
+        EXPECT_EQ(8, vec_t::size());
+        EXPECT_EQ(2, vec_t::n_regs());
+        EXPECT_EQ(4, vec_t::reg_lanes());
+        EXPECT_TRUE(vec_t::size() == vec_t::n_regs() * vec_t::reg_lanes());
+    }
+    {
+        using vec_t = simd::vi32x16_t;
+        EXPECT_EQ(16, vec_t::size());
+        EXPECT_EQ(4, vec_t::n_regs());
+        EXPECT_EQ(4, vec_t::reg_lanes());
+        EXPECT_TRUE(vec_t::size() == vec_t::n_regs() * vec_t::reg_lanes());
+    }
+}
 
 TEST(vec_sse, test_vec_init_regs)
 {
