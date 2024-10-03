@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "simd/simd.h"
-
-STATIC_CHECK_ARCH_ENABLED(AVX2);
+#include "check_arch.h"
 
 TEST(vec_op_avx2, test_cmp_eq)
 {

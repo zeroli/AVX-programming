@@ -1,10 +1,9 @@
 #include <gtest/gtest.h>
 
 #include "simd/simd.h"
+#include "check_arch.h"
 
 using namespace simd;
-
-STATIC_CHECK_ARCH_ENABLED(AVX2);
 
 TEST(vec_op_avx2, test_arith_add)
 {

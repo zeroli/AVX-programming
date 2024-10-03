@@ -1,0 +1,3 @@
+#pragma once
+
+STATIC_CHECK_ARCH_ENABLED(SSE);

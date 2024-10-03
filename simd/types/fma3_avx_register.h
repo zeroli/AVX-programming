@@ -3,12 +3,8 @@
 #include "simd/types/avx_register.h"
 
 namespace simd {
-template <typename arch>
-struct FMA3;
-
 /// AVX + FMA instructions
-template <>
-struct FMA3<AVX> : AVX
+struct FMA3_AVX : virtual AVX
 {
     static constexpr bool supported() noexcept { return SIMD_WITH_FMA3_AVX; }
     static constexpr bool available() noexcept { return true; }
@@ -21,7 +17,7 @@ struct FMA3<AVX> : AVX
 namespace simd {
 namespace types {
 
-DECLARE_SIMD_REGISTER_ALIAS(FMA3<AVX>, AVX);
+DECLARE_SIMD_REGISTER_ALIAS(FMA3_AVX, AVX);
 
 }  // namespace types
 }  // namespace simd

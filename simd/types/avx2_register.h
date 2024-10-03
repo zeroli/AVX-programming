@@ -4,7 +4,7 @@
 
 namespace simd {
 /// AVX2 instructions
-struct AVX2 : AVX
+struct AVX2 : virtual AVX
 {
     static constexpr bool supported() noexcept { return SIMD_WITH_AVX2; }
     static constexpr bool available() noexcept { return true; }

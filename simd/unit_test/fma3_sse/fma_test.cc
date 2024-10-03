@@ -1,10 +1,9 @@
 #include <gtest/gtest.h>
 
 #include "simd/simd.h"
+#include "check_arch.h"
 
 using namespace simd;
-
-STATIC_CHECK_ARCH_ENABLED(FMA3_SSE);
 
 TEST(vec_op_fma3_sse, test_arith_fmadd)
 {

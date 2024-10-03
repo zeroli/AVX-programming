@@ -2,10 +2,9 @@
 
 #include "simd/simd.h"
 #include "simd/unit_test/test_common.h"
+#include "check_arch.h"
 
 using namespace simd;
-
-STATIC_CHECK_ARCH_ENABLED(AVX);
 
 TEST(vec_avx, test_types)
 {

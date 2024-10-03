@@ -1,10 +1,9 @@
 #include <gtest/gtest.h>
 
 #include "simd/simd.h"
+#include "check_arch.h"
 
 using namespace simd;
-
-STATIC_CHECK_ARCH_ENABLED(SSE);
 
 TEST(api, test_setzero)
 {

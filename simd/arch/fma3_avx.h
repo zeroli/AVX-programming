@@ -185,37 +185,37 @@ struct fmsubadd<T, W, REQUIRE_FLOATING(T)>
 namespace simd { namespace kernel {
 
 template <typename T, size_t W>
-Vec<T, W> fmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<FMA3<AVX>>) noexcept
+Vec<T, W> fmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<FMA3_AVX>) noexcept
 {
     return fma3_avx::fmadd<T, W>::apply(x, y, z);
 }
 
 template <typename T, size_t W>
-Vec<T, W> fmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<FMA3<AVX>>) noexcept
+Vec<T, W> fmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<FMA3_AVX>) noexcept
 {
     return fma3_avx::fmsub<T, W>::apply(x, y, z);
 }
 
 template <typename T, size_t W>
-Vec<T, W> fnmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<FMA3<AVX>>) noexcept
+Vec<T, W> fnmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<FMA3_AVX>) noexcept
 {
     return fma3_avx::fnmadd<T, W>::apply(x, y, z);
 }
 
 template <typename T, size_t W>
-Vec<T, W> fnmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<FMA3<AVX>>) noexcept
+Vec<T, W> fnmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<FMA3_AVX>) noexcept
 {
     return fma3_avx::fnmsub<T, W>::apply(x, y, z);
 }
 
 template <typename T, size_t W>
-Vec<T, W> fmaddsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<FMA3<AVX>>) noexcept
+Vec<T, W> fmaddsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<FMA3_AVX>) noexcept
 {
     return fma3_avx::fmaddsub<T, W>::apply(x, y, z);
 }
 
 template <typename T, size_t W>
-Vec<T, W> fmsubadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<FMA3<AVX>>) noexcept
+Vec<T, W> fmsubadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<FMA3_AVX>) noexcept
 {
     return fma3_avx::fmsubadd<T, W>::apply(x, y, z);
 }

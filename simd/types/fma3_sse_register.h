@@ -3,12 +3,8 @@
 #include "simd/types/sse_register.h"
 
 namespace simd {
-template <typename arch>
-struct FMA3;
-
 /// SSE + FMA instructions
-template <>
-struct FMA3<SSE> : SSE
+struct FMA3_SSE : SSE
 {
     static constexpr bool supported() noexcept { return SIMD_WITH_FMA3_SSE; }
     static constexpr bool available() noexcept { return true; }
@@ -21,7 +17,7 @@ struct FMA3<SSE> : SSE
 namespace simd {
 namespace types {
 
-DECLARE_SIMD_REGISTER_ALIAS(FMA3<SSE>, SSE);
+DECLARE_SIMD_REGISTER_ALIAS(FMA3_SSE, SSE);
 
 }  // namespace types
 }  // namespace simd

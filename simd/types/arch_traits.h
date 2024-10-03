@@ -22,15 +22,15 @@ struct arch_512_traits_base {
         #if SIMD_WITH_AVX512F
             AVX512F
         #elif SIMD_WITH_FMA3_AVX2
-            FMA3<AVX2>
+            FMA3_AVX2
         #elif SIMD_WITH_AVX2
             AVX2
         #elif SIMD_WITH_FMA3_AVX
-            FMA3<AVX>
+            FMA3_AVX
         #elif SIMD_WITH_AVX
             AVX
         #elif SIMD_WITH_FMA3_SSE
-            FMA3<SSE>
+            FMA3_SSE
         #elif SIMD_WITH_SSE
             SSE
         #else
@@ -65,20 +65,20 @@ struct arch_256_traits_base {
     using arch_t =
         #if SIMD_WITH_AVX512F
             #if SIMD_WITH_FMA3_AVX2
-                FMA3<AVX2>
+                FMA3_AVX2
             #else
                 AVX2
             #endif
         #elif SIMD_WITH_FMA3_AVX2
-            FMA3<AVX2>
+            FMA3_AVX2
         #elif SIMD_WITH_AVX2
             AVX2
         #elif SIMD_WITH_FMA3_AVX
-            FMA3<AVX>
+            FMA3_AVX
         #elif SIMD_WITH_AVX
             AVX
         #elif SIMD_WITH_FMA3_SSE
-            FMA3<SSE>
+            FMA3_SSE
         #elif SIMD_WITH_SSE
             SSE
         #else
@@ -115,13 +115,13 @@ struct arch_128_traits_base {
         #if SIMD_WITH_AVX512F
             #if SIMD_WITH_FMA3_AVX2 | SIMD_WITH_FMA3_AVX | \
                 SIMD_WITH_FMA3_SSE
-                FMA3<SSE>
+                FMA3_SSE
             #else
                 SSE
             #endif
         #elif SIMD_WITH_FMA3_AVX2 | SIMD_WITH_FMA3_AVX | \
               SIMD_WITH_FMA3_SSE
-            FMA3<SSE>
+            FMA3_SSE
         #elif SIMD_WITH_AVX2 | SIMD_WITH_AVX | SIMD_WITH_SSE
             SSE
         #else

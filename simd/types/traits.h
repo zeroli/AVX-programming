@@ -41,7 +41,7 @@ void static_check_supported_type()
 }
 
 #define STATIC_CHECK_ARCH_ENABLED(ARCH) \
-    static_assert(SIMD_WITH_##ARCH == 1, "simd with arch '" #ARCH " 'not enabled")
+    static_assert(simd::ARCH::supported(), "simd with arch '" #ARCH "' not supported")
 
 namespace traits {
 template <bool cond, typename V = void>
