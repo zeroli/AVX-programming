@@ -21,20 +21,16 @@
 #define SIMD_WITH_AVX2 0
 #endif
 
+/// -mfma set, __FMA__ defined, and __AVX__ defined as well
+/// and all avx intrinsics are available to use
 #ifdef __FMA__
-
-#ifdef __AVX__
-#define SIMD_WITH_FMA3_AVX 1
+#define SIMD_WITH_FMA3_SSE SIMD_WITH_SSE
+#define SIMD_WITH_FMA3_AVX SIMD_WITH_AVX
+#define SIMD_WITH_FMA3_AVX2 SIMD_WITH_AVX2
 #else
+#define SIMD_WITH_FMA3_SSE 0
 #define SIMD_WITH_FMA3_AVX 0
-#endif  // __AVX__
-
-#ifdef __AVX2__
-#define SIMD_WITH_FMA3_AVX2 1
-#else
 #define SIMD_WITH_FMA3_AVX2 0
-#endif  // __AVX__
-
 #endif  // __FMA__
 
 #ifdef __AVX512F__

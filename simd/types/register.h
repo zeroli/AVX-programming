@@ -13,10 +13,8 @@ namespace types {
 template <typename T, size_t W, typename A>
 struct has_simd_register : std::false_type { };
 
-template <typename T, size_t W, typename A>
-struct simd_register {
-    struct register_t { };
-};
+template <typename T, size_t W, typename A, typename Enable = void>
+struct simd_register;
 
 template <typename ST, size_t W, typename A, typename VT>
 struct simd_register_base {
@@ -123,6 +121,7 @@ struct simd_register<SCALAR_TYPE, W, ISA> \
     : public simd_register_base<SCALAR_TYPE, W, ISA, VECTOR_TYPE> \
 { \
     using base_t = simd_register_base<SCALAR_TYPE, W, ISA, VECTOR_TYPE>; \
+    using arch_t = ISA; \
     using base_t::base_t; \
 }; \
 template <size_t W> \

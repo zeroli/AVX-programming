@@ -49,7 +49,7 @@ public:
 
     template <typename... Regs>
     SIMD_INLINE
-    Vec(register_t arg, Regs... others) noexcept;
+    Vec(const register_t& arg, Regs&&... others) noexcept;
 
     template <size_t... Ws>
     SIMD_INLINE

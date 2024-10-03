@@ -7,8 +7,16 @@
 #include "simd/arch/sse.h"
 #endif
 
+#if SIMD_WITH_FMA3_SSE
+#include "simd/arch/fma3_sse.h"
+#endif
+
 #if SIMD_WITH_AVX
 #include "simd/arch/avx.h"
+#endif
+
+#if SIMD_WITH_FMA3_AVX
+#include "simd/arch/fma3_avx.h"
 #endif
 
 #if SIMD_WITH_AVX2

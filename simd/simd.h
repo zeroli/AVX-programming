@@ -17,6 +17,6 @@
 #include "simd/memory/bits.h"
 #include "simd/memory/aligned_allocator.h"
 
-#include "simd/types/vec.h"
 #include "simd/types/traits.h"
+#include "simd/types/vec.h"
 #include "simd/api/all.h"

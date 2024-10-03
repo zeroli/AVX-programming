@@ -76,7 +76,7 @@ Vec<T, W>::Vec(const vec_bool_t& b) noexcept
 template <typename T, size_t W>
 template <typename... Regs>
 SIMD_INLINE
-Vec<T, W>::Vec(register_t arg, Regs... others) noexcept
+Vec<T, W>::Vec(const register_t& arg, Regs&&... others) noexcept
     : base_t({arg, others...})
 {
     static_assert(sizeof...(Regs) + 1 <= self_t::n_regs(),
