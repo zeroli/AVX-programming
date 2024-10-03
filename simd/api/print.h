@@ -27,4 +27,5 @@ std::ostream& operator <<(std::ostream& os, const VecBool<T, W>& x) noexcept
     }
     return os << (buffer[size - 1] ? 'T' : 'F') << "]";
 }
+
 }  // namespace simd

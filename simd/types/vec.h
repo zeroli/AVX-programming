@@ -3,6 +3,7 @@
 #include <cstddef>
 
 #include "simd/config/inline.h"
+#include "simd/memory/alignment.h"
 #include "simd/types/arch_traits.h"
 #include "simd/types/traits.h"
 #include "simd/types/vec_ops_fwd.h"
@@ -17,11 +18,6 @@ class Vec
     static_assert(!std::is_same<T, bool>::value,
         "use simd::VecBool<T, W> instead of simd::Vec<bool, W>");
 public:
-    static constexpr size_t size() { return W; }
-    static constexpr const char* type() {
-        return traits::vec_type_traits<T, W>::type();
-    }
-
     using A = types::arch_traits_t<T, W>;
     using arch_t = A;
     using base_t = types::simd_register<T, W, arch_t>;
@@ -29,6 +25,28 @@ public:
     using scalar_t = T;
     using register_t = typename base_t::register_t;
     using vec_bool_t = VecBool<T, W>;
+
+    /// query the number of elements of this vector
+    /// equavalent as `W`
+    /// compile-time const expression
+    static constexpr size_t size() { return W; }
+
+    /// query the name string represented for this vector
+    /// for example: vi32x4 (element type: int32_t, 4 elements)
+    /// compile-time const expression
+    static constexpr const char* type() {
+        return traits::vec_type_traits<T, W>::type();
+    }
+    /// query the name string represented for underlying arch/reg backed for this vector
+    /// for example:
+    /// if AVX enabled, Vec<float, 8>, 8xfloats fit in AVX YMM register(__m256, 256bits)
+    /// if SSE enabled, Vec<float, 8>, 8xfloats fit by 2 SSE XMM reigsters(__m128, 128bits)
+    /// if AVX512F enabled, Vec<float, 8>, 8xfloats still backed by AVX YMM register(__m256, 256bits)
+    /// Above, "AVX", "SSE", or "AVX512F" returned
+    /// compile-time const expression
+    static constexpr const char* arch_name() {
+        return A::name();
+    }
 
     SIMD_INLINE
     Vec() noexcept = default;

@@ -8,47 +8,54 @@ using namespace simd;
 
 STATIC_CHECK_ARCH_ENABLED(SSE);
 
+TEST(vec_sse, test_type_arch)
+{
+    EXPECT_EQ(simd::util::arch_name<simd::vi32x4_t>(), simd::vi32x4_t::arch_name());
+    simd::vi32x4_t v;
+    EXPECT_EQ(simd::util::arch_name(&v), simd::vi32x4_t::arch_name());
+}
+
 TEST(vec_sse, test_types)
 {
-    ut::test_type<simd::vi8x16_t, 16, 1, 16, simd::SSE>();
-    ut::test_type<simd::vi8x32_t, 32, 2, 16, simd::SSE>();
-    ut::test_type<simd::vi8x64_t, 64, 4, 16, simd::SSE>();
+    TEST_VEC_TYPE(simd::vi8x16_t, 16, 1, 16, simd::SSE);
+    TEST_VEC_TYPE(simd::vi8x32_t, 32, 2, 16, simd::SSE);
+    TEST_VEC_TYPE(simd::vi8x64_t, 64, 4, 16, simd::SSE);
 
-    ut::test_type<simd::vu8x16_t, 16, 1, 16, simd::SSE>();
-    ut::test_type<simd::vu8x32_t, 32, 2, 16, simd::SSE>();
-    ut::test_type<simd::vu8x64_t, 64, 4, 16, simd::SSE>();
+    TEST_VEC_TYPE(simd::vu8x16_t, 16, 1, 16, simd::SSE);
+    TEST_VEC_TYPE(simd::vu8x32_t, 32, 2, 16, simd::SSE);
+    TEST_VEC_TYPE(simd::vu8x64_t, 64, 4, 16, simd::SSE);
 
-    ut::test_type<simd::vi16x8_t,  8,  1, 8, simd::SSE>();
-    ut::test_type<simd::vi16x16_t, 16, 2, 8, simd::SSE>();
-    ut::test_type<simd::vi16x32_t, 32, 4, 8, simd::SSE>();
+    TEST_VEC_TYPE(simd::vi16x8_t,  8,  1, 8, simd::SSE);
+    TEST_VEC_TYPE(simd::vi16x16_t, 16, 2, 8, simd::SSE);
+    TEST_VEC_TYPE(simd::vi16x32_t, 32, 4, 8, simd::SSE);
 
-    ut::test_type<simd::vu16x8_t,  8,  1, 8, simd::SSE>();
-    ut::test_type<simd::vu16x16_t, 16, 2, 8, simd::SSE>();
-    ut::test_type<simd::vu16x32_t, 32, 4, 8, simd::SSE>();
+    TEST_VEC_TYPE(simd::vu16x8_t,  8,  1, 8, simd::SSE);
+    TEST_VEC_TYPE(simd::vu16x16_t, 16, 2, 8, simd::SSE);
+    TEST_VEC_TYPE(simd::vu16x32_t, 32, 4, 8, simd::SSE);
 
-    ut::test_type<simd::vi32x4_t,  4,  1, 4, simd::SSE>();
-    ut::test_type<simd::vi32x8_t,  8,  2, 4, simd::SSE>();
-    ut::test_type<simd::vi32x16_t, 16, 4, 4, simd::SSE>();
+    TEST_VEC_TYPE(simd::vi32x4_t,  4,  1, 4, simd::SSE);
+    TEST_VEC_TYPE(simd::vi32x8_t,  8,  2, 4, simd::SSE);
+    TEST_VEC_TYPE(simd::vi32x16_t, 16, 4, 4, simd::SSE);
 
-    ut::test_type<simd::vu32x4_t,  4,  1, 4, simd::SSE>();
-    ut::test_type<simd::vu32x8_t,  8,  2, 4, simd::SSE>();
-    ut::test_type<simd::vu32x16_t, 16, 4, 4, simd::SSE>();
+    TEST_VEC_TYPE(simd::vu32x4_t,  4,  1, 4, simd::SSE);
+    TEST_VEC_TYPE(simd::vu32x8_t,  8,  2, 4, simd::SSE);
+    TEST_VEC_TYPE(simd::vu32x16_t, 16, 4, 4, simd::SSE);
 
-    ut::test_type<simd::vi64x2_t, 2, 1, 2, simd::SSE>();
-    ut::test_type<simd::vi64x4_t, 4, 2, 2, simd::SSE>();
-    ut::test_type<simd::vi64x8_t, 8, 4, 2, simd::SSE>();
+    TEST_VEC_TYPE(simd::vi64x2_t, 2, 1, 2, simd::SSE);
+    TEST_VEC_TYPE(simd::vi64x4_t, 4, 2, 2, simd::SSE);
+    TEST_VEC_TYPE(simd::vi64x8_t, 8, 4, 2, simd::SSE);
 
-    ut::test_type<simd::vu64x2_t, 2, 1, 2, simd::SSE>();
-    ut::test_type<simd::vu64x4_t, 4, 2, 2, simd::SSE>();
-    ut::test_type<simd::vu64x8_t, 8, 4, 2, simd::SSE>();
+    TEST_VEC_TYPE(simd::vu64x2_t, 2, 1, 2, simd::SSE);
+    TEST_VEC_TYPE(simd::vu64x4_t, 4, 2, 2, simd::SSE);
+    TEST_VEC_TYPE(simd::vu64x8_t, 8, 4, 2, simd::SSE);
 
-    ut::test_type<simd::vf32x4_t,  4,  1, 4, simd::SSE>();
-    ut::test_type<simd::vf32x8_t,  8,  2, 4, simd::SSE>();
-    ut::test_type<simd::vf32x16_t, 16, 4, 4, simd::SSE>();
+    TEST_VEC_TYPE(simd::vf32x4_t,  4,  1, 4, simd::SSE);
+    TEST_VEC_TYPE(simd::vf32x8_t,  8,  2, 4, simd::SSE);
+    TEST_VEC_TYPE(simd::vf32x16_t, 16, 4, 4, simd::SSE);
 
-    ut::test_type<simd::vf64x2_t, 2, 1, 2, simd::SSE>();
-    ut::test_type<simd::vf64x4_t, 4, 2, 2, simd::SSE>();
-    ut::test_type<simd::vf64x8_t, 8, 4, 2, simd::SSE>();
+    TEST_VEC_TYPE(simd::vf64x2_t, 2, 1, 2, simd::SSE);
+    TEST_VEC_TYPE(simd::vf64x4_t, 4, 2, 2, simd::SSE);
+    TEST_VEC_TYPE(simd::vf64x8_t, 8, 4, 2, simd::SSE);
 }
 
 TEST(vec_sse, test_vec_ctor_generator)

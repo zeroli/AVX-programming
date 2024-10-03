@@ -19,4 +19,5 @@
 
 #include "simd/types/traits.h"
 #include "simd/types/vec.h"
+#include "simd/util/util.h"
 #include "simd/api/all.h"
