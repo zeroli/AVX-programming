@@ -6,19 +6,19 @@ using namespace types;
 namespace detail {
 template <typename T>
 struct abs_functor {
-    template <ENABLE_IF(sizeof(T) == 1)>
+    template <typename U = T, REQUIRES(IS_INT_SIZE_1(U))>
     avx512_reg_i operator ()(const avx512_reg_i& x) const noexcept {
         return _mm512_abs_epi8(x);
     }
-    template <ENABLE_IF(sizeof(T) == 2)>
+    template <typename U = T, REQUIRES(IS_INT_SIZE_2(U))>
     avx512_reg_i operator ()(const avx512_reg_i& x) const noexcept {
         return _mm512_abs_epi16(x);
     }
-    template <ENABLE_IF(sizeof(T) == 4)>
+    template <typename U = T, REQUIRES(IS_INT_SIZE_4(U))>
     avx512_reg_i operator ()(const avx512_reg_i& x) const noexcept {
         return _mm512_abs_epi32(x);
     }
-    template <ENABLE_IF(sizeof(T) == 8)>
+    template <typename U = T, REQUIRES(IS_INT_SIZE_8(U))>
     avx512_reg_i operator ()(const avx512_reg_i& x) const noexcept {
         return _mm512_abs_epi64(x);
     }
@@ -31,25 +31,11 @@ struct abs_functor {
     }
 };
 
-template <typename T, size_t W, typename F>
-struct math_unary_op
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& x) noexcept
-    {
-        Vec<T, W> ret;
-        constexpr auto nregs = Vec<T, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = F()(x.reg(idx));
-        }
-        return ret;
-    }
-};
 }  // namespace detail
 
 template <typename T, size_t W>
-struct abs<T, W> : detail::math_unary_op<T, W, detail::abs_functor<T>>
+struct abs<T, W>
+    : ops::arith_unary_op<T, W, detail::abs_functor<T>>
 {
 };
 

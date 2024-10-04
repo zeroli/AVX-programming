@@ -79,17 +79,20 @@ struct bitwise_op
 }  // namespace detail
 
 template <typename T, size_t W>
-struct bitwise_and<T, W> : detail::bitwise_op<T, W, detail::and_functor>
+struct bitwise_and<T, W>
+    : ops::bitwise_binary_op<T, W, detail::and_functor>
 {
 };
 
 template <typename T, size_t W>
-struct bitwise_or<T, W> : detail::bitwise_op<T, W, detail::or_functor>
+struct bitwise_or<T, W>
+    : ops::bitwise_binary_op<T, W, detail::or_functor>
 {
 };
 
 template <typename T, size_t W>
-struct bitwise_xor<T, W> : detail::bitwise_op<T, W, detail::xor_functor>
+struct bitwise_xor<T, W>
+    : ops::bitwise_binary_op<T, W, detail::xor_functor>
 {
 };
 

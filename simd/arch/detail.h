@@ -79,7 +79,7 @@ struct bitwise_binary_op {
     SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
-        VecBool<T, W> ret;
+        Vec<T, W> ret;
         constexpr auto nregs = Vec<T, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {

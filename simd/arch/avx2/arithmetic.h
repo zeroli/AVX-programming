@@ -2,7 +2,6 @@
 
 namespace simd { namespace kernel { namespace avx2 {
 using namespace types;
-
 namespace detail {
 template <typename T>
 struct add_functor {
