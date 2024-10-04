@@ -23,8 +23,8 @@
 #include "simd/arch/avx2.h"
 #endif
 
-#if SIMD_WITH_AVX512F
-#include "simd/arch/avx512f.h"
+#if SIMD_WITH_AVX512
+#include "simd/arch/avx512.h"
 #endif
 
 /// this one must comes last

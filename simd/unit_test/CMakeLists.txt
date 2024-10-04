@@ -6,7 +6,7 @@ add_subdirectory(avx)
 add_subdirectory(fma3_avx)
 add_subdirectory(avx2)
 add_subdirectory(fma3_avx2)
-add_subdirectory(avx512f)
+add_subdirectory(avx512)
 
 project(simd_ut CXX)
 

@@ -33,50 +33,12 @@
 #define SIMD_WITH_FMA3_AVX2 0
 #endif  // __FMA__
 
-#ifdef __AVX512F__
-#define SIMD_WITH_AVX512F 1
+/// compiler flags below enable these macro definitions
+/// -mavx512f -mavx512cd -mavx512dq -mavx512bw -mavx512vl
+/// we bunch them to form one flag to enable avx512
+#if defined(__AVX512F__) && defined(__AVX512CD__) && \
+    defined(__AVX512DQ__) && defined(__AVX512BW__) && defined(__AVX512VL__)
+#define SIMD_WITH_AVX512 1
 #else
-#define SIMD_WITH_AVX512F 0
-#endif  // __AVX512F__
-
-#ifdef __AVX512CD__
-#define SIMD_WITH_AVX512CD SIMD_WITH_AVX512F
-#else
-#define SIMD_WITH_AVX512CD 0
-#endif  // __AVX512CD__
-
-#ifdef __AVX512DQ__
-#define SIMD_WITH_AVX512DQ SIMD_WITH_AVX512F
-#else
-#define SIMD_WITH_AVX512DQ 0
-#endif  // __AVX512DQ__
-
-#ifdef __AVX512BW__
-#define SIMD_WITH_AVX512BW SIMD_WITH_AVX512F
-#else
-#define SIMD_WITH_AVX512BW 0
-#endif  // __AVX512BW__
-
-#ifdef __AVX512ER__
-#define SIMD_WITH_AVX512ER SIMD_WITH_AVX512F
-#else
-#define SIMD_WITH_AVX512ER 0
-#endif  // __AVX512ER__
-
-#ifdef __AVX512PF__
-#define SIMD_WITH_AVX512PF SIMD_WITH_AVX512F
-#else
-#define SIMD_WITH_AVX512PF 0
-#endif  // __AVX512PF__
-
-#ifdef __AVX512IFMA__
-#define SIMD_WITH_AVX512IFMA SIMD_WITH_AVX512F
-#else
-#define SIMD_WITH_AVX512IFMA 0
-#endif  // __AVX512IFMA__
-
-#ifdef __AVX512VBMI__
-#define SIMD_WITH_AVX512VBMI SIMD_WITH_AVX512F
-#else
-#define SIMD_WITH_AVX512VBMI 0
-#endif  // __AVX512VBMI__
+#define SIMD_WITH_AVX512 0
+#endif  // __AVX512__

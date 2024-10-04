@@ -12,6 +12,7 @@ struct sse_abs {
     }
 };
 }  // namespace detail
+
 template <typename T, size_t W>
 struct abs<T, W, REQUIRE_INTEGRAL(T)>
 {

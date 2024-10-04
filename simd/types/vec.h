@@ -41,8 +41,10 @@ public:
     /// for example:
     /// if AVX enabled, Vec<float, 8>, 8xfloats fit in AVX YMM register(__m256, 256bits)
     /// if SSE enabled, Vec<float, 8>, 8xfloats fit by 2 SSE XMM reigsters(__m128, 128bits)
-    /// if AVX512F enabled, Vec<float, 8>, 8xfloats still backed by AVX YMM register(__m256, 256bits)
-    /// Above, "AVX", "SSE", or "AVX512F" returned
+    /// if AVX512 enabled:
+    ///   Vec<float, 8>, 8xfloats still backed by AVX YMM register(__m256, 256bits)
+    ///   Vec<float, 16>, 16xfloats fit in AVX512 ZMM register(__m512, 512bits)
+    /// Above, "AVX", "SSE", or "AVX512" returned
     /// compile-time const expression
     static constexpr const char* arch_name() {
         return A::name();

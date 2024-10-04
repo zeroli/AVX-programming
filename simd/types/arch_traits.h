@@ -19,8 +19,8 @@ using arch_traits_t = typename arch_traits<T, W>::arch_t;
 namespace detail {
 struct arch_512_traits_base {
     using arch_t =
-        #if SIMD_WITH_AVX512F
-            AVX512F
+        #if SIMD_WITH_AVX512
+            AVX512
         #elif SIMD_WITH_FMA3_AVX2
             FMA3_AVX2
         #elif SIMD_WITH_AVX2
@@ -63,7 +63,7 @@ DEFINE_ARCH_TRAITS_512_BITS(std::complex<double>);
 namespace detail {
 struct arch_256_traits_base {
     using arch_t =
-        #if SIMD_WITH_AVX512F
+        #if SIMD_WITH_AVX512
             #if SIMD_WITH_FMA3_AVX2
                 FMA3_AVX2
             #else
@@ -112,7 +112,7 @@ DEFINE_ARCH_TRAITS_256_BITS(std::complex<double>);
 namespace detail {
 struct arch_128_traits_base {
     using arch_t =
-        #if SIMD_WITH_AVX512F
+        #if SIMD_WITH_AVX512
             #if SIMD_WITH_FMA3_AVX2 | SIMD_WITH_FMA3_AVX | \
                 SIMD_WITH_FMA3_SSE
                 FMA3_SSE
