@@ -2,105 +2,104 @@
 
 namespace simd { namespace kernel { namespace avx2 {
 using namespace types;
-/// add
-template <typename T, size_t W>
-struct add<T, W, REQUIRE_INTEGRAL(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
-    {
-        static_check_supported_type<T>();
 
-        Vec<T, W> ret;
-        constexpr auto nregs = Vec<T, W>::n_regs();
-        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm256_add_epi8(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm256_add_epi16(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm256_add_epi32(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm256_add_epi64(lhs.reg(idx), rhs.reg(idx));
-            }
-        }
-        return ret;
+namespace detail {
+template <typename T>
+struct add_functor {
+    template <typename U = T, REQUIRES(IS_INT_SIZE_1(U))>
+    SIMD_INLINE
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) noexcept {
+        return _mm256_add_epi8(x, y);
+    }
+    template <typename U = T, REQUIRES(IS_INT_SIZE_2(U))>
+    SIMD_INLINE
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) noexcept {
+        return _mm256_add_epi16(x, y);
+    }
+    template <typename U = T, REQUIRES(IS_INT_SIZE_4(U))>
+    SIMD_INLINE
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) noexcept {
+        return _mm256_add_epi32(x, y);
+    }
+    template <typename U = T, REQUIRES(IS_INT_SIZE_8(U))>
+    SIMD_INLINE
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) noexcept {
+        return _mm256_add_epi64(x, y);
     }
 };
+
+template <typename T>
+struct sub_functor {
+    template <typename U = T, REQUIRES(IS_INT_SIZE_1(U))>
+    SIMD_INLINE
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) noexcept {
+        return _mm256_sub_epi8(x, y);
+    }
+    template <typename U = T, REQUIRES(IS_INT_SIZE_2(U))>
+    SIMD_INLINE
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) noexcept {
+        return _mm256_sub_epi16(x, y);
+    }
+    template <typename U = T, REQUIRES(IS_INT_SIZE_4(U))>
+    SIMD_INLINE
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) noexcept {
+        return _mm256_sub_epi32(x, y);
+    }
+    template <typename U = T, REQUIRES(IS_INT_SIZE_8(U))>
+    SIMD_INLINE
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) noexcept {
+        return _mm256_sub_epi64(x, y);
+    }
+};
+
+template <typename T>
+struct mul_functor {
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) noexcept = delete;
+};
+
+template <typename T>
+struct div_functor {
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) noexcept = delete;
+};
+
+template <typename T>
+struct mod_functor {
+    avx_reg_i operator ()(const avx_reg_i& x, const avx_reg_i& y) noexcept {
+        // TODO:
+        return x;
+    }
+};
+}  // namespace detail
+
+/// add
+template <typename T, size_t W>
+struct add<T, W>
+    : ops::arith_binary_op<T, W, detail::add_functor<T>>
+{};
 
 /// sub
 template <typename T, size_t W>
-struct sub<T, W, REQUIRE_INTEGRAL(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
-    {
-        static_check_supported_type<T>();
-
-        Vec<T, W> ret;
-        constexpr auto nregs = Vec<T, W>::n_regs();
-        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm256_sub_epi8(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm256_sub_epi16(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm256_sub_epi32(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm256_sub_epi64(lhs.reg(idx), rhs.reg(idx));
-            }
-        }
-        return ret;
-    }
-};
+struct sub<T, W>
+    : ops::arith_binary_op<T, W, detail::sub_functor<T>>
+{};
 
 /// mul
 template <typename T, size_t W>
-struct mul<T, W, REQUIRE_INTEGRAL(T)>
-{
-    // TODO
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept = delete;
-};
+struct mul<T, W>
+    : ops::arith_binary_op<T, W, detail::mul_functor<T>>
+{};
 
 /// div
 template <typename T, size_t W>
-struct div<T, W, REQUIRE_INTEGRAL(T)>
-{
-    // TODO
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept = delete;
-};
+struct div<T, W>
+    : ops::arith_binary_op<T, W, detail::div_functor<T>>
+{};
 
 /// mod for integral only (float/double, deleted)
 template <typename T, size_t W>
-struct mod<T, W, REQUIRE_INTEGRAL(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept {
-        return {};  // TODO
-    }
-};
+struct mod<T, W>
+    : ops::arith_binary_op<T, W, detail::mod_functor<T>>
+{};
 
 template <typename T, size_t W>
 struct neg<T, W, REQUIRE_INTEGRAL(T)>
@@ -111,6 +110,7 @@ struct neg<T, W, REQUIRE_INTEGRAL(T)>
         return avx2::sub<T, W>::apply(Vec<T, W>(0), x);
     }
 };
+
 } } } // namespace simd::kernel::avx2
 
 #if 0
