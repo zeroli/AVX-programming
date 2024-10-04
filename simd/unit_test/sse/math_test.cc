@@ -103,3 +103,14 @@ TEST(vec_op_sse, test_math_floor)
         EXPECT_TRUE(simd::all_of(p == c));
     }
 }
+
+TEST(vec_op_sse, test_math_log)
+{
+    {
+        simd::vf32x4_t a(3.8f, 3.1f, 0.01f, 2.9999f);
+        auto c = simd::log(a);
+        for (auto i = 0; i < a.size(); i++) {
+            EXPECT_FLOAT_EQ(std::log(a[i]), c[i]);
+        }
+    }
+}

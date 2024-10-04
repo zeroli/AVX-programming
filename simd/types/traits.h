@@ -71,8 +71,15 @@ using enable_if_t = typename std::enable_if<cond, V>::type;
 #define REQUIRE_FLOAT64(T) \
     traits::enable_if_t<std::is_same<T, double>::value>
 
+#define EVAL_INT_SIZE(T, SIZE) (std::is_integral<T>::value && sizeof(T) == SIZE)
+
 #define REQUIRE_INTEGRAL_SIZE_MATCH(T, SIZE) \
-    traits::enable_if_t<std::is_integral<T>::value && sizeof(T) == SIZE>
+    traits::enable_if_t<EVAL_INT_SIZE(T, SIZE)>
+
+#define IS_INT_SIZE_1(T) (EVAL_INT_SIZE(T, 1))
+#define IS_INT_SIZE_2(T) (EVAL_INT_SIZE(T, 2))
+#define IS_INT_SIZE_4(T) (EVAL_INT_SIZE(T, 4))
+#define IS_INT_SIZE_8(T) (EVAL_INT_SIZE(T, 8))
 
 #define REQUIRE_INTEGRAL_SIZE_1(T) REQUIRE_INTEGRAL_SIZE_MATCH(T, 1)
 #define REQUIRE_INTEGRAL_SIZE_2(T) REQUIRE_INTEGRAL_SIZE_MATCH(T, 2)

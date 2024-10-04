@@ -8,25 +8,25 @@ namespace detail {
 template <typename T, int CMP>
 avx512_mask_traits_t<T> cmp_epi_mask(const avx512_reg_i& x, const avx512_reg_i& y) noexcept;
 
-template <typename T, int CMP, REQUIRES(sizeof(T) == 1)>
+template <typename T, int CMP, REQUIRES(IS_INT_SIZE_1(T))>
 avx512_mask_traits_t<T> cmp_epi_mask(const avx512_reg_i& x, const avx512_reg_i& y) noexcept
 {
     return _mm512_cmp_epi8_mask(x, y, CMP);
 }
 
-template <typename T, int CMP, REQUIRES(sizeof(T) == 2)>
+template <typename T, int CMP, REQUIRES(IS_INT_SIZE_2(T))>
 avx512_mask_traits_t<T> cmp_epi_mask(const avx512_reg_i& x, const avx512_reg_i& y) noexcept
 {
     return _mm512_cmp_epi16_mask(x, y, CMP);
 }
 
-template <typename T, int CMP, REQUIRES(sizeof(T) == 4)>
+template <typename T, int CMP, REQUIRES(IS_INT_SIZE_4(T))>
 avx512_mask_traits_t<T> cmp_epi_mask(const avx512_reg_i& x, const avx512_reg_i& y) noexcept
 {
     return _mm512_cmp_epi32_mask(x, y, CMP);
 }
 
-template <typename T, int CMP, REQUIRES(sizeof(T) == 8)>
+template <typename T, int CMP, REQUIRES(IS_INT_SIZE_8(T))>
 avx512_mask_traits_t<T> cmp_epi_mask(const avx512_reg_i& x, const avx512_reg_i& y) noexcept
 {
     return _mm512_cmp_epi64_mask(x, y, CMP);

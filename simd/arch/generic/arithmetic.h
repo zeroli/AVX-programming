@@ -14,7 +14,8 @@ struct add<T, W>
     {
         static_check_supported_type<T>();
 
-        Vec<T, W> ret = detail::apply(lhs, rhs, [](T x, T y) {
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, rhs, [](T x, T y) {
             return x + y;
         });
         return ret;
@@ -30,7 +31,8 @@ struct sub<T, W>
     {
         static_check_supported_type<T>();
 
-        Vec<T, W> ret = detail::apply(lhs, rhs, [](T x, T y) {
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, rhs, [](T x, T y) {
             return x - y;
         });
         return ret;
@@ -44,7 +46,8 @@ struct mul<T, W>
     SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
-        Vec<T, W> ret = detail::apply(lhs, rhs, [](T x, T y) {
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, rhs, [](T x, T y) {
             return x * y;
         });
         return ret;
@@ -58,7 +61,8 @@ struct div<T, W, REQUIRE_INTEGRAL(T)>
     SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
-        Vec<T, W> ret = detail::apply(lhs, rhs, [](T x, T y) {
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, rhs, [](T x, T y) {
             return x / y;
         });
         return ret;
@@ -72,7 +76,8 @@ struct mod<T, W, REQUIRE_INTEGRAL(T)>
     SIMD_INLINE
     static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
-        Vec<T, W> ret = detail::apply(lhs, rhs, [](T x, T y) {
+        Vec<T, W> ret;
+        detail::apply(ret, lhs, rhs, [](T x, T y) {
             return x % y;
         });
         return ret;

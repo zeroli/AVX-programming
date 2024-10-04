@@ -2,6 +2,8 @@
 
 #include "simd/api/detail.h"
 
+#include <cmath>
+
 namespace simd {
 
 DEFINE_API_UNARY_OP(ceil);
@@ -9,6 +11,8 @@ DEFINE_API_UNARY_OP(floor);
 
 DEFINE_API_UNARY_OP(abs);
 DEFINE_API_UNARY_OP(sqrt);
+/// Computes the natural logarithm of the vector x
+DEFINE_API_UNARY_OP(log);
 
 #if 0
 /// Computes the natural exponential of the vector x
@@ -26,8 +30,7 @@ DEFINE_API_UNARY_OP(expm1);
 /// Computes the square root of the sum of the squares of the x and y
 DEFINE_API_BINARY_OP(hypot);
 
-/// Computes the natural logarithm of the vector x
-DEFINE_API_UNARY_OP(log);
+
 
 /// Computes the base 2 logarithm of the vector x
 DEFINE_API_UNARY_OP(log2);

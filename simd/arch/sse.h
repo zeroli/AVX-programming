@@ -6,6 +6,7 @@ namespace simd { namespace kernel { namespace sse {
 
 #include "simd/types/sse_register.h"
 #include "simd/types/traits.h"
+#include "simd/arch/sse/detail.h"
 #include "simd/arch/sse/algorithm.h"
 #include "simd/arch/sse/arithmetic.h"
 #include "simd/arch/sse/cast.h"
@@ -86,13 +87,22 @@ Vec<T, W> OP(const Vec<T, W>& x, requires_arch<SSE>) noexcept \
 } \
 ///
 
+#define DEFINE_SSE_MATH_UNARY_OP(OP) \
+template <typename T, size_t W> \
+SIMD_INLINE \
+Vec<T, W> OP(const Vec<T, W>& x, requires_arch<SSE>) noexcept \
+{ \
+    return sse::OP<T, W>::apply(x); \
+} \
+///
+
 DEFINE_SSE_UNARY_OP(bitwise_not);
 DEFINE_SSE_UNARY_OP(neg);
 
-DEFINE_SSE_UNARY_OP(abs);
-DEFINE_SSE_UNARY_OP(sqrt);
-DEFINE_SSE_UNARY_OP(ceil);
-DEFINE_SSE_UNARY_OP(floor);
+DEFINE_SSE_MATH_UNARY_OP(abs);
+DEFINE_SSE_MATH_UNARY_OP(sqrt);
+DEFINE_SSE_MATH_UNARY_OP(ceil);
+DEFINE_SSE_MATH_UNARY_OP(floor);
 
 template <typename T, size_t W>
 SIMD_INLINE

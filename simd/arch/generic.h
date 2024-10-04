@@ -48,11 +48,24 @@ VecBool<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<Gener
 { \
     return generic::OP<T, W>::apply(lhs, rhs); \
 } \
-///
+///###
+
+#define DEFINE_GENERIC_MATH_UNARY_OP(OP) \
+template <typename T, size_t W> \
+SIMD_INLINE \
+Vec<T, W> OP(const Vec<T, W>& x, requires_arch<Generic>) noexcept \
+{ \
+    return generic::OP<T, W>::apply(x); \
+} \
+///###
 
 DEFINE_GENERIC_UNARY_OP(sign);
 DEFINE_GENERIC_UNARY_OP(bitofsign);
 DEFINE_GENERIC_UNARY_OP(bitwise_not);
+
+DEFINE_GENERIC_MATH_UNARY_OP(abs);
+DEFINE_GENERIC_MATH_UNARY_OP(sqrt);
+DEFINE_GENERIC_MATH_UNARY_OP(log);
 
 DEFINE_GENERIC_BINARY_OP(copysign);
 

@@ -23,8 +23,18 @@ SIMD_INLINE \
 VecBool<T, W> OP(const Vec<T, W>& lhs, const Vec<T, W>& rhs, requires_arch<Generic>) noexcept \
 ///###
 
+#define DECLARE_GENERIC_MATH_UNARY_OP(OP) \
+template <typename T, size_t W> \
+SIMD_INLINE \
+Vec<T, W> OP(const Vec<T, W>& lhs, requires_arch<Generic>) noexcept; \
+///###
+
 DECLARE_GENERIC_UNARY_OP(sign);
 DECLARE_GENERIC_UNARY_OP(bitofsign);
+
+DECLARE_GENERIC_MATH_UNARY_OP(abs);
+DECLARE_GENERIC_MATH_UNARY_OP(sqrt);
+DECLARE_GENERIC_MATH_UNARY_OP(log);
 
 DECLARE_GENERIC_BINARY_OP(add);
 DECLARE_GENERIC_BINARY_OP(sub);
@@ -46,22 +56,22 @@ DECLARE_GENERIC_BINARY_CMP_OP(lt);
 DECLARE_GENERIC_BINARY_CMP_OP(le);
 
 template <typename T, size_t W>
-Vec<T, W> fmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept;
+Vec<T, W> fmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<Generic>) noexcept;
 
 template <typename T, size_t W>
-Vec<T, W> fmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept;
+Vec<T, W> fmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<Generic>) noexcept;
 
 template <typename T, size_t W>
-Vec<T, W> fnmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept;
+Vec<T, W> fnmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<Generic>) noexcept;
 
 template <typename T, size_t W>
-Vec<T, W> fnmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept;
+Vec<T, W> fnmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<Generic>) noexcept;
 
 template <typename T, size_t W>
-Vec<T, W> fmaddsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept;
+Vec<T, W> fmaddsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<Generic>) noexcept;
 
 template <typename T, size_t W>
-Vec<T, W> fmsubadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept;
+Vec<T, W> fmsubadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<Generic>) noexcept;
 
 template <typename T, size_t W>
 SIMD_INLINE
@@ -98,6 +108,6 @@ bool some_of(const VecBool<T, W>& x, requires_arch<Generic>) noexcept;
 #undef DECLARE_GENERIC_UNARY_OP
 #undef DECLARE_GENERIC_BINARY_OP
 #undef DECLARE_GENERIC_BINARY_CMP_OP
-
+#undef DECLARE_GENERIC_MATH_UNARY_OP
 }  // namespace kernel
 }  // namespace simd

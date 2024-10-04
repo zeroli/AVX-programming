@@ -91,4 +91,81 @@ struct copysign<T, W, REQUIRE_FLOATING(T)>
     }
 };
 
+namespace detail {
+template <typename T, size_t W, typename Enable = void>
+struct abs_functor;
+
+template <typename T, size_t W>
+struct abs_functor<T, W, REQUIRE_INTEGRAL(T)>
+{
+    SIMD_INLINE
+    Vec<T, W> operator ()(const Vec<T, W>& x) const noexcept {
+        Vec<T, W> ret;
+        detail::apply(ret, x, [](T a) {
+            return std::abs(a);
+        });
+        return ret;
+    }
+};
+template <typename T, size_t W>
+struct abs_functor<T, W, REQUIRE_FLOATING(T)>
+{
+    SIMD_INLINE
+    Vec<T, W> operator ()(const Vec<T, W>& x) const noexcept {
+        Vec<T, W> ret;
+        detail::apply(ret, x, [](T a) {
+            return std::fabs(a);
+        });
+        return ret;
+    }
+};
+
+template <typename T, size_t W>
+struct sqrt_functor {
+    SIMD_INLINE
+    Vec<T, W> operator ()(const Vec<T, W>& x) const noexcept {
+        Vec<T, W> ret;
+        detail::apply(ret, x, [](T a) {
+            return std::sqrt(a);
+        });
+        return ret;
+    }
+};
+
+template <typename T, size_t W>
+struct log_functor {
+    SIMD_INLINE
+    Vec<T, W> operator ()(const Vec<T, W>& x) const noexcept {
+        Vec<T, W> ret;
+        detail::apply(ret, x, [](T a) {
+            return std::log(a);
+        });
+        return ret;
+    }
+};
+template <typename T, size_t W, typename F>
+struct math_unary_op {
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& x) noexcept
+    {
+        return F()(x);
+    }
+};
+
+}  // namespace detail
+template <typename T, size_t W>
+struct abs<T, W>
+    : detail::math_unary_op<T, W, detail::abs_functor<T, W>>
+{};
+
+template <typename T, size_t W>
+struct sqrt<T, W>
+    : detail::math_unary_op<T, W, detail::sqrt_functor<T, W>>
+{};
+
+template <typename T, size_t W>
+struct log<T, W>
+    : detail::math_unary_op<T, W, detail::log_functor<T, W>>
+{};
+
 } } } // namespace simd::kernel::generic
