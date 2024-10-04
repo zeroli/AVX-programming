@@ -11,7 +11,7 @@ struct ArchRegConfigTag { };
 inline std::ostream& operator <<(std::ostream& os, ArchRegConfigTag) noexcept
 {
     os << "SIMD Arch/Reg Configuration:" << "\n";
-    os << "SIMD_WITH_AVX512:   " << SIMD_WITH_AVX512 << "\n";
+    os << "SIMD_WITH_AVX512:    " << SIMD_WITH_AVX512 << "\n";
     os << "SIMD_WITH_FMA3_AVX2: " << SIMD_WITH_FMA3_AVX2 << "\n";
     os << "SIMD_WITH_AVX2:      " << SIMD_WITH_AVX2 << "\n";
     os << "SIMD_WITH_FMA3_AVX:  " << SIMD_WITH_FMA3_AVX << "\n";

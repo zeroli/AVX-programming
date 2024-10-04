@@ -1,300 +1,152 @@
 #pragma once
 
 namespace simd { namespace kernel { namespace avx512 {
+namespace detail {
 using namespace types;
+
+template <typename T>
+struct add_functor {
+    template <typename U = T, REQUIRES(IS_INT_SIZE_1(U))>
+    SIMD_INLINE
+    avx512_reg_i operator ()(const avx512_reg_i& x, const avx512_reg_i& y) noexcept {
+        return _mm512_add_epi8(x, y);
+    }
+    template <typename U = T, REQUIRES(IS_INT_SIZE_2(U))>
+    SIMD_INLINE
+    avx512_reg_i operator ()(const avx512_reg_i& x, const avx512_reg_i& y) noexcept {
+        return _mm512_add_epi16(x, y);
+    }
+    template <typename U = T, REQUIRES(IS_INT_SIZE_4(U))>
+    SIMD_INLINE
+    avx512_reg_i operator ()(const avx512_reg_i& x, const avx512_reg_i& y) noexcept {
+        return _mm512_add_epi32(x, y);
+    }
+    template <typename U = T, REQUIRES(IS_INT_SIZE_8(U))>
+    SIMD_INLINE
+    avx512_reg_i operator ()(const avx512_reg_i& x, const avx512_reg_i& y) noexcept {
+        return _mm512_add_epi64(x, y);
+    }
+
+    SIMD_INLINE
+    avx512_reg_f operator ()(const avx512_reg_f& x, const avx512_reg_f& y) noexcept {
+        return _mm512_add_ps(x, y);
+    }
+    SIMD_INLINE
+    avx512_reg_d operator ()(const avx512_reg_d& x, const avx512_reg_d& y) noexcept {
+        return _mm512_add_pd(x, y);
+    }
+};
+
+template <typename T>
+struct sub_functor {
+    template <typename U = T, REQUIRES(IS_INT_SIZE_1(U))>
+    SIMD_INLINE
+    avx512_reg_i operator ()(const avx512_reg_i& x, const avx512_reg_i& y) noexcept {
+        return _mm512_sub_epi8(x, y);
+    }
+    template <typename U = T, REQUIRES(IS_INT_SIZE_2(U))>
+    SIMD_INLINE
+    avx512_reg_i operator ()(const avx512_reg_i& x, const avx512_reg_i& y) noexcept {
+        return _mm512_sub_epi16(x, y);
+    }
+    template <typename U = T, REQUIRES(IS_INT_SIZE_4(U))>
+    SIMD_INLINE
+    avx512_reg_i operator ()(const avx512_reg_i& x, const avx512_reg_i& y) noexcept {
+        return _mm512_sub_epi32(x, y);
+    }
+    template <typename U = T, REQUIRES(IS_INT_SIZE_8(U))>
+    SIMD_INLINE
+    avx512_reg_i operator ()(const avx512_reg_i& x, const avx512_reg_i& y) noexcept {
+        return _mm512_sub_epi64(x, y);
+    }
+
+    SIMD_INLINE
+    avx512_reg_f operator ()(const avx512_reg_f& x, const avx512_reg_f& y) noexcept {
+        return _mm512_sub_ps(x, y);
+    }
+    SIMD_INLINE
+    avx512_reg_d operator ()(const avx512_reg_d& x, const avx512_reg_d& y) noexcept {
+        return _mm512_sub_pd(x, y);
+    }
+};
+
+template <typename T>
+struct mul_functor {
+    avx512_reg_i operator ()(const avx512_reg_i& x, const avx512_reg_i& y) noexcept = delete;
+
+    SIMD_INLINE
+    avx512_reg_f operator ()(const avx512_reg_f& x, const avx512_reg_f& y) noexcept {
+        return _mm512_mul_ps(x, y);
+    }
+    SIMD_INLINE
+    avx512_reg_d operator ()(const avx512_reg_d& x, const avx512_reg_d& y) noexcept {
+        return _mm512_mul_pd(x, y);
+    }
+};
+
+template <typename T>
+struct div_functor {
+    avx512_reg_i operator ()(const avx512_reg_i& x, const avx512_reg_i& y) noexcept = delete;
+
+    SIMD_INLINE
+    avx512_reg_f operator ()(const avx512_reg_f& x, const avx512_reg_f& y) noexcept {
+        return _mm512_div_ps(x, y);
+    }
+    SIMD_INLINE
+    avx512_reg_d operator ()(const avx512_reg_d& x, const avx512_reg_d& y) noexcept {
+        return _mm512_div_pd(x, y);
+    }
+};
+
+template <typename T>
+struct mod_functor {
+    avx512_reg_i operator ()(const avx512_reg_i& x, const avx512_reg_i& y) noexcept {
+        // TODO:
+        return x;
+    }
+
+    avx512_reg_f operator ()(const avx512_reg_f& x, const avx512_reg_f& y) noexcept = delete;
+    avx512_reg_d operator ()(const avx512_reg_d& x, const avx512_reg_d& y) noexcept = delete;
+};
+
+template <typename T>
+struct neg_functor {
+    avx512_reg_i operator ()(const avx512_reg_i& x) noexcept = delete;
+
+    SIMD_INLINE
+    avx512_reg_f operator ()(const avx512_reg_f& x) noexcept {
+        return _mm512_xor_ps(detail::make_signmask<float>(), x);
+    }
+    SIMD_INLINE
+    avx512_reg_d operator ()(const avx512_reg_d& x) noexcept {
+        return _mm512_xor_pd(detail::make_signmask<double>(), x);
+    }
+};
+
+}  // namespace detail
 
 /// add
 template <typename T, size_t W>
-struct add<T, W, REQUIRE_INTEGRAL(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
-    {
-        static_check_supported_type<T>();
-
-        Vec<T, W> ret;
-        constexpr auto nregs = Vec<T, W>::n_regs();
-        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
-        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm512_add_epi8(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm512_add_epi16(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm512_add_epi32(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm512_add_epi64(lhs.reg(idx), rhs.reg(idx));
-            }
-        }
-        return ret;
-    }
-};
-
-template <size_t W>
-struct add<float, W>
-{
-    SIMD_INLINE
-    static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
-    {
-        Vec<float, W> ret;
-        constexpr auto nregs = Vec<float, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm512_add_ps(lhs.reg(idx), rhs.reg(idx));
-        }
-        return ret;
-    }
-};
-
-template <size_t W>
-struct add<double, W>
-{
-    SIMD_INLINE
-    static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
-    {
-        Vec<double, W> ret;
-        constexpr auto nregs = Vec<double, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm512_add_pd(lhs.reg(idx), rhs.reg(idx));
-        }
-        return ret;
-    }
-};
+struct add<T, W>
+    : ops::arith_binary_op<T, W, detail::add_functor<T>>
+{};
 
 /// sub
 template <typename T, size_t W>
-struct sub<T, W, REQUIRE_INTEGRAL(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
-    {
-        static_check_supported_type<T>();
-
-        Vec<T, W> ret;
-        constexpr auto nregs = Vec<T, W>::n_regs();
-        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
-        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm512_sub_epi8(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm512_sub_epi16(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm512_sub_epi32(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm512_sub_epi64(lhs.reg(idx), rhs.reg(idx));
-            }
-        }
-        return ret;
-    }
-};
-
-template <size_t W>
-struct sub<float, W>
-{
-    SIMD_INLINE
-    static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
-    {
-        Vec<float, W> ret;
-        constexpr auto nregs = Vec<float, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm512_sub_ps(lhs.reg(idx), rhs.reg(idx));
-        }
-        return ret;
-    }
-};
-
-template <size_t W>
-struct sub<double, W>
-{
-    SIMD_INLINE
-    static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
-    {
-        Vec<double, W> ret;
-        constexpr auto nregs = Vec<double, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm512_sub_pd(lhs.reg(idx), rhs.reg(idx));
-        }
-        return ret;
-    }
-};
+struct sub<T, W>
+    : ops::arith_binary_op<T, W, detail::sub_functor<T>>
+{};
 
 /// mul
 template <typename T, size_t W>
-struct mul<T, W, REQUIRE_INTEGRAL(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
-    {
-        static_check_supported_type<T>();
-
-        Vec<T, W> ret;
-        constexpr auto nregs = Vec<T, W>::n_regs();
-        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
-        SIMD_IF_CONSTEXPR(sizeof(T) == 1) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                assert(0 && "not supported yet");
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 2) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                assert(0 && "not supported yet");
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 4) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                ret.reg(idx) = _mm512_mul_epi32(lhs.reg(idx), rhs.reg(idx));
-            }
-        } else SIMD_IF_CONSTEXPR(sizeof(T) == 8) {
-            #pragma unroll
-            for (auto idx = 0; idx < nregs; idx++) {
-                assert(0 && "not supported yet");
-            }
-        }
-        return ret;
-    }
-};
-
-template <size_t W>
-struct mul<float, W>
-{
-    SIMD_INLINE
-    static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
-    {
-        Vec<float, W> ret;
-        constexpr auto nregs = Vec<float, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm512_mul_ps(lhs.reg(idx), rhs.reg(idx));
-        }
-        return ret;
-    }
-};
-
-template <size_t W>
-struct mul<double, W>
-{
-    SIMD_INLINE
-    static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
-    {
-        Vec<double, W> ret;
-        constexpr auto nregs = Vec<double, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm512_mul_pd(lhs.reg(idx), rhs.reg(idx));
-        }
-        return ret;
-    }
-};
+struct mul<T, W>
+    : ops::arith_binary_op<T, W, detail::mul_functor<T>>
+{};
 
 /// div
-template <size_t W>
-struct div<float, W>
-{
-    SIMD_INLINE
-    static Vec<float, W> apply(const Vec<float, W>& lhs, const Vec<float, W>& rhs) noexcept
-    {
-        Vec<float, W> ret;
-        constexpr auto nregs = Vec<float, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm512_div_ps(lhs.reg(idx), rhs.reg(idx));
-        }
-        return ret;
-    }
-};
-
-template <size_t W>
-struct div<double, W>
-{
-    SIMD_INLINE
-    static Vec<double, W> apply(const Vec<double, W>& lhs, const Vec<double, W>& rhs) noexcept
-    {
-        Vec<double, W> ret;
-        constexpr auto nregs = Vec<double, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm512_div_pd(lhs.reg(idx), rhs.reg(idx));
-        }
-        return ret;
-    }
-};
-
-/// mod for integral only (float/double, deleted)
 template <typename T, size_t W>
-struct mod<T, W, REQUIRE_INTEGRAL(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept {
-        return {};  // TODO
-    }
-};
-
-template <typename T, size_t W>
-struct neg<T, W, REQUIRE_INTEGRAL(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& x) noexcept
-    {
-        return avx512::sub<T, W>::apply(Vec<T, W>(0), x);
-    }
-};
-
-template <size_t W>
-struct neg<float, W>
-{
-    SIMD_INLINE
-    static Vec<float, W> apply(const Vec<float, W>& x) noexcept
-    {
-        Vec<float, W> ret;
-        constexpr auto nregs = Vec<float, W>::n_regs();
-        auto mask = detail::make_mask<float>();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm512_xor_ps(x.reg(idx), mask);
-        }
-        return ret;
-    }
-};
-
-template <size_t W>
-struct neg<double, W>
-{
-    SIMD_INLINE
-    static Vec<double, W> apply(const Vec<double, W>& x) noexcept
-    {
-        Vec<double, W> ret;
-        constexpr auto nregs = Vec<double, W>::n_regs();
-        auto mask = detail::make_mask<double>();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = _mm512_xor_pd(x.reg(idx), mask);
-        }
-        return ret;
-    }
-};
+struct div<T, W>
+    : ops::arith_binary_op<T, W, detail::div_functor<T>>
+{};
 
 } } } // namespace simd::kernel::avx512
