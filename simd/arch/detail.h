@@ -51,7 +51,7 @@ struct arith_binary_op {
 template <typename T, size_t W, typename F>
 struct cmp_binary_op {
     SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
+    static VecBool<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
     {
         VecBool<T, W> ret;
         constexpr auto nregs = Vec<T, W>::n_regs();
@@ -68,7 +68,7 @@ struct cmp_binary_op {
         constexpr auto nregs = Vec<T, W>::n_regs();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = F()(lhs.reg(idx), rhs.reg(idx));
+            ret.reg(idx) = F()(lhs.reg(idx), rhs.reg(idx), 1);
         }
         return ret;
     }
