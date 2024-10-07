@@ -21,16 +21,16 @@ struct simd_register_base {
     using scalar_t = ST;
     using arch_t = A;
     using register_t = VT;
-    /* how many registers for this vector */
+    /// how many registers for this vector
     static constexpr size_t n_regs() {
         return sizeof(scalar_t) * W / sizeof(register_t);
     }
-    /* how many lanes per register */
+    /// how many lanes per register
     static constexpr size_t reg_lanes() {
         return W / n_regs();
     }
 
-    /* aligned to the whole vector */
+    /// aligned to the whole vector
     union alignas(n_regs() * arch_t::alignment()) {
         register_t regs_[n_regs()];
         scalar_t array_[W];
