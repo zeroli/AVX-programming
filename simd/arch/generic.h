@@ -9,6 +9,7 @@ namespace simd { namespace kernel { namespace generic {
 #include "simd/arch/generic/detail.h"
 #include "simd/arch/generic/algorithm.h"
 #include "simd/arch/generic/arithmetic.h"
+#include "simd/arch/generic/fma.h"
 #include "simd/arch/generic/cast.h"
 #include "simd/arch/generic/compare.h"
 #include "simd/arch/generic/logical.h"

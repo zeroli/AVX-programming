@@ -9,6 +9,7 @@ namespace simd { namespace kernel { namespace avx512 {
 #include "simd/arch/avx512/detail.h"
 #include "simd/arch/avx512/algorithm.h"
 #include "simd/arch/avx512/arithmetic.h"
+#include "simd/arch/avx512/fma.h"
 #include "simd/arch/avx512/cast.h"
 #include "simd/arch/avx512/compare.h"
 #include "simd/arch/avx512/complex.h"
@@ -200,6 +201,42 @@ SIMD_INLINE
 VecBool<T, W> from_mask(uint64_t x, requires_arch<AVX512>) noexcept
 {
     return avx512::from_mask<T, W>::apply(x);
+}
+
+template <typename T, size_t W>
+Vec<T, W> fmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<AVX512>) noexcept
+{
+    return avx512::fmadd<T, W>::apply(x, y, z);
+}
+
+template <typename T, size_t W>
+Vec<T, W> fmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<AVX512>) noexcept
+{
+    return avx512::fmsub<T, W>::apply(x, y, z);
+}
+
+template <typename T, size_t W>
+Vec<T, W> fnmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<AVX512>) noexcept
+{
+    return avx512::fnmadd<T, W>::apply(x, y, z);
+}
+
+template <typename T, size_t W>
+Vec<T, W> fnmsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<AVX512>) noexcept
+{
+    return avx512::fnmsub<T, W>::apply(x, y, z);
+}
+
+template <typename T, size_t W>
+Vec<T, W> fmaddsub(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<AVX512>) noexcept
+{
+    return avx512::fmaddsub<T, W>::apply(x, y, z);
+}
+
+template <typename T, size_t W>
+Vec<T, W> fmsubadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<AVX512>) noexcept
+{
+    return avx512::fmsubadd<T, W>::apply(x, y, z);
 }
 
 #undef DEFINE_AVX512_BINARY_OP

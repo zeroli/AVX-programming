@@ -11,174 +11,108 @@ namespace simd { namespace kernel { namespace fma3_avx {
 using namespace types;
 
 namespace detail {
-SIMD_INLINE
-static avx_reg_f fmadd(const avx_reg_f& x, const avx_reg_f& y, const avx_reg_f& z) noexcept
-{
-    return _mm256_fmadd_ps(x, y, z);
-}
-SIMD_INLINE
-static avx_reg_d fmadd(const avx_reg_d& x, const avx_reg_d& y, const avx_reg_d& z) noexcept
-{
-    return _mm256_fmadd_pd(x, y, z);
-}
+struct fmadd_functor {
+    SIMD_INLINE
+    avx_reg_f operator ()(const avx_reg_f& x, const avx_reg_f& y, const avx_reg_f& z) noexcept {
+        return _mm256_fmadd_ps(x, y, z);
+    }
+    SIMD_INLINE
+    avx_reg_d operator ()(const avx_reg_d& x, const avx_reg_d& y, const avx_reg_d& z) noexcept {
+        return _mm256_fmadd_pd(x, y, z);
+    }
+};
 
-SIMD_INLINE
-static avx_reg_f fmsub(const avx_reg_f& x, const avx_reg_f& y, const avx_reg_f& z) noexcept
-{
-    return _mm256_fmsub_ps(x, y, z);
-}
-SIMD_INLINE
-static avx_reg_d fmsub(const avx_reg_d& x, const avx_reg_d& y, const avx_reg_d& z) noexcept
-{
-    return _mm256_fmsub_pd(x, y, z);
-}
+struct fmsub_functor {
+    SIMD_INLINE
+    avx_reg_f operator ()(const avx_reg_f& x, const avx_reg_f& y, const avx_reg_f& z) noexcept {
+        return _mm256_fmsub_ps(x, y, z);
+    }
+    SIMD_INLINE
+    avx_reg_d operator ()(const avx_reg_d& x, const avx_reg_d& y, const avx_reg_d& z) noexcept {
+        return _mm256_fmsub_pd(x, y, z);
+    }
+};
 
-SIMD_INLINE
-static avx_reg_f fnmadd(const avx_reg_f& x, const avx_reg_f& y, const avx_reg_f& z) noexcept
-{
-    return _mm256_fnmadd_ps(x, y, z);
-}
-SIMD_INLINE
-static avx_reg_d fnmadd(const avx_reg_d& x, const avx_reg_d& y, const avx_reg_d& z) noexcept
-{
-    return _mm256_fnmadd_pd(x, y, z);
-}
+struct fnmadd_functor {
+    SIMD_INLINE
+    avx_reg_f operator ()(const avx_reg_f& x, const avx_reg_f& y, const avx_reg_f& z) noexcept {
+        return _mm256_fnmadd_ps(x, y, z);
+    }
+    SIMD_INLINE
+    avx_reg_d operator ()(const avx_reg_d& x, const avx_reg_d& y, const avx_reg_d& z) noexcept {
+        return _mm256_fnmadd_pd(x, y, z);
+    }
+};
 
-SIMD_INLINE
-static avx_reg_f fnmsub(const avx_reg_f& x, const avx_reg_f& y, const avx_reg_f& z) noexcept
-{
-    return _mm256_fnmsub_ps(x, y, z);
-}
-SIMD_INLINE
-static avx_reg_d fnmsub(const avx_reg_d& x, const avx_reg_d& y, const avx_reg_d& z) noexcept
-{
-    return _mm256_fnmsub_pd(x, y, z);
-}
+struct fnmsub_functor {
+    SIMD_INLINE
+    avx_reg_f operator ()(const avx_reg_f& x, const avx_reg_f& y, const avx_reg_f& z) noexcept {
+        return _mm256_fnmsub_ps(x, y, z);
+    }
+    SIMD_INLINE
+    avx_reg_d operator ()(const avx_reg_d& x, const avx_reg_d& y, const avx_reg_d& z) noexcept {
+        return _mm256_fnmsub_pd(x, y, z);
+    }
+};
 
-SIMD_INLINE
-static avx_reg_f fmaddsub(const avx_reg_f& x, const avx_reg_f& y, const avx_reg_f& z) noexcept
-{
-    return _mm256_fmaddsub_ps(x, y, z);
-}
-SIMD_INLINE
-static avx_reg_d fmaddsub(const avx_reg_d& x, const avx_reg_d& y, const avx_reg_d& z) noexcept
-{
-    return _mm256_fmaddsub_pd(x, y, z);
-}
+struct fmaddsub_functor {
+    SIMD_INLINE
+    avx_reg_f operator ()(const avx_reg_f& x, const avx_reg_f& y, const avx_reg_f& z) noexcept {
+        return _mm256_fmaddsub_ps(x, y, z);
+    }
+    SIMD_INLINE
+    avx_reg_d operator ()(const avx_reg_d& x, const avx_reg_d& y, const avx_reg_d& z) noexcept {
+        return _mm256_fmaddsub_pd(x, y, z);
+    }
+};
 
-SIMD_INLINE
-static avx_reg_f fmsubadd(const avx_reg_f& x, const avx_reg_f& y, const avx_reg_f& z) noexcept
-{
-    return _mm256_fmsubadd_ps(x, y, z);
-}
-SIMD_INLINE
-static avx_reg_d fmsubadd(const avx_reg_d& x, const avx_reg_d& y, const avx_reg_d& z) noexcept
-{
-    return _mm256_fmsubadd_pd(x, y, z);
-}
+struct fmsubadd_functor {
+    SIMD_INLINE
+    avx_reg_f operator ()(const avx_reg_f& x, const avx_reg_f& y, const avx_reg_f& z) noexcept {
+        return _mm256_fmsubadd_ps(x, y, z);
+    }
+    SIMD_INLINE
+    avx_reg_d operator ()(const avx_reg_d& x, const avx_reg_d& y, const avx_reg_d& z) noexcept {
+        return _mm256_fmsubadd_pd(x, y, z);
+    }
+};
 }  // namespace detail
 
 /// fmadd
 template <typename T, size_t W>
-struct fmadd<T, W, REQUIRE_FLOATING(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
-    {
-        Vec<T, W> ret;
-        constexpr auto nregs = Vec<T, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = detail::fmadd(x.reg(idx), y.reg(idx), z.reg(idx));
-        }
-        return ret;
-    }
-};
+struct fmadd<T, W>
+    : ops::arith_ternary_op<T, W, detail::fmadd_functor>
+{};
 
 /// fmsub
 template <typename T, size_t W>
-struct fmsub<T, W, REQUIRE_FLOATING(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
-    {
-        Vec<T, W> ret;
-        constexpr auto nregs = Vec<T, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = detail::fmsub(x.reg(idx), y.reg(idx), z.reg(idx));
-        }
-        return ret;
-    }
-};
+struct fmsub<T, W>
+    : ops::arith_ternary_op<T, W, detail::fmsub_functor>
+{};
 
 /// fnmadd
 template <typename T, size_t W>
-struct fnmadd<T, W, REQUIRE_FLOATING(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
-    {
-        Vec<T, W> ret;
-        constexpr auto nregs = Vec<T, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = detail::fnmadd(x.reg(idx), y.reg(idx), z.reg(idx));
-        }
-        return ret;
-    }
-};
+struct fnmadd<T, W>
+    : ops::arith_ternary_op<T, W, detail::fnmadd_functor>
+{};
 
 /// fnmsub
 template <typename T, size_t W>
-struct fnmsub<T, W, REQUIRE_FLOATING(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
-    {
-        Vec<T, W> ret;
-        constexpr auto nregs = Vec<T, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = detail::fnmsub(x.reg(idx), y.reg(idx), z.reg(idx));
-        }
-        return ret;
-    }
-};
+struct fnmsub<T, W>
+    : ops::arith_ternary_op<T, W, detail::fnmsub_functor>
+{};
 
 /// fmaddsub
 template <typename T, size_t W>
-struct fmaddsub<T, W, REQUIRE_FLOATING(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
-    {
-        Vec<T, W> ret;
-        constexpr auto nregs = Vec<T, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = detail::fmaddsub(x.reg(idx), y.reg(idx), z.reg(idx));
-        }
-        return ret;
-    }
-};
+struct fmaddsub<T, W>
+    : ops::arith_ternary_op<T, W, detail::fmaddsub_functor>
+{};
 
 /// fmsubadd
 template <typename T, size_t W>
-struct fmsubadd<T, W, REQUIRE_FLOATING(T)>
-{
-    SIMD_INLINE
-    static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
-    {
-        Vec<T, W> ret;
-        constexpr auto nregs = Vec<T, W>::n_regs();
-        #pragma unroll
-        for (auto idx = 0; idx < nregs; idx++) {
-            ret.reg(idx) = detail::fmsubadd(x.reg(idx), y.reg(idx), z.reg(idx));
-        }
-        return ret;
-    }
-};
+struct fmsubadd<T, W>
+    : ops::arith_ternary_op<T, W, detail::fmsubadd_functor>
+{};
 
 } } } // namespace simd::kernel::fma3_avx
 

@@ -49,6 +49,21 @@ struct arith_binary_op {
 };
 
 template <typename T, size_t W, typename F>
+struct arith_ternary_op {
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z) noexcept
+    {
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = F()(x.reg(idx), y.reg(idx), z.reg(idx));
+        }
+        return ret;
+    }
+};
+
+template <typename T, size_t W, typename F>
 struct cmp_binary_op {
     SIMD_INLINE
     static VecBool<T, W> apply(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
