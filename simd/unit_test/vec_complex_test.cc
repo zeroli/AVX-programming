@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-TEST(vec, test_complex)
+TEST(vec_complex, test_complex_type)
 {
     {
         simd::Vec<std::complex<float>, 2> a(std::complex<float>(1.f, 2.f));

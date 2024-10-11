@@ -115,24 +115,6 @@ void Vec<T, W>::clear() noexcept
 template <typename T, size_t W>
 template <typename U>
 SIMD_INLINE
-void Vec<T, W>::store_aligned(U* mem) const noexcept
-{
-    assert(is_aligned(mem, A::alignment())
-        && "store location is not properly aligned");
-    kernel::store_aligned<T, W>((T*)mem, *this, A{});
-}
-
-template <typename T, size_t W>
-template <typename U>
-SIMD_INLINE
-void Vec<T, W>::store_unaligned(U* mem) const noexcept
-{
-    kernel::store_unaligned<T, W>((T*)mem, *this, A{});
-}
-
-template <typename T, size_t W>
-template <typename U>
-SIMD_INLINE
 Vec<T, W> Vec<T, W>::load_aligned(const U* mem) noexcept
 {
     assert(is_aligned(mem, A::alignment())
@@ -146,6 +128,24 @@ SIMD_INLINE
 Vec<T, W> Vec<T, W>::load_unaligned(const U* mem) noexcept
 {
     return kernel::load_unaligned<T, W>((const T*)mem, A{});
+}
+
+template <typename T, size_t W>
+template <typename U>
+SIMD_INLINE
+void Vec<T, W>::store_aligned(U* mem) const noexcept
+{
+    assert(is_aligned(mem, A::alignment())
+        && "store location is not properly aligned");
+    kernel::store_aligned<T, W>((T*)mem, *this, A{});
+}
+
+template <typename T, size_t W>
+template <typename U>
+SIMD_INLINE
+void Vec<T, W>::store_unaligned(U* mem) const noexcept
+{
+    kernel::store_unaligned<T, W>((T*)mem, *this, A{});
 }
 
 template <typename T, size_t W>

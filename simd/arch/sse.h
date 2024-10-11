@@ -11,11 +11,11 @@ namespace simd { namespace kernel { namespace sse {
 #include "simd/arch/sse/arithmetic.h"
 #include "simd/arch/sse/cast.h"
 #include "simd/arch/sse/compare.h"
-#include "simd/arch/sse/complex.h"
 #include "simd/arch/sse/logical.h"
 #include "simd/arch/sse/math.h"
 #include "simd/arch/sse/memory.h"
 #include "simd/arch/sse/trigo.h"
+#include "simd/arch/sse/complex.h"
 
 namespace simd { namespace kernel {
 #define DEFINE_SSE_BINARY_OP(OP) \

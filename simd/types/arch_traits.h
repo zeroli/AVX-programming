@@ -150,5 +150,32 @@ DEFINE_ARCH_TRAITS_128_BITS(std::complex<float>);
 DEFINE_ARCH_TRAITS_128_BITS(std::complex<double>);
 
 #undef DEFINE_ARCH_TRAITS_128_BITS
+
+/// 64bits
+namespace detail {
+struct arch_64_traits_base {
+    using arch_t = Generic;
+};
+}  // namespace detail
+
+#define DEFINE_ARCH_TRAITS_64_BITS(T) \
+template <> \
+struct arch_traits<T, 64/sizeof(T)/8> : detail::arch_64_traits_base { } \
+///
+
+DEFINE_ARCH_TRAITS_64_BITS(int8_t);
+DEFINE_ARCH_TRAITS_64_BITS(uint8_t);
+DEFINE_ARCH_TRAITS_64_BITS(int16_t);
+DEFINE_ARCH_TRAITS_64_BITS(uint16_t);
+DEFINE_ARCH_TRAITS_64_BITS(int32_t);
+DEFINE_ARCH_TRAITS_64_BITS(uint32_t);
+DEFINE_ARCH_TRAITS_64_BITS(int64_t);
+DEFINE_ARCH_TRAITS_64_BITS(uint64_t);
+DEFINE_ARCH_TRAITS_64_BITS(float);
+DEFINE_ARCH_TRAITS_64_BITS(double);
+DEFINE_ARCH_TRAITS_64_BITS(std::complex<float>);
+DEFINE_ARCH_TRAITS_64_BITS(std::complex<double>);
+
+#undef DEFINE_ARCH_TRAITS_64_BITS
 }  // namespace types
 }  // namespace simd
