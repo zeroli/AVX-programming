@@ -48,11 +48,11 @@ TEST(vec_avx, test_types)
     TEST_VEC_TYPE(simd::vf64x4_t, 4, 1, 4, simd::AVX);
     TEST_VEC_TYPE(simd::vf64x8_t, 8, 2, 4, simd::AVX);
 
-    TEST_VEC_TYPE(simd::vcf32x2_t, 2, 1, 2, simd::SSE);
-    TEST_VEC_TYPE(simd::vcf32x4_t, 4, 1, 4, simd::AVX);
-    TEST_VEC_TYPE(simd::vcf32x8_t, 8, 2, 4, simd::AVX);
+    TEST_VEC_TYPE(simd::vcf32x4_t,  4,  1, 4, simd::Generic);
+    TEST_VEC_TYPE(simd::vcf32x8_t,  8,  1, 8, simd::Generic);
+    TEST_VEC_TYPE(simd::vcf32x16_t, 16, 2, 8, simd::Generic);
 
-    TEST_VEC_TYPE(simd::vcf64x1_t, 1, 1, 1, simd::SSE);
-    TEST_VEC_TYPE(simd::vcf64x2_t, 2, 1, 2, simd::AVX);
-    TEST_VEC_TYPE(simd::vcf64x4_t, 4, 2, 2, simd::AVX);
+    TEST_VEC_TYPE(simd::vcf64x2_t, 2, 1, 2, simd::Generic);
+    TEST_VEC_TYPE(simd::vcf64x4_t, 4, 1, 4, simd::Generic);
+    TEST_VEC_TYPE(simd::vcf64x8_t, 8, 2, 4, simd::Generic);
 }

@@ -56,16 +56,6 @@ TEST(vec_op_sse, test_arith_add)
         auto g = simd::add(1.0, b);
         EXPECT_TRUE(simd::all_of(p == g));
     }
-    {
-        simd::Vec<std::complex<float>, 2> a(std::complex<float>{1.f, 2.f}), b(std::complex<float>{1.f, 2.f});
-        auto c = a + b;
-        auto d = simd::add(a, b);
-    }
-    {
-        simd::Vec<std::complex<double>, 1> a(std::complex<double>{1.0, 2.0}), b(std::complex<double>{1.0, 2.0});
-        auto c = a + b;
-        auto d = simd::add(a, b);
-    }
 }
 
 TEST(vec_op_sse, test_arith_add_inplace)
@@ -133,16 +123,6 @@ TEST(vec_op_sse, test_arith_sub)
         EXPECT_TRUE(simd::all_of(p == e));
         auto f = simd::sub(2.0, b);
         EXPECT_TRUE(simd::all_of(p == f));
-    }
-    {
-        simd::Vec<std::complex<float>, 2> a(std::complex<float>{1.f, 2.f}), b(std::complex<float>{1.f, 2.f});
-        auto c = a - b;
-        auto d = simd::sub(a, b);
-    }
-    {
-        simd::Vec<std::complex<double>, 1> a(std::complex<double>{1.0, 2.0}), b(std::complex<double>{1.0, 2.0});
-        auto c = a - b;
-        auto d = simd::sub(a, b);
     }
 }
 

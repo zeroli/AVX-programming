@@ -6,22 +6,23 @@
 
 namespace simd {
 
+/// An abstraction vector for complex<T>
 template <typename T, size_t W>
 class Vec<std::complex<T>, W>
-    : public types::simd_register<std::complex<T>, W, types::arch_traits_t<std::complex<T>, W>>
 {
 public:
-    using self_t = Vec<std::complex<T>, W>;
-    using value_type = std::complex<T>;
-    using A = types::arch_traits_t<value_type, W>;
-    using arch_t = A;
-    using base_t = types::simd_register<value_type, W, arch_t>;
-    using scalar_t = value_type;
-    using register_t = typename base_t::register_t;
-    /// still use complex<T> for mask bool, so that it has same type as vec
-    using vec_bool_t = VecBool<value_type, W>;
     using real_vec_t = Vec<T, W>;
     using imag_vec_t = Vec<T, W>;
+
+    using self_t = Vec<std::complex<T>, W>;
+    using value_type = std::complex<T>;
+
+    /// always Generic, no native arch to support this complex<T> type
+    using A = Generic;
+    using arch_t = A;
+    using scalar_t = T;
+    using register_t = typename Vec<T, W>::register_t;
+    using vec_bool_t = VecBool<T, W>;
 
     /// query the number of elements of this vector
     /// equavalent as `W`
@@ -29,27 +30,36 @@ public:
     static constexpr size_t size() { return W; }
 
     /// query the name string represented for this vector
-    /// for example: vi32x4 (element type: int32_t, 4 elements)
+    /// for example: vcf32x4 (element type: float, 4 elements)
     /// compile-time const expression
     static constexpr const char* type() {
         return traits::vec_type_traits<value_type, W>::type();
     }
     /// query the name string represented for underlying arch/reg backed for this vector
-    /// for example:
-    /// if AVX enabled, Vec<std::complex<float>, 8>, 8xfloats fit in AVX YMM register(__m256, 256bits)
-    /// if SSE enabled, Vec<std::complex<float>, 8>, 8xfloats fit by 2 SSE XMM reigsters(__m128, 128bits)
-    /// if AVX512 enabled:
-    ///   Vec<std::complex<float>, 8>, 8xfloats still backed by AVX YMM register(__m256, 256bits)
-    ///   Vec<std::complex<float>, 16>, 16xfloats fit in AVX512 ZMM register(__m512, 512bits)
-    /// Above, "AVX", "SSE", or "AVX512" returned
     /// compile-time const expression
     static constexpr const char* arch_name() {
         return A::name();
     }
 
+    /// how many registers for this vector (real or imag)
+    static constexpr size_t n_regs() {
+        return sizeof(scalar_t) * W / sizeof(register_t);
+    }
+    /// how many lanes per register
+    static constexpr size_t reg_lanes() {
+        return W / n_regs();
+    }
+private:
+    /// store real and imag in separate vectors
+    real_vec_t real_;
+    imag_vec_t imag_;
+
+public:
     // create a vector initialized with undefined values
     SIMD_INLINE
     Vec() noexcept = default;
+
+    /// initialize all elements with same value `val`
     SIMD_INLINE
     Vec(const value_type& val) noexcept;
 
@@ -59,6 +69,7 @@ public:
     SIMD_INLINE
     Vec(const real_vec_t& real) noexcept;
 
+    /// initialize all elements with same value (val, 0)
     SIMD_INLINE
     Vec(const T& val) noexcept;
 
@@ -69,10 +80,6 @@ public:
     template <typename... Regs>
     SIMD_INLINE
     Vec(const register_t& arg, Regs&&... others) noexcept;
-
-    template <size_t... Ws>
-    SIMD_INLINE
-    Vec(const Vec<value_type, Ws>&... vecs) noexcept;
 
     /// generate values for each slot through generator,
     /// which must satisfy below operation:
@@ -192,10 +199,24 @@ public:
     }
 
     SIMD_INLINE
-    real_vec_t real() const noexcept;
+    const real_vec_t& real() const noexcept {
+        return real_;
+    }
 
     SIMD_INLINE
-    imag_vec_t imag() const noexcept;
+    const imag_vec_t& imag() const noexcept {
+        return imag_;
+    }
+
+    SIMD_INLINE
+    real_vec_t& real() noexcept {
+        return real_;
+    }
+
+    SIMD_INLINE
+    imag_vec_t& imag() noexcept {
+        return imag_;
+    }
 
     /// comparison operators
     SIMD_INLINE
@@ -356,12 +377,12 @@ private:
 using cf32_t = std::complex<float>;
 using cf64_t = std::complex<double>;
 
-using vcf32x8_t = Vec<std::complex<float>, 8>;     // 512 bits
-using vcf32x4_t = Vec<std::complex<float>, 4>;     // 256 bits
-using vcf32x2_t = Vec<std::complex<float>, 2>;     // 128 bits
+using vcf32x16_t = Vec<std::complex<float>, 16>;    // 2 * 512 bits
+using vcf32x8_t  = Vec<std::complex<float>, 8>;     // 2 * 256 bits
+using vcf32x4_t  = Vec<std::complex<float>, 4>;     // 2 * 128 bits
 
-using vcf64x4_t = Vec<std::complex<double>, 4>;    // 512 bits
-using vcf64x2_t = Vec<std::complex<double>, 2>;    // 256 bits
-using vcf64x1_t = Vec<std::complex<double>, 1>;    // 128 bits
+using vcf64x8_t  = Vec<std::complex<double>, 8>;    // 2 * 512 bits
+using vcf64x4_t  = Vec<std::complex<double>, 4>;    // 2 * 256 bits
+using vcf64x2_t  = Vec<std::complex<double>, 2>;    // 2 * 128 bits
 
 }  // namespace simd

@@ -15,10 +15,24 @@ Vec<T, W> add(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
 
 template <typename T, size_t W>
 SIMD_INLINE
+Vec<std::complex<T>, W> add(const Vec<std::complex<T>, W>& lhs, const Vec<std::complex<T>, W>& rhs) noexcept
+{
+    return kernel::add<std::complex<T>, W>(lhs, rhs, Generic{});
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W> sub(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
 {
     using A = typename Vec<T, W>::arch_t;
     return kernel::sub<T, W>(lhs, rhs, A{});
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<std::complex<T>, W> sub(const Vec<std::complex<T>, W>& lhs, const Vec<std::complex<T>, W>& rhs) noexcept
+{
+    return kernel::sub<std::complex<T>, W>(lhs, rhs, Generic{});
 }
 
 template <typename T, size_t W>
@@ -31,10 +45,25 @@ Vec<T, W> mul(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
 
 template <typename T, size_t W>
 SIMD_INLINE
+Vec<std::complex<T>, W> mul(const Vec<std::complex<T>, W>& lhs, const Vec<std::complex<T>, W>& rhs) noexcept
+{
+    return kernel::mul<std::complex<T>, W>(lhs, rhs, Generic{});
+}
+
+
+template <typename T, size_t W>
+SIMD_INLINE
 Vec<T, W> div(const Vec<T, W>& lhs, const Vec<T, W>& rhs) noexcept
 {
     using A = typename Vec<T, W>::arch_t;
     return kernel::div<T, W>(lhs, rhs, A{});
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<std::complex<T>, W> div(const Vec<std::complex<T>, W>& lhs, const Vec<std::complex<T>, W>& rhs) noexcept
+{
+    return kernel::div<std::complex<T>, W>(lhs, rhs, Generic{});
 }
 
 template <typename T, size_t W>

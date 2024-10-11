@@ -16,7 +16,6 @@ struct AVX : Generic
 
 #if SIMD_WITH_AVX
 #include <immintrin.h>
-#include <complex>
 
 namespace simd {
 namespace types {
@@ -38,18 +37,16 @@ struct avx_reg_traits<SCALAR_TYPE> { \
 DECLARE_SIMD_REGISTER(SCALAR_TYPE, ISA, VECTOR_TYPE) \
 ///###
 
-DECLARE_SIMD_AVX_REGISTER(int8_t,               AVX, avx_reg_i);
-DECLARE_SIMD_AVX_REGISTER(uint8_t,              AVX, avx_reg_i);
-DECLARE_SIMD_AVX_REGISTER(int16_t,              AVX, avx_reg_i);
-DECLARE_SIMD_AVX_REGISTER(uint16_t,             AVX, avx_reg_i);
-DECLARE_SIMD_AVX_REGISTER(int32_t,              AVX, avx_reg_i);
-DECLARE_SIMD_AVX_REGISTER(uint32_t,             AVX, avx_reg_i);
-DECLARE_SIMD_AVX_REGISTER(int64_t,              AVX, avx_reg_i);
-DECLARE_SIMD_AVX_REGISTER(uint64_t,             AVX, avx_reg_i);
-DECLARE_SIMD_AVX_REGISTER(float,                AVX, avx_reg_f);
-DECLARE_SIMD_AVX_REGISTER(double,               AVX, avx_reg_d);
-DECLARE_SIMD_AVX_REGISTER(std::complex<float>,  AVX, avx_reg_f);
-DECLARE_SIMD_AVX_REGISTER(std::complex<double>, AVX, avx_reg_d);
+DECLARE_SIMD_AVX_REGISTER(int8_t,    AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(uint8_t,   AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(int16_t,   AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(uint16_t,  AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(int32_t,   AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(uint32_t,  AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(int64_t,   AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(uint64_t,  AVX, avx_reg_i);
+DECLARE_SIMD_AVX_REGISTER(float,     AVX, avx_reg_f);
+DECLARE_SIMD_AVX_REGISTER(double,    AVX, avx_reg_d);
 }  // namespace types
 }  // namespace simd
 #endif  // SIMD_WITH_AVX

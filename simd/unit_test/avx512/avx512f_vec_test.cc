@@ -41,19 +41,19 @@ TEST(vec_avx512, test_types)
     TEST_VEC_TYPE(simd::vu64x4_t,  4,  1, 4, simd::AVX2);
     TEST_VEC_TYPE(simd::vu64x8_t,  8,  1, 8, simd::AVX512);
 
-    TEST_VEC_TYPE(simd::vf32x4_t,  4,  1, 4,  simd::SSE);
-    TEST_VEC_TYPE(simd::vf32x8_t,  8,  1, 8,  simd::AVX2);
+    TEST_VEC_TYPE(simd::vf32x4_t,  4,  1,  4, simd::SSE);
+    TEST_VEC_TYPE(simd::vf32x8_t,  8,  1,  8, simd::AVX2);
     TEST_VEC_TYPE(simd::vf32x16_t, 16, 1, 16, simd::AVX512);
 
     TEST_VEC_TYPE(simd::vf64x2_t, 2, 1, 2, simd::SSE);
     TEST_VEC_TYPE(simd::vf64x4_t, 4, 1, 4, simd::AVX2);
     TEST_VEC_TYPE(simd::vf64x8_t, 8, 1, 8, simd::AVX512);
 
-    TEST_VEC_TYPE(simd::vcf32x2_t, 2, 1, 2, simd::SSE);
-    TEST_VEC_TYPE(simd::vcf32x4_t, 4, 1, 4, simd::AVX2);
-    TEST_VEC_TYPE(simd::vcf32x8_t, 8, 1, 8, simd::AVX512);
+    TEST_VEC_TYPE(simd::vcf32x4_t,  4,  1,  4, simd::SSE);
+    TEST_VEC_TYPE(simd::vcf32x8_t,  8,  1,  8, simd::AVX2);
+    TEST_VEC_TYPE(simd::vcf32x16_t, 16, 1, 16, simd::AVX512);
 
-    TEST_VEC_TYPE(simd::vcf64x1_t, 1, 1, 1, simd::SSE);
-    TEST_VEC_TYPE(simd::vcf64x2_t, 2, 1, 2, simd::AVX2);
-    TEST_VEC_TYPE(simd::vcf64x4_t, 4, 1, 4, simd::AVX512);
+    TEST_VEC_TYPE(simd::vcf64x2_t, 2, 1, 2, simd::SSE);
+    TEST_VEC_TYPE(simd::vcf64x4_t, 4, 1, 4, simd::AVX2);
+    TEST_VEC_TYPE(simd::vcf64x8_t, 8, 1, 8, simd::AVX512);
 }

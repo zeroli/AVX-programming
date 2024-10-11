@@ -6,20 +6,21 @@ namespace simd {
 template <typename T, size_t W>
 SIMD_INLINE
 Vec<std::complex<T>, W>::Vec(const value_type& val) noexcept
-    : self_t(kernel::broadcast<value_type, W>(val, A{}))
+    : real_(val.real()), imag_(val.imag())
 {
 }
 
 template <typename T, size_t W>
 SIMD_INLINE
 Vec<std::complex<T>, W>::Vec(const real_vec_t& real, const imag_vec_t& imag) noexcept
+    : real_(real), imag_(imag)
 {
-
 }
 
 template <typename T, size_t W>
 SIMD_INLINE
 Vec<std::complex<T>, W>::Vec(const real_vec_t& real) noexcept
+    : real_(real), imag_(0)
 {
 }
 
@@ -44,19 +45,10 @@ template <typename T, size_t W>
 template <typename... Regs>
 SIMD_INLINE
 Vec<std::complex<T>, W>::Vec(const register_t& arg, Regs&&... others) noexcept
-    : base_t({arg, others...})
 {
+    assert(0 && "TODO");
     static_assert(sizeof...(Regs) + 1 <= self_t::n_regs(),
         "the constructor requires not-beyond number of registers");
-}
-
-template <typename T, size_t W>
-template <size_t... Ws>
-SIMD_INLINE
-Vec<std::complex<T>, W>::Vec(const Vec<value_type, Ws>&... vecs) noexcept
-    : self_t(vecs.reg()...)
-{
-    // TODO: validation
 }
 
 template <typename T, size_t W>
@@ -149,24 +141,6 @@ SIMD_INLINE
 void Vec<std::complex<T>, W>::store(U* mem, unaligned_mode) const noexcept
 {
     //kernel::store_unaligned<value_type, W>((value_type*)mem, *this, A{});
-}
-
-template <typename T, size_t W>
-SIMD_INLINE
-typename Vec<std::complex<T>, W>::real_vec_t
-Vec<std::complex<T>, W>::real() const noexcept
-{
-    // TODO:
-    return {};
-}
-
-template <typename T, size_t W>
-SIMD_INLINE
-typename Vec<std::complex<T>, W>::imag_vec_t
-Vec<std::complex<T>, W>::imag() const noexcept
-{
-    // TODO:
-    return {};
 }
 
 template <typename T, size_t W>

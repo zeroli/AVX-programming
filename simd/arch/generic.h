@@ -16,6 +16,7 @@ namespace simd { namespace kernel { namespace generic {
 #include "simd/arch/generic/math.h"
 #include "simd/arch/generic/memory.h"
 #include "simd/arch/generic/trigo.h"
+#include "simd/arch/generic/complex.h"
 
 namespace simd { namespace kernel {
 #define DEFINE_GENERIC_UNARY_OP(OP) \
@@ -67,6 +68,11 @@ DEFINE_GENERIC_UNARY_OP(bitwise_not);
 DEFINE_GENERIC_MATH_UNARY_OP(abs);
 DEFINE_GENERIC_MATH_UNARY_OP(sqrt);
 DEFINE_GENERIC_MATH_UNARY_OP(log);
+
+DEFINE_GENERIC_BINARY_OP(add);
+DEFINE_GENERIC_BINARY_OP(sub);
+DEFINE_GENERIC_BINARY_OP(mul);
+DEFINE_GENERIC_BINARY_OP(div);
 
 DEFINE_GENERIC_BINARY_OP(copysign);
 

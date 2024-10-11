@@ -43,36 +43,30 @@ TEST(vec, test_alignment)
     check_vec_aligned<uint64_t, 2>();
     check_vec_aligned<float, 4>();
     check_vec_aligned<double, 2>();
-    check_vec_aligned<std::complex<float>, 2>();
-    check_vec_aligned<std::complex<double>, 1>();
 
     /// 256bits
-    // check_vec_aligned<int8_t, 32>();
-    // check_vec_aligned<uint8_t, 32>();
-    // check_vec_aligned<int16_t, 16>();
-    // check_vec_aligned<uint16_t, 16>();
-    // check_vec_aligned<int32_t, 8>();
-    // check_vec_aligned<uint32_t, 8>();
-    // check_vec_aligned<int64_t, 4>();
-    // check_vec_aligned<uint64_t, 4>();
-    // check_vec_aligned<float, 8>();
-    // check_vec_aligned<double, 4>();
-    // check_vec_aligned<std::complex<float>, 4>();
-    // check_vec_aligned<std::complex<double>, 2>();
+    check_vec_aligned<int8_t, 32>();
+    check_vec_aligned<uint8_t, 32>();
+    check_vec_aligned<int16_t, 16>();
+    check_vec_aligned<uint16_t, 16>();
+    check_vec_aligned<int32_t, 8>();
+    check_vec_aligned<uint32_t, 8>();
+    check_vec_aligned<int64_t, 4>();
+    check_vec_aligned<uint64_t, 4>();
+    check_vec_aligned<float, 8>();
+    check_vec_aligned<double, 4>();
 
     /// 512bits
-    // check_vec_aligned<int8_t, 64>();
-    // check_vec_aligned<uint8_t, 64>();
-    // check_vec_aligned<int16_t, 32>();
-    // check_vec_aligned<uint16_t, 32>();
-    // check_vec_aligned<int32_t, 16>();
-    // check_vec_aligned<uint32_t, 16>();
-    // check_vec_aligned<int64_t, 8>();
-    // check_vec_aligned<uint64_t, 8>();
-    // check_vec_aligned<float, 16>();
-    // check_vec_aligned<double, 8>();
-    // check_vec_aligned<std::complex<float>, 8>();
-    // check_vec_aligned<std::complex<double>, 4>();
+    check_vec_aligned<int8_t, 64>();
+    check_vec_aligned<uint8_t, 64>();
+    check_vec_aligned<int16_t, 32>();
+    check_vec_aligned<uint16_t, 32>();
+    check_vec_aligned<int32_t, 16>();
+    check_vec_aligned<uint32_t, 16>();
+    check_vec_aligned<int64_t, 8>();
+    check_vec_aligned<uint64_t, 8>();
+    check_vec_aligned<float, 16>();
+    check_vec_aligned<double, 8>();
 }
 
 TEST(vec, test_pretty_print)
