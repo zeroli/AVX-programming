@@ -55,6 +55,14 @@ TEST(vec_sse, test_types)
     TEST_VEC_TYPE(simd::vf64x2_t, 2, 1, 2, simd::SSE);
     TEST_VEC_TYPE(simd::vf64x4_t, 4, 2, 2, simd::SSE);
     TEST_VEC_TYPE(simd::vf64x8_t, 8, 4, 2, simd::SSE);
+
+    TEST_VEC_TYPE(simd::vcf32x2_t, 2, 1, 2, simd::SSE);
+    TEST_VEC_TYPE(simd::vcf32x4_t, 4, 2, 2, simd::SSE);
+    TEST_VEC_TYPE(simd::vcf32x8_t, 8, 4, 2, simd::SSE);
+
+    TEST_VEC_TYPE(simd::vcf64x1_t, 1, 1, 1, simd::SSE);
+    TEST_VEC_TYPE(simd::vcf64x2_t, 2, 2, 1, simd::SSE);
+    TEST_VEC_TYPE(simd::vcf64x4_t, 4, 4, 1, simd::SSE);
 }
 
 TEST(vec_sse, test_vec_ctor_generator)

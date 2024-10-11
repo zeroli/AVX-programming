@@ -360,8 +360,8 @@ using vcf32x8_t = Vec<std::complex<float>, 8>;     // 512 bits
 using vcf32x4_t = Vec<std::complex<float>, 4>;     // 256 bits
 using vcf32x2_t = Vec<std::complex<float>, 2>;     // 128 bits
 
-using vcf64x4_t = Vec<std::complex<double>, 8>;    // 512 bits
-using vcf64x2_t = Vec<std::complex<double>, 4>;    // 256 bits
+using vcf64x4_t = Vec<std::complex<double>, 4>;    // 512 bits
+using vcf64x2_t = Vec<std::complex<double>, 2>;    // 256 bits
 using vcf64x1_t = Vec<std::complex<double>, 1>;    // 128 bits
 
 }  // namespace simd
