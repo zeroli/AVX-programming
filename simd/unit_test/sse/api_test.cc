@@ -5,7 +5,7 @@
 
 using namespace simd;
 
-TEST(api, test_setzero)
+TEST(api, test_sse_setzero)
 {
     {
         auto a = simd::setzero<int32_t, 4>();
@@ -27,7 +27,7 @@ TEST(api, test_setzero)
     }
 }
 
-TEST(api, test_load)
+TEST(api, test_sse_load)
 {
     {
         alignas(16) int32_t p[] = {1, 2, 3, 4};

@@ -140,4 +140,28 @@ VecBool<T, W> from_mask(uint64_t x) noexcept
     return kernel::from_mask<T, W>(x, A{});
 }
 
+template <typename T, size_t W>
+Vec<T, W> real(const Vec<T, W>& x) noexcept
+{
+    return x;
+}
+
+template <typename T, size_t W>
+Vec<T, W> real(const Vec<std::complex<T>, W>& x) noexcept
+{
+    return x.real();
+}
+
+template <typename T, size_t W>
+Vec<T, W> imag(const Vec<T, W>& x) noexcept
+{
+    return Vec<T, W>(0);
+}
+
+template <typename T, size_t W>
+Vec<T, W> imag(const Vec<std::complex<T>, W>& x) noexcept
+{
+    return x.imag();
+}
+
 }  // namespace simd
