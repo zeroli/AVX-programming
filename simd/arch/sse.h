@@ -206,18 +206,17 @@ Vec<std::complex<T>, W> load_complex(const Vec<T, W>& vlo, const Vec<T, W>& vhi,
 
 template <typename T, size_t W>
 SIMD_INLINE
-Vec<T, W> complex_packlo(const Vec<T, W>& vlo, const Vec<T, W>& vhi, requires_arch<SSE>) noexcept
+Vec<T, W> complex_packlo(const Vec<T, W>& vreal, const Vec<T, W>& vimag, requires_arch<SSE>) noexcept
 {
-    return sse::complex_packlo<T, W>::apply(vlo, vhi);
+    return sse::complex_packlo<T, W>::apply(vreal, vimag);
 }
 
 template <typename T, size_t W>
 SIMD_INLINE
-Vec<T, W> complex_packhi(const Vec<T, W>& vlo, const Vec<T, W>& vhi, requires_arch<SSE>) noexcept
+Vec<T, W> complex_packhi(const Vec<T, W>& vreal, const Vec<T, W>& vimag, requires_arch<SSE>) noexcept
 {
-    return sse::complex_packhi<T, W>::apply(vlo, vhi);
+    return sse::complex_packhi<T, W>::apply(vreal, vimag);
 }
-
 
 template <typename T, size_t W, typename U, typename V>
 SIMD_INLINE

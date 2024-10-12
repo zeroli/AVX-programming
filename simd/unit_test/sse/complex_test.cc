@@ -3,6 +3,8 @@
 #include "simd/simd.h"
 #include "check_arch.h"
 
+#include <algorithm>
+
 using namespace simd;
 
 TEST(vec_complex_sse, test_arith_add)
@@ -132,7 +134,8 @@ TEST(vec_complex_sse, test_arith_div)
 TEST(vec_complex_sse, test_memory_load_aligned)
 {
     {
-        alignas(16) float mem[] = { 1.f, 2.f, 3.f, 4.f };
+        alignas(16) float mem[4]{};
+        std::iota(mem, mem + 4, 1.f);
         auto a = simd::Vec<cf32_t, 4>::load_aligned(mem, nullptr);
         for (auto i = 0; i < a.size(); i++) {
             EXPECT_FLOAT_EQ(mem[i], a.real()[i]);
@@ -140,8 +143,10 @@ TEST(vec_complex_sse, test_memory_load_aligned)
         }
     }
     {
-        alignas(16) float rmem[] = { 1.f, 2.f, 3.f, 4.f };
-        alignas(16) float imem[] = { 5.f, 6.f, 7.f, 8.f };
+        alignas(16) float rmem[4]{};
+        std::iota(rmem, rmem + 4, 1.f);
+        alignas(32) float imem[4]{};
+        std::iota(imem, imem + 4, 5.f);
         auto a = simd::Vec<cf32_t, 4>::load_aligned(rmem, imem);
         for (auto i = 0; i < a.size(); i++) {
             EXPECT_FLOAT_EQ(rmem[i], a.real()[i]);
@@ -149,8 +154,18 @@ TEST(vec_complex_sse, test_memory_load_aligned)
         }
     }
     {
-        alignas(16) float mem[] = { 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f };
+        alignas(16) float mem[8]{};
+        std::iota(mem, mem + 8, 1.f);
         auto a = simd::Vec<cf32_t, 4>::load(mem, simd::aligned_mode{});
+        for (auto i = 0; i < a.size(); i++) {
+            EXPECT_FLOAT_EQ(mem[2*i],   a.real()[i]);
+            EXPECT_FLOAT_EQ(mem[2*i+1], a.imag()[i]);
+        }
+    }
+    {
+        alignas(16) double mem[4]{};
+        std::iota(mem, mem + 4, 1.0);
+        auto a = simd::Vec<cf64_t, 2>::load(mem, simd::aligned_mode{});
         for (auto i = 0; i < a.size(); i++) {
             EXPECT_FLOAT_EQ(mem[2*i],   a.real()[i]);
             EXPECT_FLOAT_EQ(mem[2*i+1], a.imag()[i]);
@@ -161,7 +176,8 @@ TEST(vec_complex_sse, test_memory_load_aligned)
 TEST(vec_complex_sse, test_memory_load_unaligned)
 {
     {
-        float mem[] = { 1.f, 2.f, 3.f, 4.f };
+        float mem[4]{};
+        std::iota(mem, mem + 4, 1.f);
         auto a = simd::Vec<cf32_t, 4>::load_unaligned(mem, nullptr);
         for (auto i = 0; i < a.size(); i++) {
             EXPECT_FLOAT_EQ(mem[i], a.real()[i]);
@@ -169,8 +185,10 @@ TEST(vec_complex_sse, test_memory_load_unaligned)
         }
     }
     {
-        float rmem[] = { 1.f, 2.f, 3.f, 4.f };
-        float imem[] = { 5.f, 6.f, 7.f, 8.f };
+        float rmem[4]{};
+        std::iota(rmem, rmem + 4, 1.f);
+        float imem[8]{};
+        std::iota(imem, imem + 4, 5.f);
         auto a = simd::Vec<cf32_t, 4>::load_unaligned(rmem, imem);
         for (auto i = 0; i < a.size(); i++) {
             EXPECT_FLOAT_EQ(rmem[i], a.real()[i]);
@@ -178,8 +196,18 @@ TEST(vec_complex_sse, test_memory_load_unaligned)
         }
     }
     {
-        alignas(16) float mem[] = { 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f };
+        float mem[8]{};
+        std::iota(mem, mem + 8, 1.f);
         auto a = simd::Vec<cf32_t, 4>::load(mem, simd::unaligned_mode{});
+        for (auto i = 0; i < a.size(); i++) {
+            EXPECT_FLOAT_EQ(mem[2*i],   a.real()[i]);
+            EXPECT_FLOAT_EQ(mem[2*i+1], a.imag()[i]);
+        }
+    }
+    {
+        double mem[4]{};
+        std::iota(mem, mem + 4, 1.0);
+        auto a = simd::Vec<cf64_t, 2>::load(mem, simd::unaligned_mode{});
         for (auto i = 0; i < a.size(); i++) {
             EXPECT_FLOAT_EQ(mem[2*i],   a.real()[i]);
             EXPECT_FLOAT_EQ(mem[2*i+1], a.imag()[i]);
@@ -190,7 +218,8 @@ TEST(vec_complex_sse, test_memory_load_unaligned)
 TEST(vec_complex_sse, test_memory_store_aligned)
 {
     {
-        alignas(16) float mem[] = { 1.f, 2.f, 3.f, 4.f };
+        alignas(16) float mem[4];
+        std::iota(mem, mem + 4, 1.f);
         auto a = simd::Vec<cf32_t, 4>::load_aligned(mem, nullptr);
         alignas(16) float mem1[4] = { 0.f };
         a.store_aligned(mem1, nullptr);
@@ -199,8 +228,10 @@ TEST(vec_complex_sse, test_memory_store_aligned)
         }
     }
     {
-        alignas(16) float rmem[] = { 1.f, 2.f, 3.f, 4.f };
-        alignas(16) float imem[] = { 5.f, 6.f, 7.f, 8.f };
+        alignas(16) float rmem[4]{};
+        std::iota(rmem, rmem + 4, 1.f);
+        alignas(16) float imem[4]{};
+        std::iota(imem, imem + 4, 5.f);
         auto a = simd::Vec<cf32_t, 4>::load_aligned(rmem, imem);
         alignas(16) float rmem1[4] = { 0.f };
         alignas(16) float imem1[4] = { 0.f };
@@ -211,10 +242,21 @@ TEST(vec_complex_sse, test_memory_store_aligned)
         }
     }
     {
-        alignas(16) float mem[] = { 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f };
+        alignas(16) float mem[8]{};
+        std::iota(mem, mem + 8, 1.f);
         auto a = simd::Vec<cf32_t, 4>::load(mem, simd::aligned_mode{});
         alignas(16) float mem1[8] = { 0.f };
         a.store_aligned((cf32_t*)mem1);
+        for (auto i = 0; i < 2 * a.size(); i++) {
+            EXPECT_FLOAT_EQ(mem[i], mem1[i]);
+        }
+    }
+    {
+        alignas(16) double mem[4]{};
+        std::iota(mem, mem + 4, 1.f);
+        auto a = simd::Vec<cf64_t, 2>::load(mem, simd::aligned_mode{});
+        alignas(16) double mem1[4] = { 0.0 };
+        a.store_aligned((cf64_t*)mem1);
         for (auto i = 0; i < 2 * a.size(); i++) {
             EXPECT_FLOAT_EQ(mem[i], mem1[i]);
         }
@@ -224,7 +266,8 @@ TEST(vec_complex_sse, test_memory_store_aligned)
 TEST(vec_complex_sse, test_memory_store_unaligned)
 {
     {
-        float mem[] = { 1.f, 2.f, 3.f, 4.f };
+        float mem[4]{};
+        std::iota(mem, mem + 4, 1.f);
         auto a = simd::Vec<cf32_t, 4>::load_unaligned(mem, nullptr);
         float mem1[4] = { 0.f };
         a.store_unaligned(mem1, nullptr);
@@ -233,8 +276,10 @@ TEST(vec_complex_sse, test_memory_store_unaligned)
         }
     }
     {
-        float rmem[] = { 1.f, 2.f, 3.f, 4.f };
-        float imem[] = { 5.f, 6.f, 7.f, 8.f };
+        float rmem[4]{};
+        std::iota(rmem, rmem + 4, 1.f);
+        float imem[4]{};
+        std::iota(imem, imem + 4, 5.f);
         auto a = simd::Vec<cf32_t, 4>::load_unaligned(rmem, imem);
         float rmem1[4] = { 0.f };
         float imem1[4] = { 0.f };
@@ -245,10 +290,21 @@ TEST(vec_complex_sse, test_memory_store_unaligned)
         }
     }
     {
-        float mem[] = { 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f };
+        float mem[8]{};
+        std::iota(mem, mem + 8, 1.f);
         auto a = simd::Vec<cf32_t, 4>::load(mem, simd::unaligned_mode{});
         float mem1[8] = { 0.f };
         a.store_unaligned((cf32_t*)mem1);
+        for (auto i = 0; i < 2 * a.size(); i++) {
+            EXPECT_FLOAT_EQ(mem[i], mem1[i]);
+        }
+    }
+    {
+        double mem[4]{};
+        std::iota(mem, mem + 4, 1.0);
+        auto a = simd::Vec<cf64_t, 2>::load(mem, simd::unaligned_mode{});
+        double mem1[4] = { 0.0 };
+        a.store_unaligned((cf64_t*)mem1);
         for (auto i = 0; i < 2 * a.size(); i++) {
             EXPECT_FLOAT_EQ(mem[i], mem1[i]);
         }

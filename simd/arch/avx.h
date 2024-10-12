@@ -174,6 +174,27 @@ void store_unaligned(T* mem, const Vec<T, W>& x, requires_arch<AVX>) noexcept
     avx::store_unaligned<T, W>::apply(mem, x);
 }
 
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<std::complex<T>, W> load_complex(const Vec<T, W>& vlo, const Vec<T, W>& vhi, requires_arch<AVX>) noexcept
+{
+    return avx::load_complex<T, W>::apply(vlo, vhi);
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> complex_packlo(const Vec<T, W>& vreal, const Vec<T, W>& vimag, requires_arch<AVX>) noexcept
+{
+    return avx::complex_packlo<T, W>::apply(vreal, vimag);
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> complex_packhi(const Vec<T, W>& vreal, const Vec<T, W>& vimag, requires_arch<AVX>) noexcept
+{
+    return avx::complex_packhi<T, W>::apply(vreal, vimag);
+}
+
 template <typename T, size_t W, typename U, typename V>
 SIMD_INLINE
 Vec<T, W> gather(const U* mem, const Vec<V, W>& index, requires_arch<AVX>) noexcept

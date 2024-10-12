@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tuple>
 namespace simd { namespace kernel { namespace avx {
 using namespace types;
 
@@ -467,6 +468,179 @@ struct store_unaligned<double, W>
     }
 };
 
+namespace detail {
+struct load_complex {
+    SIMD_INLINE
+    std::pair<avx_reg_f, avx_reg_f> operator ()(const avx_reg_f& lo, const avx_reg_f& hi) noexcept
+    {
+        /*
+            split complex<T> to real<T> and imag<T>
+            for example: (low => high from left to right)
+            lo: (1,  2), (3,   4), (5,   6),  (7,  8)
+            hi: (9, 10), (11, 12), (13, 14), (15, 16)
+            => (1, 3, 5, 7, 9, 11, 13, 15), (2, 4, 6, 8, 10, 12, 14, 16)
+
+            ===handle lo===
+            tmp1: (1, 2), (3, 4), tmp2: (5, 6), (7, 8)
+            =>shuffle: 00, 10, 00, 10 (reversed)
+            tmp_real:  1,  3,  5,  7
+            =>shuffle: 01, 11, 01, 11 (reversed)
+            tmp_imag:  2,  4,  6,  8
+
+            real: 1,  3,  5,  7, 0, 0, 0, 0
+            imag: 2,  4,  6,  8, 0, 0, 0, 0
+
+            ===handle hi===
+            tmp1: (9, 10), (11, 12), tmp2: (13, 14), (15, 16)
+            =>shuffle: 00, 10, 00, 10 (reversed)
+            tmp_real:  9,  11, 13, 15
+            =>shuffle: 01, 11, 01, 11 (reversed)
+            tmp_imag:  10, 12, 14, 16
+
+            real: 1,  3,  5,  7,  (9,  11, 13, 15)
+            imag: 2,  4,  6,  8,  (10, 12, 14, 16)
+            ==done==
+        */
+        auto tmp1 = _mm256_extractf128_ps(lo, 0);
+        auto tmp2 = _mm256_extractf128_ps(lo, 1);
+        auto tmp_real = _mm_shuffle_ps(tmp1, tmp2, _MM_SHUFFLE(2, 0, 2, 0));
+        auto tmp_imag = _mm_shuffle_ps(tmp1, tmp2, _MM_SHUFFLE(3, 1, 3, 1));
+        auto real = _mm256_castps128_ps256(tmp_real);
+        auto imag = _mm256_castps128_ps256(tmp_imag);
+
+        tmp1 = _mm256_extractf128_ps(hi, 0);
+        tmp2 = _mm256_extractf128_ps(hi, 1);
+        tmp_real = _mm_shuffle_ps(tmp1, tmp2, _MM_SHUFFLE(2, 0, 2, 0));
+        tmp_imag = _mm_shuffle_ps(tmp1, tmp2, _MM_SHUFFLE(3, 1, 3, 1));
+        real = _mm256_insertf128_ps(real, tmp_real, 1);
+        imag = _mm256_insertf128_ps(imag, tmp_imag, 1);
+        return {real, imag};
+    }
+
+    SIMD_INLINE
+    std::pair<avx_reg_d, avx_reg_d> operator ()(const avx_reg_d& lo, const avx_reg_d& hi) noexcept
+    {
+        /*
+            split complex<T> to real<T> and imag<T>
+            for example: (low => high from left to right)
+            lo: (1, 2), (3, 4)
+            hi: (5, 6), (7, 8)
+            => (1, 3, 5, 7), (2, 4, 6, 8)
+
+            ===handle lo===
+            tmp1: (1, 2), tmp2: (3, 4)
+            real: (1, 3), imag: (2, 4)
+            =>
+            real: (1, 3, 0, 0), imag: (2, 4, 0, 0)
+
+            ===handle hi===
+            tmp1: (5, 6), tmp2: (7, 8)
+                  (1, 3)(5, 7)
+            real: (1, 3, 5, 7),
+                  (2, 4)(6, 8)
+            imag: (2, 4, 6, 8)
+            ==done==
+        */
+        auto tmp1 = _mm256_extractf128_pd(lo, 0);
+        auto tmp2 = _mm256_extractf128_pd(lo, 1);
+        auto real = _mm256_castpd128_pd256(_mm_unpacklo_pd(tmp1, tmp2));
+        auto imag = _mm256_castpd128_pd256(_mm_unpackhi_pd(tmp1, tmp2));
+
+        tmp1 = _mm256_extractf128_pd(hi, 0);
+        tmp2 = _mm256_extractf128_pd(hi, 1);
+        real = _mm256_insertf128_pd(real, _mm_unpacklo_pd(tmp1, tmp2), 1);
+        imag = _mm256_insertf128_pd(imag, _mm_unpackhi_pd(tmp1, tmp2), 1);
+        return {real, imag};
+    }
+};
+}  // namespace detail
+
+template <typename T, size_t W>
+struct load_complex<T, W>
+{
+    using value_type = std::complex<T>;
+
+    SIMD_INLINE
+    static Vec<value_type, W> apply(const Vec<T, W>& vlo, const Vec<T, W>& vhi) noexcept
+    {
+        Vec<value_type, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            std::tie(ret.real(), ret.imag()) = detail::load_complex()(vlo.reg(idx), vhi.reg(idx));
+        }
+        return ret;
+    }
+};
+
+namespace detail {
+/*
+    real: r1, r2, r3, r4, r5, r6, r7, r8
+    imag: i1, i2, i3, i4, i5, i6, i7, i8
+    => packlo
+    complex: r1, l1, r2, i2, r3, i3, r4, i4
+    => packhi
+    complex: r5, i5, r6, i6, r7, i7, r8, i8
+*/
+
+/// _mm256_extractf128_ps requires immediate argument at compile-time
+template <int index>
+struct complex_pack {
+    avx_reg_f operator ()(const avx_reg_f& real, const avx_reg_f& imag) noexcept
+    {
+        auto tmp1 = _mm256_extractf128_ps(real, index);
+        auto tmp2 = _mm256_extractf128_ps(imag, index);
+        auto ret = _mm256_castps128_ps256(_mm_unpacklo_ps(tmp1, tmp2));
+        ret = _mm256_insertf128_ps(ret, _mm_unpackhi_ps(tmp1, tmp2), 1);
+        return ret;
+    }
+    avx_reg_d operator ()(const avx_reg_d& real, const avx_reg_d& imag) noexcept
+    {
+        auto tmp1 = _mm256_extractf128_pd(real, index);
+        auto tmp2 = _mm256_extractf128_pd(imag, index);
+        auto ret = _mm256_castpd128_pd256(_mm_unpacklo_pd(tmp1, tmp2));
+        ret = _mm256_insertf128_pd(ret, _mm_unpackhi_pd(tmp1, tmp2), 1);
+        return ret;
+    }
+};
+
+using complex_packlo = complex_pack<0>;
+using complex_packhi = complex_pack<1>;
+
+}  // namespace detail
+
+template <typename T, size_t W>
+struct complex_packlo<T, W>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& vreal, const Vec<T, W>& vimag) noexcept
+    {
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = detail::complex_packlo()(vreal.reg(idx), vimag.reg(idx));
+        }
+        return ret;
+    }
+};
+
+template <typename T, size_t W>
+struct complex_packhi<T, W>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& vreal, const Vec<T, W>& vimag) noexcept
+    {
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = detail::complex_packhi()(vreal.reg(idx), vimag.reg(idx));
+        }
+        return ret;
+    }
+};
+
 /// to_mask
 namespace detail {
 SIMD_INLINE
@@ -642,7 +816,7 @@ struct from_mask<double, W>
 {
     /// mask, lower 4 bits, each bit indicates one element (4 * sizeof(double) = 256)
     SIMD_INLINE
-    static avx_reg_d mask_lut(uint64_t mask) noexcept
+    static avx_reg_i mask_lut(uint64_t mask) noexcept
     {
         using A = typename VecBool<double, W>::arch_t;
         alignas(A::alignment()) static const uint64_t lut[][4] = {
@@ -652,8 +826,8 @@ struct from_mask<double, W>
             { 0xFFFFFFFFFFFFFFFFul, 0xFFFFFFFFFFFFFFFFul },
         };
         assert(!(mask & ~0xFul) && "inbound mask: [0, F]");
-        return detail::merge_reg(*(const sse_reg_d*)lut[(mask >> 0) & 0x3],
-                                 *(const sse_reg_d*)lut[(mask >> 2) & 0x3]);
+        return detail::merge_reg(*(const sse_reg_i*)lut[(mask >> 0) & 0x3],
+                                 *(const sse_reg_i*)lut[(mask >> 2) & 0x3]);
     }
     SIMD_INLINE
     static VecBool<double, W> apply(uint64_t x) noexcept
