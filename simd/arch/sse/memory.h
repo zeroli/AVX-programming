@@ -444,6 +444,52 @@ struct store_unaligned<double, W>
     }
 };
 
+namespace detail {
+struct load_complex
+{
+    SIMD_INLINE
+    sse_reg_f real(const sse_reg_f& lo, const sse_reg_f& hi) noexcept
+    {
+        return _mm_shuffle_ps(lo, hi, _MM_SHUFFLE(2, 0, 2, 0));
+    }
+    SIMD_INLINE
+    sse_reg_f imag(const sse_reg_f& lo, const sse_reg_f& hi) noexcept
+    {
+        return _mm_shuffle_ps(lo, hi, _MM_SHUFFLE(3, 1, 3, 1));
+    }
+    SIMD_INLINE
+    sse_reg_d real(const sse_reg_d& lo, const sse_reg_d& hi) noexcept
+    {
+        return _mm_shuffle_pd(lo, hi, _MM_SHUFFLE2(0, 0));
+    }
+    SIMD_INLINE
+    sse_reg_d imag(const sse_reg_d& lo, const sse_reg_d& hi) noexcept
+    {
+        return _mm_shuffle_pd(lo, hi, _MM_SHUFFLE2(1, 1));
+    }
+};
+}  // namespace detail
+
+template <typename T, size_t W>
+struct load_complex<T, W>
+{
+    using value_type = std::complex<T>;
+
+    SIMD_INLINE
+    static Vec<value_type, W> apply(const Vec<T, W>& vlo, const Vec<T, W>& vhi) noexcept
+    {
+        Vec<value_type, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.real() = detail::load_complex().real(vlo.reg(idx), vhi.reg(idx));
+            ret.imag() = detail::load_complex().imag(vlo.reg(idx), vhi.reg(idx));
+        }
+        return ret;
+    }
+};
+
 /// to_mask
 namespace detail {
 SIMD_INLINE

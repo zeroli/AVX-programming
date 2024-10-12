@@ -56,6 +56,22 @@ DECLARE_GENERIC_BINARY_CMP_OP(lt);
 DECLARE_GENERIC_BINARY_CMP_OP(le);
 
 template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> load_aligned(const T* mem, requires_arch<Generic>) noexcept;
+
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> load_unaligned(const T* mem, requires_arch<Generic>) noexcept;
+
+template <typename T, size_t W>
+SIMD_INLINE
+void store_aligned(T* mem, const Vec<T, W>& x, requires_arch<Generic>) noexcept;
+
+template <typename T, size_t W>
+SIMD_INLINE
+void store_unaligned(T* mem, const Vec<T, W>& x, requires_arch<Generic>) noexcept;
+
+template <typename T, size_t W>
 Vec<T, W> fmadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, requires_arch<Generic>) noexcept;
 
 template <typename T, size_t W>

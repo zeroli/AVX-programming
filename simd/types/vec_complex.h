@@ -49,6 +49,11 @@ public:
     static constexpr size_t reg_lanes() {
         return W / n_regs();
     }
+
+    /// even though arch_t is Generic, the alignment is real/imag vector's alignment
+    static constexpr size_t alignment() {
+        return real_vec_t::arch_t::alignment();
+    }
 private:
     /// store real and imag in separate vectors
     real_vec_t real_;

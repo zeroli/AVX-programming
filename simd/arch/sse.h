@@ -197,6 +197,13 @@ void store_unaligned(T* mem, const Vec<T, W>& x, requires_arch<SSE>) noexcept
     sse::store_unaligned<T, W>::apply(mem, x);
 }
 
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<std::complex<T>, W> load_complex(const Vec<T, W>& vlo, const Vec<T, W>& vhi, requires_arch<SSE>) noexcept
+{
+    return sse::load_complex<T, W>::apply(vlo, vhi);
+}
+
 template <typename T, size_t W, typename U, typename V>
 SIMD_INLINE
 Vec<T, W> gather(const U* mem, const Vec<V, W>& index, requires_arch<SSE>) noexcept

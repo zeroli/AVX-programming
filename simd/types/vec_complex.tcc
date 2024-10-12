@@ -80,49 +80,57 @@ void Vec<std::complex<T>, W>::clear() noexcept
 }
 
 template <typename T, size_t W>
-SIMD_INLINE
+SIMD_INLINE /*static*/
 Vec<std::complex<T>, W> Vec<std::complex<T>, W>::load_aligned(const T* real, const T* imag) noexcept
 {
-
+    Vec<std::complex<T>, W> ret;
+    real ? ret.real().load(real) : ret.real().clear();
+    imag ? ret.imag().load(imag) : ret.imag().clear();
+    return ret;
 }
 
 template <typename T, size_t W>
-SIMD_INLINE
+SIMD_INLINE /*static*/
 Vec<std::complex<T>, W> Vec<std::complex<T>, W>::load_unaligned(const T* real, const T* imag) noexcept
 {
-
+    Vec<std::complex<T>, W> ret;
+    real ? ret.real().loadu(real) : ret.real().clear();
+    imag ? ret.imag().loadu(imag) : ret.imag().clear();
+    return ret;
 }
 
 template <typename T, size_t W>
 template <typename U>
-SIMD_INLINE
+SIMD_INLINE /*static*/
 Vec<std::complex<T>, W> Vec<std::complex<T>, W>::load(const U* mem, aligned_mode) noexcept
 {
-    assert(is_aligned(mem, A::alignment())
+    assert(is_aligned(mem, alignment())
         && "loaded location is not properly aligned");
-    //return kernel::load_aligned<value_type, W>((const value_type*)mem, A{});
+    return kernel::load_aligned<value_type, W>((const value_type*)mem, A{});
 }
 
 template <typename T, size_t W>
 template <typename U>
-SIMD_INLINE
+SIMD_INLINE /*static*/
 Vec<std::complex<T>, W> Vec<std::complex<T>, W>::load(const U* mem, unaligned_mode) noexcept
 {
-    //return kernel::load_unaligned<value_type, W>((const value_type*)mem, A{});
+    return kernel::load_unaligned<value_type, W>((const value_type*)mem, A{});
 }
 
 template <typename T, size_t W>
 SIMD_INLINE
 void Vec<std::complex<T>, W>::store_aligned(T* real, T* imag) const noexcept
 {
-    // TODO:
+    real ? real().store_aligned(real) : (void)0;
+    imag ? imag().store_aligned(imag) : (void)0;
 }
 
 template <typename T, size_t W>
 SIMD_INLINE
 void Vec<std::complex<T>, W>::store_unaligned(T* real, T* imag) const noexcept
 {
-    // TODO:
+    real ? real().store_unaligned(real) : (void)0;
+    imag ? imag().store_unaligned(imag) : (void)0;
 }
 
 template <typename T, size_t W>
@@ -130,9 +138,9 @@ template <typename U>
 SIMD_INLINE
 void Vec<std::complex<T>, W>::store(U* mem, aligned_mode) const noexcept
 {
-    assert(is_aligned(mem, A::alignment())
+    assert(is_aligned(mem, alignment())
         && "store location is not properly aligned");
-    //kernel::store_aligned<value_type, W>((value_type*)mem, *this, A{});
+    kernel::store_aligned<value_type, W>((value_type*)mem, *this, A{});
 }
 
 template <typename T, size_t W>
@@ -140,7 +148,7 @@ template <typename U>
 SIMD_INLINE
 void Vec<std::complex<T>, W>::store(U* mem, unaligned_mode) const noexcept
 {
-    //kernel::store_unaligned<value_type, W>((value_type*)mem, *this, A{});
+    kernel::store_unaligned<value_type, W>((value_type*)mem, *this, A{});
 }
 
 template <typename T, size_t W>

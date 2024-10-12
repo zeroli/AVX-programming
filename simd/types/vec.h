@@ -50,6 +50,11 @@ public:
         return A::name();
     }
 
+    static constexpr size_t alignment() {
+        return A::alignment();
+    }
+
+public:
     SIMD_INLINE
     Vec() noexcept = default;
     SIMD_INLINE

@@ -181,6 +181,34 @@ Vec<T, W> fmsubadd(const Vec<T, W>& x, const Vec<T, W>& y, const Vec<T, W>& z, r
     return generic::fmsubadd<T, W>::apply(x, y, z);
 }
 
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> load_aligned(const T* mem, requires_arch<Generic>) noexcept
+{
+    return generic::load_aligned<T, W>::apply(mem);
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> load_unaligned(const T* mem, requires_arch<Generic>) noexcept
+{
+    return generic::load_unaligned<T, W>::apply(mem);
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+void store_aligned(T* mem, const Vec<T, W>& x, requires_arch<Generic>) noexcept
+{
+    generic::store_aligned<T, W>::apply(mem, x);
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+void store_unaligned(T* mem, const Vec<T, W>& x, requires_arch<Generic>) noexcept
+{
+    sse::store_unaligned<T, W>::apply(mem, x);
+}
+
 #undef DEFINE_GENERIC_UNARY_OP
 #undef DEFINE_GENERIC_BINARY_OP
 #undef DEFINE_GENERIC_BINARY_CMP_OP

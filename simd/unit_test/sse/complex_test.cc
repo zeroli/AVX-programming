@@ -128,3 +128,32 @@ TEST(vec_complex_sse, test_arith_div)
         }
     }
 }
+
+TEST(vec_complex_sse, test_memory_load_aligned)
+{
+    {
+        alignas(16) float mem[] = { 1.f, 2.f, 3.f, 4.f };
+        auto a = simd::Vec<cf32_t, 4>::load_aligned(mem);
+        for (auto i = 0; i < a.size(); i++) {
+            EXPECT_FLOAT_EQ(mem[i], a.real()[i]);
+            EXPECT_FLOAT_EQ(0.f, a.imag()[i]);
+        }
+    }
+    {
+        alignas(16) float rmem[] = { 1.f, 2.f, 3.f, 4.f };
+        alignas(16) float imem[] = { 5.f, 6.f, 7.f, 8.f };
+        auto a = simd::Vec<cf32_t, 4>::load_aligned(rmem, imem);
+        for (auto i = 0; i < a.size(); i++) {
+            EXPECT_FLOAT_EQ(rmem[i], a.real()[i]);
+            EXPECT_FLOAT_EQ(imem[i], a.imag()[i]);
+        }
+    }
+    {
+        alignas(16) float mem[] = { 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f };
+        auto a = simd::Vec<cf32_t, 4>::load(mem, simd::aligned_mode{});
+        for (auto i = 0; i < a.size(); i++) {
+            EXPECT_FLOAT_EQ(mem[2*i],   a.real()[i]);
+            EXPECT_FLOAT_EQ(mem[2*i+1], a.imag()[i]);
+        }
+    }
+}
