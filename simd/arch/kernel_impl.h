@@ -30,6 +30,8 @@ DECLARE_OP_KERNEL(store_aligned);
 DECLARE_OP_KERNEL(store_unaligned);
 DECLARE_OP_KERNEL(broadcast);
 DECLARE_OP_KERNEL(load_complex);
+DECLARE_OP_KERNEL(complex_packlo);
+DECLARE_OP_KERNEL(complex_packhi);
 
 /// bitwise op kernels
 DECLARE_OP_KERNEL(bitwise_and);

@@ -206,7 +206,7 @@ template <typename T, size_t W>
 SIMD_INLINE
 void store_unaligned(T* mem, const Vec<T, W>& x, requires_arch<Generic>) noexcept
 {
-    sse::store_unaligned<T, W>::apply(mem, x);
+    generic::store_unaligned<T, W>::apply(mem, x);
 }
 
 #undef DEFINE_GENERIC_UNARY_OP

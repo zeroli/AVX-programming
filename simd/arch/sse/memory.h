@@ -480,11 +480,66 @@ struct load_complex<T, W>
     {
         Vec<value_type, W> ret;
         constexpr auto nregs = Vec<T, W>::n_regs();
-        constexpr auto reg_lanes = Vec<T, W>::reg_lanes();
         #pragma unroll
         for (auto idx = 0; idx < nregs; idx++) {
             ret.real() = detail::load_complex().real(vlo.reg(idx), vhi.reg(idx));
             ret.imag() = detail::load_complex().imag(vlo.reg(idx), vhi.reg(idx));
+        }
+        return ret;
+    }
+};
+
+namespace detail {
+struct complex_packlo {
+    sse_reg_f operator ()(const sse_reg_f& lo, const sse_reg_f& hi) noexcept
+    {
+        return _mm_unpacklo_ps(lo, hi);
+    }
+    sse_reg_d operator ()(const sse_reg_d& lo, const sse_reg_d& hi) noexcept
+    {
+        return _mm_unpacklo_pd(lo, hi);
+    }
+};
+
+struct complex_packhi {
+    sse_reg_f operator ()(const sse_reg_f& lo, const sse_reg_f& hi) noexcept
+    {
+        return _mm_unpackhi_ps(lo, hi);
+    }
+    sse_reg_d operator ()(const sse_reg_d& lo, const sse_reg_d& hi) noexcept
+    {
+        return _mm_unpackhi_pd(lo, hi);
+    }
+};
+}  // namespace detail
+
+template <typename T, size_t W>
+struct complex_packlo<T, W>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& vlo, const Vec<T, W>& vhi) noexcept
+    {
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = detail::complex_packlo()(vlo.reg(idx), vhi.reg(idx));
+        }
+        return ret;
+    }
+};
+
+template <typename T, size_t W>
+struct complex_packhi<T, W>
+{
+    SIMD_INLINE
+    static Vec<T, W> apply(const Vec<T, W>& vlo, const Vec<T, W>& vhi) noexcept
+    {
+        Vec<T, W> ret;
+        constexpr auto nregs = Vec<T, W>::n_regs();
+        #pragma unroll
+        for (auto idx = 0; idx < nregs; idx++) {
+            ret.reg(idx) = detail::complex_packhi()(vlo.reg(idx), vhi.reg(idx));
         }
         return ret;
     }

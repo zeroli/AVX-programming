@@ -115,10 +115,10 @@ public:
 
     /// load
     SIMD_INLINE
-    static Vec load_aligned(const T* real, const T* imag = nullptr) noexcept;
+    static Vec load_aligned(const T* real, const T* imag) noexcept;
 
     SIMD_INLINE
-    static Vec load_unaligned(const T* real, const T* imag = nullptr) noexcept;
+    static Vec load_unaligned(const T* real, const T* imag) noexcept;
 
     template <typename U>
     SIMD_INLINE
@@ -176,11 +176,11 @@ public:
     }
 
     SIMD_INLINE
-    void load(const T* real_mem, const T* imag_mem = nullptr) noexcept {
+    void load(const T* real_mem, const T* imag_mem) noexcept {
         *this = load_aligned(real_mem, imag_mem);
     }
     SIMD_INLINE
-    void loadu(const T* real_mem, const T* imag_mem = nullptr) noexcept {
+    void loadu(const T* real_mem, const T* imag_mem) noexcept {
         *this = load_unaligned(real_mem, imag_mem);
     }
 

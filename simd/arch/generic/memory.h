@@ -40,9 +40,16 @@ template <typename T, size_t W>
 struct store_aligned<std::complex<T>, W>
 {
     using value_type = std::complex<T>;
+
     SIMD_INLINE
-    static void apply(value_type* mem) noexcept
+    static void apply(value_type* mem, const Vec<value_type, W>& x) noexcept
     {
+        using vec_t = Vec<T, W>;
+        using A = typename vec_t::arch_t;
+        auto vlo = kernel::complex_packlo(x.real(), x.imag(), A{});
+        auto vhi = kernel::complex_packhi(x.real(), x.imag(), A{});
+        vlo.store((T*)mem);
+        vhi.store((T*)mem + W);
     }
 };
 
@@ -52,8 +59,14 @@ struct store_unaligned<std::complex<T>, W>
     using value_type = std::complex<T>;
 
     SIMD_INLINE
-    static void apply(value_type* mem) noexcept
+    static void apply(value_type* mem, const Vec<value_type, W>& x) noexcept
     {
+        using vec_t = Vec<T, W>;
+        using A = typename vec_t::arch_t;
+        auto vlo = kernel::complex_packlo(x.real(), x.imag(), A{});
+        auto vhi = kernel::complex_packhi(x.real(), x.imag(), A{});
+        vlo.storeu((T*)mem);
+        vhi.storeu((T*)mem + W);
     }
 };
 } } } // namespace simd::kernel::generic

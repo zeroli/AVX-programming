@@ -204,6 +204,21 @@ Vec<std::complex<T>, W> load_complex(const Vec<T, W>& vlo, const Vec<T, W>& vhi,
     return sse::load_complex<T, W>::apply(vlo, vhi);
 }
 
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> complex_packlo(const Vec<T, W>& vlo, const Vec<T, W>& vhi, requires_arch<SSE>) noexcept
+{
+    return sse::complex_packlo<T, W>::apply(vlo, vhi);
+}
+
+template <typename T, size_t W>
+SIMD_INLINE
+Vec<T, W> complex_packhi(const Vec<T, W>& vlo, const Vec<T, W>& vhi, requires_arch<SSE>) noexcept
+{
+    return sse::complex_packhi<T, W>::apply(vlo, vhi);
+}
+
+
 template <typename T, size_t W, typename U, typename V>
 SIMD_INLINE
 Vec<T, W> gather(const U* mem, const Vec<V, W>& index, requires_arch<SSE>) noexcept

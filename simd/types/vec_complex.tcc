@@ -121,16 +121,16 @@ template <typename T, size_t W>
 SIMD_INLINE
 void Vec<std::complex<T>, W>::store_aligned(T* real, T* imag) const noexcept
 {
-    real ? real().store_aligned(real) : (void)0;
-    imag ? imag().store_aligned(imag) : (void)0;
+    real ? this->real().store_aligned(real) : (void)0;
+    imag ? this->imag().store_aligned(imag) : (void)0;
 }
 
 template <typename T, size_t W>
 SIMD_INLINE
 void Vec<std::complex<T>, W>::store_unaligned(T* real, T* imag) const noexcept
 {
-    real ? real().store_unaligned(real) : (void)0;
-    imag ? imag().store_unaligned(imag) : (void)0;
+    real ? this->real().store_unaligned(real) : (void)0;
+    imag ? this->imag().store_unaligned(imag) : (void)0;
 }
 
 template <typename T, size_t W>
