@@ -90,7 +90,7 @@ public:
             >::value))
     >
     SIMD_INLINE
-    Vec(G&& generator) noexcept {
+    explicit Vec(G&& generator) noexcept {
         gen_values(std::forward<G>(generator));
     }
 

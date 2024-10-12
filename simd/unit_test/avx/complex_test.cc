@@ -138,8 +138,8 @@ TEST(vec_complex_avx, test_memory_load_aligned)
         std::iota(mem, mem + 8, 1.f);
         auto a = simd::Vec<cf32_t, 8>::load_aligned(mem, nullptr);
         for (auto i = 0; i < a.size(); i++) {
-            EXPECT_FLOAT_EQ(mem[i], a.real()[i]);
-            EXPECT_FLOAT_EQ(0.f, a.imag()[i]);
+            EXPECT_FLOAT_EQ(mem[i], a[i].real());
+            EXPECT_FLOAT_EQ(0.f, a[i].imag());
         }
     }
     {
@@ -149,8 +149,8 @@ TEST(vec_complex_avx, test_memory_load_aligned)
         std::iota(imem, imem + 8, 9.f);
         auto a = simd::Vec<cf32_t, 8>::load_aligned(rmem, imem);
         for (auto i = 0; i < a.size(); i++) {
-            EXPECT_FLOAT_EQ(rmem[i], a.real()[i]);
-            EXPECT_FLOAT_EQ(imem[i], a.imag()[i]);
+            EXPECT_FLOAT_EQ(rmem[i], a[i].real());
+            EXPECT_FLOAT_EQ(imem[i], a[i].imag());
         }
     }
     {
@@ -158,8 +158,8 @@ TEST(vec_complex_avx, test_memory_load_aligned)
         std::iota(mem, mem + 16, 1.f);
         auto a = simd::Vec<cf32_t, 8>::load(mem, simd::aligned_mode{});
         for (auto i = 0; i < a.size(); i++) {
-            EXPECT_FLOAT_EQ(mem[2*i],   a.real()[i]);
-            EXPECT_FLOAT_EQ(mem[2*i+1], a.imag()[i]);
+            EXPECT_FLOAT_EQ(mem[2*i],   a[i].real());
+            EXPECT_FLOAT_EQ(mem[2*i+1], a[i].imag());
         }
     }
     {
@@ -167,8 +167,8 @@ TEST(vec_complex_avx, test_memory_load_aligned)
         std::iota(mem, mem + 8, 1.0);
         auto a = simd::Vec<cf64_t, 4>::load(mem, simd::aligned_mode{});
         for (auto i = 0; i < a.size(); i++) {
-            EXPECT_FLOAT_EQ(mem[2*i],   a.real()[i]);
-            EXPECT_FLOAT_EQ(mem[2*i+1], a.imag()[i]);
+            EXPECT_FLOAT_EQ(mem[2*i],   a[i].real());
+            EXPECT_FLOAT_EQ(mem[2*i+1], a[i].imag());
         }
     }
 }
@@ -180,8 +180,8 @@ TEST(vec_complex_avx, test_memory_load_unaligned)
         std::iota(mem, mem + 8, 1.f);
         auto a = simd::Vec<cf32_t, 8>::load_unaligned(mem, nullptr);
         for (auto i = 0; i < a.size(); i++) {
-            EXPECT_FLOAT_EQ(mem[i], a.real()[i]);
-            EXPECT_FLOAT_EQ(0.f, a.imag()[i]);
+            EXPECT_FLOAT_EQ(mem[i], a[i].real());
+            EXPECT_FLOAT_EQ(0.f, a[i].imag());
         }
     }
     {
@@ -191,8 +191,8 @@ TEST(vec_complex_avx, test_memory_load_unaligned)
         std::iota(imem, imem + 8, 9.f);
         auto a = simd::Vec<cf32_t, 8>::load_unaligned(rmem, imem);
         for (auto i = 0; i < a.size(); i++) {
-            EXPECT_FLOAT_EQ(rmem[i], a.real()[i]);
-            EXPECT_FLOAT_EQ(imem[i], a.imag()[i]);
+            EXPECT_FLOAT_EQ(rmem[i], a[i].real());
+            EXPECT_FLOAT_EQ(imem[i], a[i].imag());
         }
     }
     {
@@ -200,8 +200,8 @@ TEST(vec_complex_avx, test_memory_load_unaligned)
         std::iota(mem, mem + 16, 1.f);
         auto a = simd::Vec<cf32_t, 8>::load(mem, simd::unaligned_mode{});
         for (auto i = 0; i < a.size(); i++) {
-            EXPECT_FLOAT_EQ(mem[2*i],   a.real()[i]);
-            EXPECT_FLOAT_EQ(mem[2*i+1], a.imag()[i]);
+            EXPECT_FLOAT_EQ(mem[2*i],   a[i].real());
+            EXPECT_FLOAT_EQ(mem[2*i+1], a[i].imag());
         }
     }
     {
@@ -209,8 +209,8 @@ TEST(vec_complex_avx, test_memory_load_unaligned)
         std::iota(mem, mem + 8, 1.0);
         auto a = simd::Vec<cf64_t, 4>::load(mem, simd::unaligned_mode{});
         for (auto i = 0; i < a.size(); i++) {
-            EXPECT_FLOAT_EQ(mem[2*i],   a.real()[i]);
-            EXPECT_FLOAT_EQ(mem[2*i+1], a.imag()[i]);
+            EXPECT_FLOAT_EQ(mem[2*i],   a[i].real());
+            EXPECT_FLOAT_EQ(mem[2*i+1], a[i].imag());
         }
     }
 }

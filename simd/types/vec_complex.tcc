@@ -35,10 +35,11 @@ template <typename T, size_t W>
 template <typename... Ts>
 SIMD_INLINE
 Vec<std::complex<T>, W>::Vec(const value_type& val0, const value_type& val1, Ts... vals) noexcept
-    //: self_t(kernel::set<value_type, W>(A{}, val0, val1, static_cast<value_type>(vals)...))
 {
     static_assert(sizeof...(Ts) + 2 == W,
         "the constructor requires as many arguments as vector elements");
+    real() = kernel::set<T, W>(real_arch_t{}, val0.real(), val1.real(), std::real(vals)...);
+    imag() = kernel::set<T, W>(real_arch_t{}, val0.imag(), val1.imag(), std::imag(vals)...);
 }
 
 template <typename T, size_t W>
@@ -56,10 +57,10 @@ template <typename G>
 SIMD_INLINE
 void Vec<std::complex<T>, W>::gen_values(G&& generator) noexcept
 {
-    alignas(A::alignment()) value_type buf[W];
+    alignas(real_arch_t::alignment()) value_type buf[W];
     #pragma unroll
     for (int i = 0; i < W; i++) {
-        buf[i] = (T)generator(i);
+        buf[i] = (value_type)generator(i);
     }
     load(buf);
 }

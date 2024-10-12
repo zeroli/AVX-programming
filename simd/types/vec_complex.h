@@ -20,6 +20,7 @@ public:
     /// always Generic, no native arch to support this complex<T> type
     using A = Generic;
     using arch_t = A;
+    using real_arch_t = typename real_vec_t::arch_t;
     using scalar_t = T;
     using register_t = typename Vec<T, W>::register_t;
     using vec_bool_t = VecBool<T, W>;
@@ -96,7 +97,7 @@ public:
             >::value))
     >
     SIMD_INLINE
-    Vec(G&& generator) noexcept {
+    explicit Vec(G&& generator) noexcept {
         gen_values(std::forward<G>(generator));
     }
 
@@ -221,6 +222,12 @@ public:
     SIMD_INLINE
     imag_vec_t& imag() noexcept {
         return imag_;
+    }
+
+    /// operator [] access
+    SIMD_INLINE
+    value_type operator [](size_t idx) const noexcept {
+        return { real()[idx], imag()[idx] };
     }
 
     /// comparison operators
